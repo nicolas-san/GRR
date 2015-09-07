@@ -1,13 +1,13 @@
 {# ########### TYPE SELECT ################## #}
 {% if fieldType == "select" %}
     <b><i>{{ vocab.rooms}}{{ vocab.deux_points}}</i></b><br />
-    <form id="room_001" action="{{ formAction }}"><div><select class="form-control" name="room" onchange="room_go()">
+    <form id="room_001" action="{{ formAction }}" class="form-inline">
+            <select class="form-control" name="room" onchange="room_go()">
                 <option value="{{ linkToAllRoom }}">{{ vocab.all_rooms }}</option>
                 {% for room in rooms %}
                     <option {% if room.current %}selected="selected"{% endif %} value="{{ room.linkToRoom }}" >{{ room.txtOption }}</option>
                 {% endfor %}
             </select>
-        </div>
         <script type="text/javascript">
             function room_go()
             {

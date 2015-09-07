@@ -2,7 +2,7 @@
 {% if fieldType == "select" %}
 
     <b><i>{{ vocab.sites}}{{ vocab.deux_points }}</i></b>
-    <form id="site_001" action="{{ formAction }}">
+    <form id="site_001" action="{{ formAction }}" class="form-inline">
         <select class="form-control" name="site" onchange="site_go()">
             {% for site in sites %}
                 <option {% if site.current %}selected="selected"{% endif %} value="{{ site.linkToDomaine }}">{{ site.txtOption }}</option>

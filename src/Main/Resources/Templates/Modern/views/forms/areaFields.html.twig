@@ -1,7 +1,7 @@
 {# ########### TYPE SELECT ################## #}
 {% if fieldType == "select" %}
     <b><i>{{ vocab.areas }}</i></b>
-    <form id="area_001" action="{{ formAction }}">
+    <form id="area_001" action="{{ formAction }}" class="form-inline">
         <select class="form-control" name="area" onchange="area_go()">
             {% for area in areas %}
                 <option {% if area.current %}selected="selected"{% endif %} value="{{ area.linkToArea }}">{{ area.txtOption }}</option>

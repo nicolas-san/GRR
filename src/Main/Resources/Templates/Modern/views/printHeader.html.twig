@@ -1,106 +1,159 @@
-<div id="toppanel">
-    <div id="panel">
-        <div class="content">
-            <table id="header">
-                <tr>
-                    <td class="logo" height="100px">
-                        {% if nomPicture == true %}
-                        <a href="{{ homeLink }}">
-                            <img src="{{ nomPicture }}" alt="logo"/>
-                        </a>
-                        {% endif %}
-                    </td>
-                    <td class="accueil ">
-                        <h2>
-                            <a href="{{ homeLink }}">
-                                {{ vocab.welcome }} - <b> {{ company }} </b>
-                            </a>
-                        </h2>
-                        {{ messageAcceuil }}
-                        {% if mailEtatDestEtNoSession %}
-                    <td class="contactformulaire">
-                        <input class="btn btn-default" type="submit" rel="popup_name" value="Réserver" onClick="javascript:location.href={{ pathToReserver }}" >
-                    </td>
-                    {% endif %}
-                    <td class="administration">
-                        <br><a href="{{ pathToAdmin }}">{{ vocab.admin }}</a>
-                        <br />
-                        {% if pathToMyslqlSave != false %}
-                            <form action="{{ pathToMyslqlSave }}" method='get'><div>
-                                    <input type="hidden" name="flag_connect" value="yes" />
-                                    <input type="submit" class="btn btn-default" value="{{ vocab.submit_backup }}" /></div>
-                            </form>
-                            <a href="{{ pathToViewConnexions }}">{{ nb_connect }} {% if nb_connect == 1 %} {{ vocab.one_connected }} {% else %} {{ several.one_connected }} {% endif %}</a>
-                            {% if erreurVersion != false %}
-                                {# include template ont accès aux données courantes, dans alert.html.twig je peux afficher directement erreurVersion #}
-                                {{ include('helpers/alert.html.twig') }}
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                    {% if session != false %}
-                        <script>selection()</script>
-                    {% endif %}
-                    <td class="configuration" >
-                        {% if clockFile  != false %}
-                            <div class="clock">
-                                <div id="Date">
-                                    &nbsp;<span id="hours"></span>
-                                    h
-                                    <span id="min"></span>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=fr"><img src="src/Main/Resources/public/images/base/fr_dp.png" alt="France" title="france" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=de"><img src="src/Main/Resources/public/images/base/de_dp.png" alt="Deutch" title="deutch" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=en"><img src="src/Main/Resources/public/images/base/en_dp.png" alt="English" title="English" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=it"><img src="src/Main/Resources/public/images/base/it_dp.png" alt="Italiano" title="Italiano" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=es"><img src="src/Main/Resources/public/images/base/es_dp.png" alt="Spanish" title="Spanish" width="20" height="13" class="image" /></a>
-                        {% if session == false %}
-                            {% if ssoStatus == "cas_visiteur" or ssoStatus == "cas_utilisateur" %}
-                                <br />
-                                <a href="index.php?force_authentification=y">{{ vocab.authentification }}</a>
-                                <br />
-                                <small>
-                                    <i>
-                                        <a href="login.php">{{ vocab.connect_local }}</a>
-                                    </i>
-                                </small>
-                            {% else %}
-                                <br /> <a href="login.php">{{ vocab.connect }}</a>
-                            {% endif %}
-                        {% else %}
-                            {% if searchAccess != false %}
-                                <br/><a href="{{ pathToReport }}">{{ vocab.report }}</a>
-                            {% endif %}
-                            {% if disconnectLink == true %}
-                                {% if authentificationObli == true %}
-                                    <br /> <a href="{{ pathToLogout }}" >{{ vocab.disconnect }}</a>
-                                {% else %}
-                                    <br /> <a href="{{ pathToLogout }}" >{{ vocab.disconnect }}</a>
-                                {% endif %}
-                            {% endif %}
-                            {% if portailSso != false %}
-                                <a href="{{ portailSso }}" >{{ vocab.Portail_accueil }} </a>
-                            {% endif %}
-                            {% if ssoStatus == "lasso_visiteur" or ssoStatus == "lasso_utilisateur" %}
-                                {% if lasso_nameid == true %}
-                                    <a href="lasso/federate.php">{{ vocab.lasso_federate_this_account }}</a>
-                                {% else %}
-                                    <a href="lasso/defederate.php">{{ vocab.lasso_defederate_this_account }}</a>
-                                {% endif %}
-                            {% endif %}
+{#{{ dump() }}#}
+<div class="navbar navbar-fixed-top nav-custom">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
 
-                        {% endif %}
+            </button> {#<a class="navbar-brand" href="#">Centre de réservation</a>#}
 
-                    </td>
-                </tr>
-            </table>
         </div>
-    </div>
-    <div class="tab">
-
-        <a id="open" class="open" href="#">Menu <i>(ouvrir/fermer)</i></a>
-
+        <div class="collapse navbar-collapse pull-right">
+            <ul class="nav navbar-nav">
+                <li class="active"><a class="orange" href="#">Home</a>
+                </li>
+                <li class="active"><a class="orange" href="#">Lien1</a>
+                </li>
+                <li class="active"><a class="orange" href="#">Lien2</a>
+                </li>
+                {% if searchAccess != false %}
+                    <li>
+                        <a class="orange" href="{{ pathToReport }}">{{ vocab.report }}</a>
+                    </li>
+                {% endif %}
+                <li><a class="orange" href="#contact">Support technique</a>
+                </li>
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
     </div>
 </div>
- 
+<div class="row bg-primary" id="bandeau">
+{#    {% if nomPicture == true %}
+        <a href="{{ homeLink }}">
+            <img src="{{ nomPicture }}" class="img-responsive" alt="logo" ><br />
+            <h1>Contre de réservation</h1>
+            <div class="col-md-offset-6">
+                <h4>Enseignement catholique</h4>
+            </div>
+        </a>
+    {% endif %}#}
+    <div class="row">
+        <div class="col-md-2 col-md-offset-2">
+            <a href="{{ homeLink }}">
+                <img src="src/Main/Resources/Templates/Modern/public/images/logo_ec.jpg" class="img-responsive" alt="logo" width="200px" height="200px">
+            </a>
+        </div>
+
+        <div class="col-md-8">
+
+            <h1 class="bigTexte">Centre de réservation</h1>
+            <h4 class="col-md-offset-4">Enseignement catholique</h4>
+        </div>
+    </div>
+    {#<div class="row">
+        <div class="col-md-offset-6">
+            <h4>Enseignement catholique</h4>
+        </div>
+    </div>#}
+</div>
+<div class="container">
+    <div class="row">
+        {# liens de connection, logout ... #}
+        <div class="col-md-3 col-md-offset-2" >
+            {% if session == false %}
+                <div class="col-md-6">
+                    {% if ssoStatus == "cas_visiteur" or ssoStatus == "cas_utilisateur" %}
+
+                        <a href="index.php?force_authentification=y">{{ vocab.authentification }}</a>
+                        <small>
+                            <i>
+                                <a href="login.php">{{ vocab.connect_local }}</a>
+                            </i>
+                        </small>
+                    {% else %}
+                        <a href="login.php">{{ vocab.connect }}</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="col-md-6">
+                    {{ vocab.welcome }}
+                    </div>
+                    <div class="col-md-3">
+                    {% if searchAccess != false %}
+                        <br/><a href="{{ pathToReport }}">{{ vocab.report }}</a>
+                    {% endif %}
+                    {% if disconnectLink == true %}
+                        {% if authentificationObli == true %}
+                            <br /> <a href="{{ pathToLogout }}" >{{ vocab.disconnect }}</a>
+                        {% else %}
+                            <br /> <a href="{{ pathToLogout }}" >{{ vocab.disconnect }}</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if portailSso != false %}
+                        <a href="{{ portailSso }}" >{{ vocab.Portail_accueil }} </a>
+                    {% endif %}
+                    {% if ssoStatus == "lasso_visiteur" or ssoStatus == "lasso_utilisateur" %}
+                        {% if lasso_nameid == true %}
+                            <a href="lasso/federate.php">{{ vocab.lasso_federate_this_account }}</a>
+                        {% else %}
+                            <a href="lasso/defederate.php">{{ vocab.lasso_defederate_this_account }}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {#<div class="col-md-3" id="calendrierGauche">
+        </div>
+        <div class="col-md-3"  id="calendrierDroit">
+        </div>#}
+    </div>
+    {#<script class="">
+        $('#calendrierGauche').datepicker({
+            inline: true,
+            firstDay: 1,
+            showOtherMonths: true,
+            dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        });
+        $('#calendrierDroit').datepicker({
+            inline: true,
+            firstDay: 1,
+            showOtherMonths: true,
+            dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        });
+    </script>#}
+</div>
+<!-- /.container -->
+
+{#
+nomPicture
+{{ homeLink }}
+{{ nomPicture }}  {{ vocab.welcome }}
+{{ company }}
+{{ messageAcceuil }}
+mailEtatDestEtNoSession
+{{ pathToReserver }}
+{{ pathToAdmin }}{{ vocab.admin }}
+pathToMyslqlSave{{ vocab.submit_backup }}
+{{ pathToViewConnexions }}{{ nb_connect }} {{ vocab.one_connected }}{{ several.one_connected }}
+erreurVersion != false
+session != false
+clockFile  != false
+{{ pathToReturn }}
+ssoStatus == "cas_visiteur" or ssoStatus == "cas_utilisateur"
+{{ vocab.authentification }}
+{{ vocab.connect_local }}
+{{ vocab.connect }}
+searchAccess != false
+{{ pathToReport }}">{{ vocab.report }}
+disconnectLink == true
+if authentificationObli == true
+{{ pathToLogout }}{{ vocab.disconnect }}
+portailSso != false
+{{ portailSso }}{{ vocab.Portail_accueil }}
+ssoStatus == "lasso_visiteur" or ssoStatus == "lasso_utilisateur"
+lasso_nameid == true
+{{ vocab.lasso_federate_this_account }}
+{{ vocab.lasso_defederate_this_account }}#}

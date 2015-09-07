@@ -1,3 +1,11 @@
+{# si $tplArray['header'] est false, le header a déjà été affiché par print_header dans functions.inc.php #}
+{#{% if header != false %}
+    HEADER<br>
+    {{ dump(header) }}
+    {{ include('printHeader.html.twig' with {'header' : header, 'menuGauche' : tplArrayMenuGauche }) }}
+{% endif %}#}
+{# anciennement menuGauche, affiché ici en horizontal#}
+{{ include('menuGauche.html.twig', tplArrayMenuGauche) }}
 {% if pview %}
     {% set classImage = "print_image" %}
 {% else %}
@@ -15,7 +23,7 @@
                 <div id="planning">
         {% endif %}
         {# include de template du menu gauche #}
-        {{ include('menuGauche.html.twig', tplArrayMenuGauche) }}
+        {#{{ include('menuGauche.html.twig', tplArrayMenuGauche) }}#}
                     <div id="chargement">
                         <div class="progress">
                             <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
