@@ -4,54 +4,67 @@
 
 
             {% for key, monthDetail in returnCalHtml['month'] %}
-            <table class="table">
-                {#<br>KEY<br>
-                {{ dump(key) }}#}
-                {# ligne des jours de la semaine #}
-                <tr>
-                    <td>&nbsp;</td>
-                    {% for firstDay in monthDetail.firstDays %}
-                        <td>{{ firstDay }}</td>
-                    {% endfor %}
-                </tr>
-                {#{{ dump(monthDetail) }}#}
-                {% for key2, day in monthDetail.daysOfTheMonth.dayInMonth %}
-                    <tr>
-                        <td>
-                            {#KEY2 : {{ key2 }} <br>#}
-                            {#<pre>
-                                {{ dump(day) }}
-                            </pre>#}
-                            <a href="{{ day.linkToWeekArea }}">s{{ day.textToWeekArea }} </a>
-                        </td>
-                        {% for number in day.numbers %}
-                            {% for keyDay, dayDetail in number  %}
-                                <td>
-                                    {{ keyDay }}
-                                    {#{{ dump(dayDetail) }}#}
-                                    {% if dayDetail.current %}
-                                        CURRENT
-                                    {% endif %}
-                                    {% if dayDetail.link %}
-                                        {{ dayDetail.link }}
-                                    {% endif %}
-                                    {#{{ dump(number)}}#}
-                                </td>
+                <div class="col-md-3">
+                    <table class="table-condensed">
+                        {#<br>KEY<br>
+                        {{ dump(key) }}#}
+                        {# ligne des jours de la semaine #}
+                        <tr>
+                            <td>&nbsp;</td>
+                            {% for firstDay in monthDetail.firstDays %}
+                                <td>{{ firstDay }}</td>
                             {% endfor %}
+                        </tr>
+                        {#{{ dump(monthDetail) }}#}
+                        {% for key2, day in monthDetail.daysOfTheMonth.dayInMonth %}
+                            <tr>
+                                <td>
+                                    {#KEY2 : {{ key2 }} <br>#}
+                                    {#<pre>
+                                        {{ dump(day) }}
+                                    </pre>#}
+                                    <a class="week" href="{{ day.linkToWeekArea }}">s{{ day.textToWeekArea }} </a>
+                                </td>
+                                {% for number in day.numbers %}
+                                    {% for keyDay, dayDetail in number  %}
+                                        {% if dayDetail[loop.index0].current %}
+                                            {% set class = "cellcalendar" %}
+                                        {% else %}
+                                            {% set class = "cal_current_day" %}
+                                        {% endif %}
+                                        <td class="{{ class }}">
+                                        {#{{ loop.index0 }}#}
+                                        {#{% for temp in dayDetail  %}
+                                                {{ dump(temp.link) }}
+                                                {{ dump(temp.current) }}
+                                                {{ dump(temp.week) }}
+                                        {% endfor %}#}
+                                            {#<pre>{{ dump(dayDetail[loop.index0].link) }}</pre>
+                                            <pre>{{ dump(dayDetail[loop.index0].current) }}</pre>
+                                            <pre>{{ dump(dayDetail[loop.index0].week) }}</pre>#}
+                                            {#<pre>{{ dump(dayDetail) }}</pre>
+                                            <pre>{{ dump(dayDetail) }}</pre>#}
+
+                                            {% if dayDetail[loop.index0].link %}
+
+                                                <a href="{{ dayDetail[loop.index0].link }}">
+                                                    {{ keyDay }}
+                                                </a>
+
+                                                {#{% if dayDetail[loop.index0].current %}
+                                                    CURRENT
+                                                {% endif %}#}
+
+                                            {% endif %}
+                                            {#{{ dump(number)}}#}
+                                        </td>
+                                    {% endfor %}
+                                {% endfor %}
+
+                            </tr>
                         {% endfor %}
-
-                    </tr>
-                {% endfor %}
-
-
-
-
-
-
-
-
-
-            </table>
+                    </table>
+                </div>
             {% endfor %}
         </div>
     </div>
