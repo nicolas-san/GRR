@@ -14,6 +14,15 @@ Les tags :
 ###Security 
 * to invite users to upgrade in case of vulnerabilities.
 
+## [] - 2015-09-16
+###[Unrelaesed]
+* début branche dev feature repas
+
+## [] - 2015-09-15
+###Added
+* separation de l'affichage dans le fichier day.php
+* fonctions qui affichent les heeaders et le menu gauche passées à twig
+
 ## [] - 2015-08-10
 ###Added
 * composer à la racine du projet
