@@ -21,3 +21,9 @@
 * Mise en place de la generation de pdf avancé - Partiel
 * Envois d'une lettre en pdf avec le mail de confirmation - 0%
 * Sauvegarde de la lettre sur le serveur - 0%
+
+# Refacto idées
+* Gestion lib externes avec composer
+* IMPORTANT sécuriser toutes les entrées utilisateurs avec strip_tags, possibilité actuellement d'XSS dans la bdd 
+* refacto begin_page pour l'intégrer à print_header puisque les deux préparent les infos pour afficher le début de page
+* dé dupliquer le code des fonctions make_site_*
