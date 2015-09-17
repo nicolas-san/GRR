@@ -1182,6 +1182,15 @@ if (($edit_type == 'series') || (isset($flag_periodicite))) {
     echo '</table>',PHP_EOL;
     echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;
     ?>
+    <?php
+        /**
+        * Ici l'espace dédié aux plugins de edit_entry
+        */
+        /**
+        * je dispatch l'event
+        */
+        $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
+     ?>
 	<div id="fixe">
 		<input type="button" class="btn btn-primary" value="<?php echo get_vocab('cancel')?>" onclick="window.location.href='<?php echo $page.'.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$area.'&amp;room='.$room; ?>'" />
 		<input type="button" class="btn btn-primary" value="<?php echo get_vocab('save')?>" onclick="Save_entry();validate_and_submit();" />
