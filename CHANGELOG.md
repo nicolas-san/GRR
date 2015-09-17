@@ -15,8 +15,12 @@ Les tags :
 * to invite users to upgrade in case of vulnerabilities.
 
 ## [] - 2015-09-16
+###Added
+* utilisation de eventDispatcher http://symfony.com/doc/current/components/event_dispatcher/index.html pour permettre l'extention de GRR sans toucher au code d'origine,
+système de plugin, basé sur les events.
+
 ###[Unrelaesed]
-* début branche dev feature repas
+*
 
 ## [] - 2015-09-15
 ###Added
