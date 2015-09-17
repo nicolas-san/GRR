@@ -14,13 +14,32 @@ if (@file_exists('../include/connect.inc.php')) {
     $racine = '';
 }
 /* load vendors */
-require_once $racine.'vendor/autoload.php';
+require_once $racine . 'vendor/autoload.php';
 
+/**
+ * symfony autoloader
+ */
+require_once $racine . 'vendor/symfony/class-loader/UniversalClassLoader.php';
+
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+
+$loader = new UniversalClassLoader();
+
+// enregistrez les espaces de noms et préfixes ici (voir ci-dessous)
+//$loader->registerNamespace('Grr\Event', $racine . 'src/Grr/Event');
+//$loader->registerNamespace('Grr', $racine . 'src/Grr/Event');
+$loader->registerNamespace('Grr', $racine . 'src/Grr');
+// vous pouvez rechercher dans l'« include_path » en dernier recours.
+echo "<pre>";
+var_dump($loader);
+echo "</pre>";
+//$loader->useIncludePath(true);
+$loader->register();
 /*
  * Twig init
  */
 global $twig;
-$loader = new Twig_Loader_Filesystem($racine.'src/Main/Resources/Templates/'.$template.'/views/');
+$loader = new Twig_Loader_Filesystem($racine.'src/Grr/Resources/Templates/'.$template.'/views/');
 /*
  * debug true, and profiler, only for dev env, todo : manage env dev or prod
  */

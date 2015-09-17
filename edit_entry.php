@@ -29,17 +29,16 @@
  * along with GRR; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+include 'include/admin.inc.php';
+
 use Grr\Event\EditEntryForm;
 use Grr\Event\EditEntryEvent;
 
 // crée le EntryFormEvent et le répartit
-//$event = new Grr\Events\EditEntryFormEvent\EditEntryFormEvent();
 $event = new EditEntryForm();
-//include "src/Main/Events/EditEntryEvent.php";
 
-$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
+#$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
-include 'include/admin.inc.php';
 $grr_script_name = 'edit_entry.php';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -614,6 +613,11 @@ echo '<h2>'.$A.'</h2>'.PHP_EOL;
 if ($moderate) {
     echo '<h3><span class="texte_ress_moderee">'.$vocab['reservations_moderees'].'</span></h3>'.PHP_EOL;
 }
+/**
+* Avant le formulaire
+ */
+$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
+
 echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;
 ?>
 <script type="text/javascript" >
