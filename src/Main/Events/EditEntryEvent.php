@@ -5,7 +5,7 @@
  */
 namespace Grr\Event;
 
-final class EditEntryEvents
+final class EditEntryEvent
 {
     /**
      * L'évènement editEntry.form.before est lancé juste avant la balise form

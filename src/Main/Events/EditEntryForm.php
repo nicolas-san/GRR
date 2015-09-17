@@ -8,9 +8,9 @@ namespace Grr\Event;
 use Symfony\Component\EventDispatcher\Event;
 
 
-class EditEntryEvent extends Event
+class EditEntryForm extends Event
 {
-    protected $test;
+    private $test;
 
     public function __construct()
     {

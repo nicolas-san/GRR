@@ -29,6 +29,16 @@
  * along with GRR; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+use Grr\Event\EditEntryForm;
+use Grr\Event\EditEntryEvent;
+
+// crée le EntryFormEvent et le répartit
+//$event = new Grr\Events\EditEntryFormEvent\EditEntryFormEvent();
+$event = new EditEntryForm();
+//include "src/Main/Events/EditEntryEvent.php";
+
+$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
+
 include 'include/admin.inc.php';
 $grr_script_name = 'edit_entry.php';
 if (isset($_GET['id'])) {
@@ -655,6 +665,10 @@ echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method
 </script>
 
 <?php
+/**
+* Dispatch event before the form
+ */
+$dispatcher->dispatch(EditEntryEvents::EDITENTRY_FORM_BEFORE, $event);
 echo '<div id="error"></div>';
 echo '<table class="table-bordered EditEntryTable"><tr>'.PHP_EOL;
 echo '<td style="width:50%; vertical-align:top; padding-left:15px; padding-top:5px; padding-bottom:5px;">'.PHP_EOL;
@@ -1007,7 +1021,7 @@ $monthlist = array('firstofmonth','secondofmonth','thirdofmonth','fouthofmonth',
 if (($edit_type == 'series') || (isset($flag_periodicite))) {
     echo '<tr>',PHP_EOL,'<td id="ouvrir" style="cursor: inherit" align="center" class="fontcolor4">',PHP_EOL,
     '<span class="fontcolor1 btn btn-primary"><b><a href="javascript:clicMenu(1);check_5()">',get_vocab('click_here_for_series_open'),'</a></b></span>',PHP_EOL,
-    '</td>',PHP_EOL,'</tr>',PHP_EOL,'<tr>',PHP_EOL,'<td style="display:none; cursor: inherit white" id="fermer" align="center" class="fontcolor4">',PHP_EOL,
+    '</td>',PHP_EOL,'</tr>',PHP_EOL,'<tr>',PHP_EOL,'<td style="display:none; cursor: inherit white;" id="fermer" align="center" class="fontcolor4">',PHP_EOL,
     '<span class="btn btn-primary fontcolor1 white"><b><a href="javascript:clicMenu(1);check_5()">',get_vocab('click_here_for_series_close'),'</a></b></span>',PHP_EOL,
     '</td>',PHP_EOL,'</tr>',PHP_EOL;
     echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<table id="menu1" style="display:none;">',PHP_EOL,'<tr>',PHP_EOL,
