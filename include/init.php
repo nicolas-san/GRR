@@ -12,7 +12,12 @@ if (@file_exists('../include/connect.inc.php')) {
 } else {
     $racine = '';
 }
+/* load vendors */
 require_once $racine.'vendor/autoload.php';
+
+/**
+ * Twig init
+ */
 global $twig;
 $loader = new Twig_Loader_Filesystem($racine.'src/Main/Resources/Templates/'.$template.'/views/');
 /**
@@ -27,3 +32,17 @@ $twig = new Twig_Environment($loader, array(
     'debug' => true,
 ));
 $twig->addExtension(new Twig_Extension_Debug());
+
+/**
+ * event dispatcher init
+ */
+use Symfony\Component\EventDispatcher\EventDispatcher;
+global $dispatcher;
+$dispatcher = new EventDispatcher();
+var_dump($dispatcher);
+
+/**
+ * je charge les plugins
+ */
+
+include_once "plugins.php";

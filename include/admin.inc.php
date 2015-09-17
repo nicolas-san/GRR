@@ -42,7 +42,7 @@ if (@file_exists('../include/connect.inc.php')) {
     include $racine.'include/misc.inc.php';
     include $racine.'include/functions.inc.php';
     include $racine."include/$dbsys.inc.php";
-    include $racine . "include/vendorInit.php";
+    include $racine . "include/init.php";
 
 // Settings
 require_once $racine.'include/settings.class.php';

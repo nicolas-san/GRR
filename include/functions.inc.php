@@ -2,7 +2,7 @@
 /**
  * include/functions.inc.php
  * fichier Bibliothèque de fonctions de GRR
- * Dernière modification : $Date: 2010-04-07 15:38:14 $.
+ * Dernière modification : $Date: 2015-17-09 15:38:14 $.
  *
  * @author		Laurent Delineau <laurent.delineau@ac-poitiers.fr>
  * @author		Marc-Henri PAMISEUX <marcori@users.sourceforge.net>

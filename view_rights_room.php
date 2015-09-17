@@ -32,8 +32,8 @@ include "include/config.inc.php";
 include "include/functions.inc.php";
 include "include/$dbsys.inc.php";
 include_once('include/misc.inc.php');
-include "include/mrbs_sql.inc.php"; include 'include/vendorInit.php';
-include 'include/vendorInit.php';
+include "include/mrbs_sql.inc.php"; include 'include/init.php';
+include 'include/init.php';
 $grr_script_name = "view_rights_room.php";
 // Settings
 require_once("./include/settings.class.php");

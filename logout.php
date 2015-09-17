@@ -32,7 +32,7 @@ require_once("include/config.inc.php");
 include "include/misc.inc.php";
 include "include/functions.inc.php";
 require_once("include/$dbsys.inc.php");
-include 'include/vendorInit.php';
+include 'include/init.php';
 // Settings
 require_once("./include/settings.class.php");
 //Chargement des valeurs de la table settingS
