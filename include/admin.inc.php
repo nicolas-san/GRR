@@ -42,7 +42,7 @@ if (@file_exists('../include/connect.inc.php')) {
     include $racine.'include/misc.inc.php';
     include $racine.'include/functions.inc.php';
     include $racine."include/$dbsys.inc.php";
-    include $racine."include/twigInit.php";
+    include $racine . "include/vendorInit.php";
 
 // Settings
 require_once $racine.'include/settings.class.php';

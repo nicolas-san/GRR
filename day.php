@@ -36,7 +36,7 @@ include 'include/functions.inc.php';
 include "include/$dbsys.inc.php";
 include 'include/mincals.inc.php';
 include 'include/mrbs_sql.inc.php';
-include 'include/twigInit.php';
+include 'include/vendorInit.php';
 $grr_script_name = 'day.php';
 require_once './include/settings.class.php';
 $settings = new Settings();

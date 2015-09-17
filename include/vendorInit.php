@@ -5,7 +5,7 @@
  * Time: 14:10
  */
 /**
- * Load des infos pour twig
+ * Load des vendors, et init
  */
 if (@file_exists('../include/connect.inc.php')) {
     $racine = '../';
