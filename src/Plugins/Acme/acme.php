@@ -1,8 +1,10 @@
 <?php
-use Symfony\Component\EventDispatcher\Event;
 
-global $dispatcher;
+use Grr\Event\EditEntryForm;
 
-$dispatcher->addListener('editentry.form_before', function (Event $event) {
+//global $dispatcher;
+
+$dispatcher->addListener('editentry.form_before', function (EditEntryForm $event) {
     echo "<br>Dans le listener avant l'affichage du form<br>";
+    echo $event->getTest();
 });

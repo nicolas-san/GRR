@@ -37,6 +37,7 @@ use Grr\Event\EditEntryEvent;
 // crée le EntryFormEvent et le répartit
 $event = new EditEntryForm();
 
+
 #$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
 $grr_script_name = 'edit_entry.php';
@@ -669,10 +670,7 @@ echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method
 </script>
 
 <?php
-/**
-* Dispatch event before the form
- */
-$dispatcher->dispatch(EditEntryEvents::EDITENTRY_FORM_BEFORE, $event);
+
 echo '<div id="error"></div>';
 echo '<table class="table-bordered EditEntryTable"><tr>'.PHP_EOL;
 echo '<td style="width:50%; vertical-align:top; padding-left:15px; padding-top:5px; padding-bottom:5px;">'.PHP_EOL;

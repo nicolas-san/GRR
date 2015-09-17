@@ -17,7 +17,7 @@ class EditEntryForm extends Event
         $this->test = "test";
     }
 
-    public function getOrder()
+    public function getTest()
     {
         return $this->test;
     }

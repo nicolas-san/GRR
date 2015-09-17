@@ -11,7 +11,7 @@
 if (@file_exists('../include/connect.inc.php')) {
     $racine = '../';
 } else {
-    $racine = '';
+    $racine = './';
 }
 /* load vendors */
 require_once $racine . 'vendor/autoload.php';
@@ -19,22 +19,21 @@ require_once $racine . 'vendor/autoload.php';
 /**
  * symfony autoloader
  */
-require_once $racine . 'vendor/symfony/class-loader/UniversalClassLoader.php';
+//require_once $racine . 'vendor/symfony/class-loader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
-$loader = new UniversalClassLoader();
+//global $loader;
+$autoloader = new UniversalClassLoader();
 
 // enregistrez les espaces de noms et préfixes ici (voir ci-dessous)
 //$loader->registerNamespace('Grr\Event', $racine . 'src/Grr/Event');
 //$loader->registerNamespace('Grr', $racine . 'src/Grr/Event');
-$loader->registerNamespace('Grr', $racine . 'src/Grr');
+$autoloader->registerNamespace('Grr', $racine . 'src');
 // vous pouvez rechercher dans l'« include_path » en dernier recours.
-echo "<pre>";
-var_dump($loader);
-echo "</pre>";
+
 //$loader->useIncludePath(true);
-$loader->register();
+$autoloader->register();
 /*
  * Twig init
  */

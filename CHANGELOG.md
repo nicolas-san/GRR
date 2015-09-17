@@ -14,10 +14,11 @@ Les tags :
 ###Security 
 * to invite users to upgrade in case of vulnerabilities.
 
-## [] - 2015-09-16
+## [] - 2015-09
 ###Added
 * utilisation de eventDispatcher http://symfony.com/doc/current/components/event_dispatcher/index.html pour permettre l'extention de GRR sans toucher au code d'origine,
 système de plugin, basé sur les events.
+* utilisation du composant class loader de symfony pour gérer l'autoloading des nouvelles classes
 
 ###[Unrelaesed]
 *
