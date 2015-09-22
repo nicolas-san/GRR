@@ -65,6 +65,10 @@ $nb_year_calendar = 10;
 */
  putenv("TZ=posix/Etc/GMT+0");
 
+/* si il n'est pas dans php.ini il faut le mettre ici */
+/* todo voir putenv si encore necessaire sur les install récentes */
+date_default_timezone_set("Europe/Paris");
+
 # Changement d'heure été<->hiver
 # $correct_heure_ete_hiver = 1 => GRR prend en compte les changements d'heure
 # $correct_heure_ete_hiver = 0 => GRR ne prend en compte les changements d'heure

@@ -14,6 +14,20 @@ Les tags :
 ###Security 
 * to invite users to upgrade in case of vulnerabilities.
 
+## [] - 2015-09
+###Added
+* utilisation de eventDispatcher http://symfony.com/doc/current/components/event_dispatcher/index.html pour permettre l'extention de GRR sans toucher au code d'origine,
+système de plugin, basé sur les events.
+* utilisation du composant class loader de symfony pour gérer l'autoloading des nouvelles classes
+
+###[Unrelaesed]
+*
+
+## [] - 2015-09-15
+###Added
+* separation de l'affichage dans le fichier day.php
+* fonctions qui affichent les heeaders et le menu gauche passées à twig
+
 ## [] - 2015-08-10
 ###Added
 * composer à la racine du projet

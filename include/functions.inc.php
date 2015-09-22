@@ -2,7 +2,7 @@
 /**
  * include/functions.inc.php
  * fichier Bibliothèque de fonctions de GRR
- * Dernière modification : $Date: 2010-04-07 15:38:14 $.
+ * Dernière modification : $Date: 2015-17-09 15:38:14 $.
  *
  * @author		Laurent Delineau <laurent.delineau@ac-poitiers.fr>
  * @author		Marc-Henri PAMISEUX <marcori@users.sourceforge.net>
@@ -31,7 +31,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 header('Cache-Control:no-cache');
-
 function returnmsg($type, $test, $status, $msg = '')
 {
     echo encode_message_utf8('<div class="alert alert-'.$type.'" role="alert"><h3>'.$test);
