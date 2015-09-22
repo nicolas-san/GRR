@@ -31,7 +31,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 header('Cache-Control:no-cache');
-
 function returnmsg($type, $test, $status, $msg = '')
 {
     echo encode_message_utf8('<div class="alert alert-'.$type.'" role="alert"><h3>'.$test);
