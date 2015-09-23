@@ -855,6 +855,7 @@ $tplArrayEditEntry['nbAreas'] = $nb_areas;
 /* todo rassembler vocab*/
 $tplArrayEditEntry['vocab']['match_area'] = get_vocab('match_area');
 $tplArrayEditEntry['vocab']['rooms'] = get_vocab('rooms');
+$tplArrayEditEntry['vocab']['ctrl_click'] = get_vocab('ctrl_click');
 /*echo '<tr ';
 if ($nb_areas == 1) {
     echo 'style="display:none" ';
@@ -906,148 +907,221 @@ $tplArrayEditEntry['longeurListeRessourcesMax'] = min($longueur_liste_ressources
 //Sélection de la "room" dans l'"area"
 if ($res) {
     for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
+        $tplArrayEditEntry['rooms'][]['0'] = $row[0];
+        $tplArrayEditEntry['rooms'][]['1'] = $row[1];
         $selected = '';
         if ($row[0] == $room_id) {
-            $selected = 'selected="selected"';
+            //$selected = 'selected="selected"';
+            $tplArrayEditEntry['rooms'][]['selected'] = true;
+        } else {
+            $tplArrayEditEntry['rooms'][]['selected'] = true;
         }
-        echo '<option ',$selected,' value="',$row[0],'">',$row[1],'</option>',PHP_EOL;
+        /*echo '<option ',$selected,' value="',$row[0],'">',$row[1],'</option>',PHP_EOL;*/
     }
 }
-echo '</select>',PHP_EOL,'</div>',PHP_EOL,'</td>',PHP_EOL,'<td>',get_vocab('ctrl_click'),'</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;
+/*echo '</select>',PHP_EOL,'</div>',PHP_EOL,'</td>',PHP_EOL,'<td>',get_vocab('ctrl_click'),'</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;
 echo '</td>',PHP_EOL,'</tr>',PHP_EOL;
 echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<div id="div_types">',PHP_EOL;
 echo '</div>',PHP_EOL,'</td>',PHP_EOL,'</tr>',PHP_EOL;
-echo '<tr>',PHP_EOL,'<td class="E">',PHP_EOL;
-?>
-<script type="text/javascript" >
+echo '<tr>',PHP_EOL,'<td class="E">',PHP_EOL;*/
+
+/*<script type="text/javascript" >
 	insertChampsAdd();
 	insertTypes();
 	insertProfilBeneficiaire();
-</script>
-<?php
+</script>*/
+
 if ($affiche_mess_asterisque) {
-    get_vocab('required');
+    $tplArrayEditEntry['afficheMessAsterisque'] = get_vocab('required');
+    //get_vocab('required');
+} else {
+    $tplArrayEditEntry['afficheMessAsterisque'] = false;
 }
-echo '</td></tr>',PHP_EOL;
+/*echo '</td></tr>',PHP_EOL;
 echo '</table>',PHP_EOL;
 echo '</td>',PHP_EOL;
 echo '<td style="vertical-align:top;">',PHP_EOL;
-echo '<table class="table-header">',PHP_EOL;
+echo '<table class="table-header">',PHP_EOL;*/
+
 $sql = 'SELECT id FROM '.TABLE_PREFIX.'_area;';
 $res = grr_sql_query($sql);
-echo '<!-- ************* Periodic edition ***************** -->',PHP_EOL;
+/*echo '<!-- ************* Periodic edition ***************** -->',PHP_EOL;*/
 $weeklist = array('unused','every week','week 1/2','week 1/3','week 1/4','week 1/5');
 $monthlist = array('firstofmonth','secondofmonth','thirdofmonth','fouthofmonth','fiveofmonth','lastofmonth');
+
 if (($edit_type == 'series') || (isset($flag_periodicite))) {
-    echo '<tr>',PHP_EOL,'<td id="ouvrir" style="cursor: inherit" align="center" class="fontcolor4">',PHP_EOL,
+
+    /* todo rassembler les vocab */
+    $tplArrayEditEntry['vocab']['click_here_for_series_open'] = get_vocab('click_here_for_series_open');
+    $tplArrayEditEntry['vocab']['click_here_for_series_close'] = get_vocab('click_here_for_series_close');
+    $tplArrayEditEntry['vocab']['rep_type'] = get_vocab('rep_type');
+    $tplArrayEditEntry['vocab']['every_week'] = get_vocab('every week');
+
+
+
+    $tplArrayEditEntry['showPeriodicite'] = true;
+
+    /*echo '<tr>',PHP_EOL,'<td id="ouvrir" style="cursor: inherit" align="center" class="fontcolor4">',PHP_EOL,
     '<span class="fontcolor1 btn btn-primary"><b><a href="javascript:clicMenu(1);check_5()">',get_vocab('click_here_for_series_open'),'</a></b></span>',PHP_EOL,
     '</td>',PHP_EOL,'</tr>',PHP_EOL,'<tr>',PHP_EOL,'<td style="display:none; cursor: inherit white;" id="fermer" align="center" class="fontcolor4">',PHP_EOL,
     '<span class="btn btn-primary fontcolor1 white"><b><a href="javascript:clicMenu(1);check_5()">',get_vocab('click_here_for_series_close'),'</a></b></span>',PHP_EOL,
     '</td>',PHP_EOL,'</tr>',PHP_EOL;
     echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<table id="menu1" style="display:none;">',PHP_EOL,'<tr>',PHP_EOL,
     '<td class="F"><b>',get_vocab('rep_type'),'</b></td>',PHP_EOL,'</tr>',PHP_EOL,'<tr>',PHP_EOL,'<td class="CL">',PHP_EOL;
-    echo '<table class="table" >',PHP_EOL;
+    echo '<table class="table" >',PHP_EOL;*/
     if (Settings::get('jours_cycles_actif') == 'Oui') {
         $max = 8;
     } else {
         $max = 7;
     }
-    for ($i = 0; $i < $max; ++$i) {
+    for ($i = 0; $i < $max; $i++) {
         if ($i == 6 && Settings::get('jours_cycles_actif') == 'Non') {
             $i++;
         }
         if ($i != 5) {
-            echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<input name="rep_type" type="radio" value="',$i,'"';
+            //echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<input name="rep_type" type="radio" value="',$i,'"';
             if ($i == $rep_type) {
-                echo ' checked="checked"';
+                $tplArrayEditEntry['repetitions'][$i]['checked'] = true;
+                //echo ' checked="checked"';
+            } else {
+                $tplArrayEditEntry['repetitions'][$i]['checked'] = false;
             }
             if (($i == 3) && ($rep_type == 5)) {
-                echo ' checked="checked"';
+                //echo ' checked="checked"';
+                $tplArrayEditEntry['repetitions'][$i]['checked'] = true;
+            } else {
+                $tplArrayEditEntry['repetitions'][$i]['checked'] = false;
             }
-            echo ' onclick="check_1()" />',PHP_EOL,'</td>',PHP_EOL,'<td>',PHP_EOL;
+            //echo ' onclick="check_1()" />',PHP_EOL,'</td>',PHP_EOL,'<td>',PHP_EOL;
+
             if (($i != 2) && ($i != 3)) {
-                echo get_vocab("rep_type_$i");
+                $tplArrayEditEntry['repetitions'][$i]['vocab'] = get_vocab("rep_type_$i");
+                //echo get_vocab("rep_type_$i");
+            } else {
+                $tplArrayEditEntry['repetitions'][$i]['vocab'] = false;
             }
 
-            echo PHP_EOL;
+            //echo PHP_EOL;
             if ($i == '2') {
-                echo '<select class="form-control" name="rep_num_weeks" size="1" onfocus="check_2()" onclick="check_2()">',PHP_EOL;
-                echo '<option value="1" >',get_vocab('every week'),'</option>',PHP_EOL;
+                $tplArrayEditEntry['repetitions'][$i]['type'] = 2;
+
+                /*echo '<select class="form-control" name="rep_num_weeks" size="1" onfocus="check_2()" onclick="check_2()">',PHP_EOL;
+                echo '<option value="1" >',get_vocab('every week'),'</option>',PHP_EOL;*/
                 for ($weekit = 2; $weekit < 6; ++$weekit) {
-                    echo '<option value="',$weekit,'"';
+                    $tplArrayEditEntry['repetitions'][$i]['weeks'][$weekit]['selected'] = true;
+                    //echo '<option value="',$weekit,'"';
                     if ($rep_num_weeks == $weekit) {
-                        echo ' selected="selected"';
+                        $tplArrayEditEntry['repetitions'][$i]['weeks'][$weekit]['selected'] = true;
+                        //echo ' selected="selected"';
+                    } else {
+                        $tplArrayEditEntry['repetitions'][$i]['weeks'][$weekit]['selected'] = false;
                     }
-                    echo '>',get_vocab($weeklist[$weekit]),'</option>',PHP_EOL;
+                    //echo '>',get_vocab($weeklist[$weekit]),'</option>',PHP_EOL;
+                    $tplArrayEditEntry['repetitions'][$i]['weeks'][$weekit]['vocab'] = get_vocab($weeklist[$weekit]);
+
                 }
-                echo '</select>',PHP_EOL;
-            }
-            if ($i == '3') {
+                //echo '</select>',PHP_EOL;
+
+            } elseif ($i == '3') {
+
+                $tplArrayEditEntry['repetitions'][$i]['type'] = 3;
+
                 $monthrep3 = '';
                 $monthrep5 = '';
                 if ($rep_type == 3) {
                     $monthrep3 = ' selected="selected" ';
+                    $tplArrayEditEntry['repetitions'][$i]['selected'] = 3;
                 }
                 if ($rep_type == 5) {
                     $monthrep5 = ' selected="selected" ';
+                    $tplArrayEditEntry['repetitions'][$i]['selected'] = 5;
                 }
-                echo '<select class="form-control" name="rep_month" size="1" onfocus="check_3()" onclick="check_3()">'.PHP_EOL;
+                $tplArrayEditEntry['vocab']['rep_type_3'] = get_vocab('rep_type_3');
+                $tplArrayEditEntry['vocab']['rep_type_5'] = get_vocab('rep_type_5');
+
+                /*echo '<select class="form-control" name="rep_month" size="1" onfocus="check_3()" onclick="check_3()">'.PHP_EOL;
                 echo "<option value=\"3\" $monthrep3>".get_vocab('rep_type_3')."</option>\n";
                 echo "<option value=\"5\" $monthrep5>".get_vocab('rep_type_5')."</option>\n";
-                echo "</select>\n";
-            }
-            if ($i == '7') {
-                echo '<select class="form-control" name="rep_month_abs1" size="1" onfocus="check_7()" onclick="check_7()">'.PHP_EOL;
-                for ($weekit = 0; $weekit < 6; ++$weekit) {
-                    echo '<option value="'.$weekit.'"';
-                    echo '>'.get_vocab($monthlist[$weekit])."</option>\n";
+                echo "</select>\n";*/
+
+            } elseif ($i == '7') {
+
+                $tplArrayEditEntry['repetitions'][$i]['type'] = 7;
+
+                /*echo '<select class="form-control" name="rep_month_abs1" size="1" onfocus="check_7()" onclick="check_7()">'.PHP_EOL;*/
+                for ($weekit = 0; $weekit < 6; $weekit++) {
+                    $tplArrayEditEntry['repetitions'][$i]['weeks7'][$weekit]['vocab'] = get_vocab($monthlist[$weekit]);
+                    /*echo '<option value="'.$weekit.'"';
+                    echo '>'.get_vocab($monthlist[$weekit])."</option>\n";*/
                 }
-                echo '</select>'.PHP_EOL;
-                echo '<select class="form-control" name="rep_month_abs2" size="1" onfocus="check_8()" onclick="check_8()">'.PHP_EOL;
+                /*echo '</select>'.PHP_EOL;*/
+                /*echo '<select class="form-control" name="rep_month_abs2" size="1" onfocus="check_8()" onclick="check_8()">'.PHP_EOL;*/
                 for ($weekit = 1; $weekit < 8; ++$weekit) {
-                    echo '<option value="'.$weekit.'"';
-                    echo '>'.day_name($weekit)."</option>\n";
+                    $tplArrayEditEntry['repetitions'][$i]['weeksDayName'][$weekit]['vocab'] = day_name($weekit);
+                    /*echo '<option value="'.$weekit.'"';
+                    echo '>'.day_name($weekit)."</option>\n";*/
                 }
-                echo "</select>\n";
-                echo get_vocab('ofmonth');
+                /*echo "</select>\n";
+                echo get_vocab('ofmonth');*/
+
             }
-            echo "</td></tr>\n";
+
+            //echo "</td></tr>\n";
         }
     }
-    echo "</table>\n\n";
-    echo "<!-- ***** Fin de périodidité ***** -->\n";
-    echo '</td></tr>';
+/* todo rassembler les vocab */
+$tplArrayEditEntry['vocab']['ofmonth'] = get_vocab('ofmonth');
+$tplArrayEditEntry['vocab']['rep_end_date'] = get_vocab('rep_end_date');
+$tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
+
+/*    echo "</table>\n\n";
+    echo "<!-- ***** Fin de périodidité ***** -->\n";*/
+    /*echo '</td></tr>';
     echo '<tr><td class="F"><b>'.get_vocab('rep_end_date')."</b></td></tr>\n";
-    echo '<tr><td class="CL">';
-    jQuery_DatePicker('rep_end');
-    echo "</td></tr></table>\n";
+    echo '<tr><td class="CL">';*/
+    $tplArrayEditEntry['rawDatePickerRepEnd'] = jQuery_DatePicker('rep_end', true);
+    /*echo "</td></tr></table>\n";
     echo "<table style=\"display:none\" id=\"menu2\" width=\"100%\">\n";
     echo '<tr><td class="F"><b>'.get_vocab('rep_rep_day')."</b></td></tr>\n";
-    echo '<tr><td class="CL">';
-    for ($i = 0; $i < 7; ++$i) {
+    echo '<tr><td class="CL">';*/
+    for ($i = 0; $i < 7; $i++) {
         $wday = ($i + $weekstarts) % 7;
-        echo "<input name=\"rep_day[$wday]\" type=\"checkbox\"";
+        $tplArrayEditEntry['repDays'][$i]['wday'] = $wday;
+        //echo "<input name=\"rep_day[$wday]\" type=\"checkbox\"";
         if ($rep_day[$wday]) {
-            echo ' checked="checked"';
+            //echo ' checked="checked"';
+            $tplArrayEditEntry['repDays'][$i]['checked'] = true;
+        } else {
+            $tplArrayEditEntry['repDays'][$i]['checked'] = false;
         }
-        echo ' onclick="check_1()" />'.day_name($wday)."\n";
+        $tplArrayEditEntry['repDays'][$i]['vocab'] = day_name($wday);
+        //echo ' onclick="check_1()" />'.day_name($wday)."\n";
     }
-    echo "</td></tr>\n</table>\n";
+    /*echo "</td></tr>\n</table>\n";
     echo "<table style=\"display:none\" id=\"menuP\" width=\"100%\">\n";
     echo "<tr><td class=\"F\"><b>Jours/Cycle</b></td></tr>\n";
-    echo '<tr><td class="CL">';
+    echo '<tr><td class="CL">';*/
     for ($i = 1; $i < (Settings::get('nombre_jours_Jours/Cycles') + 1); ++$i) {
         $wday = $i;
-        echo "<input type=\"radio\" name=\"rep_jour_\" value=\"$wday\"";
+
+        //echo "<input type=\"radio\" name=\"rep_jour_\" value=\"$wday\"";
         if (isset($jours_c)) {
             if ($i == $jours_c) {
-                echo ' checked="checked"';
+                $tplArrayEditEntry['repRadioJours'][$wday]['checked'] = true;
+                //echo ' checked="checked"';
             }
         }
-        echo ' onclick="check_1()" />',get_vocab('rep_type_6'),' ',$wday,PHP_EOL;
+        $tplArrayEditEntry['vocab']['rep_type_6'] = get_vocab('rep_type_6');
+        //echo ' onclick="check_1()" />',get_vocab('rep_type_6'),' ',$wday,PHP_EOL;
     }
-    echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL,'</td>',PHP_EOL,'</tr>',PHP_EOL;
+    /*echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL,'</td>',PHP_EOL,'</tr>',PHP_EOL;*/
+
+
 } else {
+    $tplArrayEditEntry['showPeriodicite'] = false;
+
+    $tplArrayEditEntry['vocab']['periodicite_associe'] = get_vocab('periodicite_associe');
+
     echo '<tr><td class="E"><b>'.get_vocab('periodicite_associe').get_vocab('deux_points')."</b></td></tr>\n";
     if ($rep_type == 2) {
         $affiche_period = get_vocab($weeklist[$rep_num_weeks]);
