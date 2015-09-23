@@ -37,9 +37,6 @@ use Grr\Event\EditEntryEvent;
 // crée le EntryFormEvent et le répartit
 $event = new EditEntryForm();
 
-
-#$dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
-
 $grr_script_name = 'edit_entry.php';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -105,6 +102,7 @@ $delais_option_reservation = grr_sql_query1('SELECT delais_option_reservation FR
 $qui_peut_reserver_pour = grr_sql_query1('SELECT qui_peut_reserver_pour FROM '.TABLE_PREFIX."_room WHERE id='".$room."'");
 $back = '';
 if (isset($_SERVER['HTTP_REFERER'])) {
+    /* TODO TEST ET SECURISER ÇA */
     $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
 }
 $longueur_liste_ressources_max = Settings::get('longueur_liste_ressources_max');
@@ -117,14 +115,17 @@ if (check_begin_end_bookings($day, $month, $year)) {
     } else {
         $type_session = 'with_session';
     }
+    /* TODO PASSER À TWIG */
     showNoBookings($day, $month, $year, $back);
     exit();
 }
 if ((authGetUserLevel(getUserName(), -1) < 2) && (auth_visiteur(getUserName(), $room) == 0)) {
+    /* TODO passer à twig */
     showAccessDenied($back);
     exit();
 }
 if (authUserAccesArea(getUserName(), $area) == 0) {
+    /* TODO passer à twig */
     showAccessDenied($back);
     exit();
 }
@@ -134,6 +135,7 @@ if (isset($id) && ($id != 0)) {
     $compt = 1;
 }
 if (UserRoomMaxBooking(getUserName(), $room, $compt) == 0) {
+/* TODO passer à twig */
     showAccessDeniedMaxBookings($day, $month, $year, $room, $back);
     exit();
 }
@@ -319,365 +321,152 @@ if ($res) {
 $use_select2 = 'y';
 print_header($day, $month, $year, $type = 'with_session');
 
-?>
-<script type="text/javascript" >
-function insertChampsAdd(){
-	jQuery.ajax({
-		type: 'GET',
-		url: 'edit_entry_champs_add.php',
-		data: {
-			areas:'<?php echo $area; ?>',
-			id: '<?php echo $id; ?>',
-			room: '<?php echo $room; ?>',
-		},
-		success: function(returnData)
-		{
-			$("#div_champs_add").html(returnData);
-		},
-		error: function(data)
-		{
-			alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_champs_add.php ');
-		}
-		});
-	}
-	function insertTypes(){
-		jQuery.ajax({
-			type: 'GET',
-			url: 'edit_entry_types.php',
-			data: {
-				areas:'<?php echo $area; ?>',
-				type: '<?php echo $etype; ?>',
-				room:'<?php echo $room; ?>',
-			},
-			success: function(returnData){
-				$('#div_types').html(returnData);
-			},
-			error: function(data){
-				alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_types.php ');
-			}
-		});
-	}
-	function insertProfilBeneficiaire(){
-		jQuery.ajax({
-			type: 'GET',
-			url: 'edit_entry_beneficiaire.php',
-			data: {
-				beneficiaire:'ADMINISTRATEUR',
-				identifiant_beneficiaire: '<?php echo $beneficiaire; ?>'
-			},
-			success: function(returnData)
+/* intégration de twig, premier passage, probablement à refactoriser pour éviter les variables assignées deux fois */
+$tplArrayEditEntry['area'] = $area;
+$tplArrayEditEntry['id'] = $id;
+$tplArrayEditEntry['room'] = $room;
+$tplArrayEditEntry['etype'] = $etype;
+$tplArrayEditEntry['beneficiaire'] = $beneficiaire;
+$tplArrayEditEntry['edit_type'] = $edit_type;
 
-			{
-				$("#div_profilBeneficiaire").html(returnData);
-			},
-			error: function(data)
+/* settings */
+$tplArrayEditEntry['settings']['joursCyclesActif'] = Settings::get('jours_cycles_actif');
+$tplArrayEditEntry['settings']['remplissageDescriptionBreve'] = Settings::get('remplissage_description_breve');
 
-			{
-				alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_beneficiaire.php ');
-			}
-		});
-	}
-	function check_1 ()
-	{
-		menu = document.getElementById('menu2');
-		if (menu)
-		{
-			if (!document.forms["main"].rep_type[2].checked)
-			{
-				document.forms["main"].elements['rep_day[0]'].checked=false;
-				document.forms["main"].elements['rep_day[1]'].checked=false;
-				document.forms["main"].elements['rep_day[2]'].checked=false;
-				document.forms["main"].elements['rep_day[3]'].checked=false;
-				document.forms["main"].elements['rep_day[4]'].checked=false;
-				document.forms["main"].elements['rep_day[5]'].checked=false;
-				document.forms["main"].elements['rep_day[6]'].checked=false;
-				menu.style.display = "none";
-			}
-			else
-			{
-				menu.style.display = "";
-			}
-		}
-		<?php
-        if (Settings::get('jours_cycles_actif') == 'Oui') {
-            ?>
-			menu = document.getElementById('menuP');
-			if (menu)
-			{
-				if (!document.forms["main"].rep_type[5].checked)
-				{
-					menu.style.display = "none";
-				}
-				else
-				{
-					menu.style.display = "";
-				}
-			}
-			<?php
+/* vocable */
+$tplArrayEditEntry['vocab']['you_have_not_entered'] = get_vocab('you_have_not_entered');
+$tplArrayEditEntry['vocab']['deux_points'] = get_vocab('deux_points');
+$tplArrayEditEntry['vocab']['nom_beneficiaire'] = get_vocab('nom beneficiaire');
+$tplArrayEditEntry['vocab']['brief_description'] = get_vocab('brief_description');
+$tplArrayEditEntry['vocab']['required'] = get_vocab('required');
+$tplArrayEditEntry['vocab']['is_not_numeric'] = get_vocab('is_not_numeric');
+$tplArrayEditEntry['vocab']['choose_a_type'] = get_vocab('choose_a_type');
+$tplArrayEditEntry['vocab']['choose_a_day'] = get_vocab('choose_a_day');
+$tplArrayEditEntry['vocab']['addentry'] = get_vocab('addentry');
+$tplArrayEditEntry['vocab']['editseries'] = get_vocab('editseries');
+$tplArrayEditEntry['vocab']['copyentry'] = get_vocab('copyentry');
+$tplArrayEditEntry['vocab']['editentry'] = get_vocab('editentry');
+$tplArrayEditEntry['vocab']['namebooker'] = get_vocab('namebooker');
+$tplArrayEditEntry['vocab']['fulldescription'] = get_vocab('fulldescription');
+$tplArrayEditEntry['vocab']['reservations_moderees'] = get_vocab('reservations_moderees');
+$tplArrayEditEntry['vocab']['fulldescription'] = get_vocab('fulldescription');
+$tplArrayEditEntry['vocab']['date'] = get_vocab('date');
+$tplArrayEditEntry['vocab']['definir_par_defaut'] = get_vocab('definir par defaut');
+$tplArrayEditEntry['vocab']['nom_beneficiaire'] = strip_tags(get_vocab('nom_beneficiaire'));
+$tplArrayEditEntry['vocab']['email_beneficiaire'] = get_vocab('email beneficiaire');
 
-        }
-        ?>
-	}
-	function check_2 ()
-	{
-		document.forms["main"].rep_type[2].checked=true;
-		check_1 ();
-	}
-	function check_3 ()
-	{
-		document.forms["main"].rep_type[3].checked=true;
-	}
-	function check_4 ()
-	{
-		menu = document.getElementById('menu4');
-		if (menu)
-		{
-			if (!document.forms["main"].beneficiaire.options[0].selected)
-			{
-				menu.style.display = "none";
-				<?php
-                if (Settings::get('remplissage_description_breve') == '2') {
-                    ?>
-					document.forms["main"].name.value=document.forms["main"].beneficiaire.options[document.forms["main"].beneficiaire.options.selectedIndex].text;
-					<?php
-
-                }
-                ?>
-			}
-			else
-			{
-				menu.style.display = "";
-				<?php
-                if (Settings::get('remplissage_description_breve') == '2') {
-                    ?>
-					document.forms["main"].name.value="";
-					<?php
-
-                }
-                ?>
-			}
-		}
-	}
-	function check_5 ()
-	{
-		var menu; var menup; var menu2;
-		menu = document.getElementById('menu1');
-		menup = document.getElementById('menuP');
-		menu2 = document.getElementById('menu2');
-		if ((menu)&&(menu.style.display == "none"))
-		{
-			menup.style.display = "none";
-			menu2.style.display = "none";
-		}
-		else
-			check_1();
-	}
-	function setdefault (name,input)
-	{
-		document.cookie = escape(name) + "=" + escape(input) +
-		( "" ? ";expires=" + ( new Date( ( new Date() ).getTime() + ( 1000 * lifeTime ) ) ).toGMTString() : "" ) +
-		( "" ? ";path=" + path : "") +
-		( "" ? ";domain=" + domain : "") +
-		( "" ? ";secure" : "");
-	}
-	function Load_entry ()
-	{
-		recoverInputs(document.forms["main"],retrieveCookie('Grr_entry'),true);
-		<?php
-        if (!$id != '') {
-            ?>
-			if (!document.forms["main"].rep_type[0].checked)
-				clicMenu('1');
-			<?php
-
-        }
-        ?>
-	}
-	function Save_entry ()
-	{
-		setCookie('Grr_entry',getFormString(document.forms["main"],true));
-	}
-	function validate_and_submit ()
-	{
-		var err;
-		$("#error").html("");
-		if (document.forms["main"].benef_ext_nom)
-		{
-			if ((document.forms["main"].beneficiaire.options[0].selected) &&(document.forms["main"].benef_ext_nom.value == ""))
-			{
-				$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('you_have_not_entered').get_vocab('deux_points').strtolower(get_vocab('nom beneficiaire')) ?></div>');
-				err = 1;
-			}
-		}
-		<?php if (Settings::get('remplissage_description_breve') == '1' || Settings::get('remplissage_description_breve') == '2') {
-    ?>
-			if (document.forms["main"].name.value == "")
-			{
-				$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('you_have_not_entered').get_vocab('deux_points').get_vocab('brief_description') ?></div>');
-				err = 1;
-			}
-			<?php
-
+foreach ($allareas_id as $idtmp) {
+    //$overload_fields = mrbsOverloadGetFieldslist($idtmp);
+    $tplArrayEditEntry['overloadFields'][] = mrbsOverloadGetFieldslist($idtmp);
 }
-        foreach ($allareas_id as $idtmp) {
-            $overload_fields = mrbsOverloadGetFieldslist($idtmp);
-            foreach ($overload_fields as $fieldname => $fieldtype) {
-                if ($overload_fields[$fieldname]['obligatoire'] == 'y') {
-                    if ($overload_fields[$fieldname]['type'] != 'list') {
-                        echo "if ((document.getElementById('id_".$idtmp.'_'.$overload_fields[$fieldname]['id']."')) && (document.forms[\"main\"].addon_".$overload_fields[$fieldname]['id'].".value == \"\")) {\n";
-                    } else {
-                        echo "if ((document.getElementById('id_".$idtmp.'_'.$overload_fields[$fieldname]['id']."')) && (document.forms[\"main\"].addon_".$overload_fields[$fieldname]['id'].".options[0].selected == true)) {\n";
-                    }
-                    ?>
-					$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('required');
-                    ?></div>');
-					err = 1;
-				}
-				<?php
 
-                }
-                if ($overload_fields[$fieldname]['type'] == 'numeric') {
-                    echo "if (isNaN((document.getElementById('id_".$idtmp.'_'.$overload_fields[$fieldname]['id']."')) && (document.forms[\"main\"].addon_".$overload_fields[$fieldname]['id'].".value))) {\n";
-                    ?>
-				$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo $overload_fields[$fieldname]['name'].get_vocab('deux_points').get_vocab('is_not_numeric') ?></div>');
-				err = 1;
-			}
-			<?php
-
-                }
-            }
-        }
-?>
-if  (document.forms["main"].type.value=='0')
-{
-	$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('choose_a_type'); ?></div>');
-	err = 1;
-}
-<?php
-if ($edit_type == 'series') {
-    ?>
-	i1 = parseInt(document.forms["main"].id.value);
-	i2 = parseInt(document.forms["main"].rep_id.value);
-	n = parseInt(document.forms["main"].rep_num_weeks.value);
-	if ((document.forms["main"].elements['rep_day[0]'].checked || document.forms["main"].elements['rep_day[1]'].checked || document.forms["main"].elements['rep_day[2]'].checked || document.forms["main"].elements['rep_day[3]'].checked || document.forms["main"].elements['rep_day[4]'].checked || document.forms["main"].elements['rep_day[5]'].checked || document.forms["main"].elements['rep_day[6]'].checked) && (!document.forms["main"].rep_type[2].checked))
-	{
-		$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('no_compatibility_with_repeat_type');
-    ?></div>');
-		err = 1;
-	}
-	if ((!document.forms["main"].elements['rep_day[0]'].checked && !document.forms["main"].elements['rep_day[1]'].checked && !document.forms["main"].elements['rep_day[2]'].checked && !document.forms["main"].elements['rep_day[3]'].checked && !document.forms["main"].elements['rep_day[4]'].checked && !document.forms["main"].elements['rep_day[5]'].checked && !document.forms["main"].elements['rep_day[6]'].checked) && (document.forms["main"].rep_type[2].checked))
-	{
-		$("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><?php echo get_vocab('choose_a_day');
-    ?></div>');
-		err = 1;
-	}
-	<?php
-
-}
-?>
-if (err == 1)
-	return false;
-document.forms["main"].submit();
-return true;
-}
-</script>
-<?php
+/* $A est le titre de la page */
 if ($id == 0) {
     $A = get_vocab('addentry');
+    $tplArrayEditEntry['titrePage'] = get_vocab('addentry');
 } else {
     if ($edit_type == 'series') {
         $A = get_vocab('editseries');
+        $tplArrayEditEntry['titrePage'] = get_vocab('editseries');
     } else {
         if (isset($_GET['copier'])) {
             $A = get_vocab('copyentry');
+            $tplArrayEditEntry['titrePage'] = get_vocab('copyentry');
         } else {
             $A = get_vocab('editentry');
+            $tplArrayEditEntry['titrePage'] = get_vocab('editentry');
         }
     }
 }
 $B = get_vocab('namebooker');
+$tplArrayEditEntry['nameBooker'] = get_vocab('namebooker');
 if (Settings::get('remplissage_description_breve') == '1') {
     $B .= ' *';
+    $tplArrayEditEntry['nameBooker'] .= ' *';
     $affiche_mess_asterisque = true;
 }
 $B .= get_vocab('deux_points');
+$tplArrayEditEntry['nameBooker'] .= get_vocab('deux_points');
+
 $C = htmlspecialchars($breve_description);
+$tplArrayEditEntry['breveDescription'] = htmlspecialchars(strip_tags($breve_description));
+
 $D = get_vocab('fulldescription');
 $E = htmlspecialchars($description);
+$tplArrayEditEntry['description'] = htmlspecialchars(strip_tags($description));
+
 $F = get_vocab('date').get_vocab('deux_points');
+
+
 $sql = 'SELECT area_id FROM '.TABLE_PREFIX."_room WHERE id=$room_id";
 $res = grr_sql_query($sql);
 $row = grr_sql_row($res, 0);
 $area_id = $row[0];
 $moderate = grr_sql_query1('SELECT moderate FROM '.TABLE_PREFIX."_room WHERE id='".$room_id."'");
-echo '<h2>'.$A.'</h2>'.PHP_EOL;
-if ($moderate) {
+
+$tplArrayEditEntry['areaId'] = $row[0];
+$tplArrayEditEntry['moderate'] = $moderate;
+
+/*echo '<h2>'.$A.'</h2>'.PHP_EOL;*/
+/*if ($moderate) {
     echo '<h3><span class="texte_ress_moderee">'.$vocab['reservations_moderees'].'</span></h3>'.PHP_EOL;
-}
+}*/
+
 /**
 * Avant le formulaire
  */
 $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
-echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;
-?>
-<script type="text/javascript" >
-	function changeRooms( formObj )
-	{
-		areasObj = eval( "formObj.areas" );
-		area = areasObj[areasObj.selectedIndex].value
-		roomsObj = eval( "formObj.elements['rooms[]']" )
-		l = roomsObj.length;
-		for (i = l; i > 0; i-- )
-		{
-			roomsObj.options[i] = null
-		}
-		switch (area)
-		{
-			<?php
-            if ($enable_periods == 'y') {
-                $sql = 'SELECT id, area_name FROM '.TABLE_PREFIX."_area WHERE id='".$area."' ORDER BY area_name";
-            } else {
-                $sql = 'SELECT id, area_name FROM '.TABLE_PREFIX."_area WHERE enable_periods != 'y' ORDER BY area_name";
+/*echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;*/
+
+if ($enable_periods == 'y') {
+    $sql = 'SELECT id, area_name FROM '.TABLE_PREFIX."_area WHERE id='".$area."' ORDER BY area_name";
+} else {
+    $sql = 'SELECT id, area_name FROM '.TABLE_PREFIX."_area WHERE enable_periods != 'y' ORDER BY area_name";
+}
+$res = grr_sql_query($sql);
+if ($res) {
+    for ($i = 0; ($row = grr_sql_row($res, $i)); $i++) {
+        if (authUserAccesArea(getUserName(), $row[0]) == 1) {
+            $tplArrayEditEntry['areasIds'][$i]['id'] = $row[0];
+            /*print '      case "'.$row[0]."\":\n";*/
+            $sql2 = 'SELECT id, room_name FROM '.TABLE_PREFIX."_room WHERE area_id='".$row[0]."'";
+            $tab_rooms_noaccess = verif_acces_ressource(getUserName(), 'all');
+            foreach ($tab_rooms_noaccess as $key) {
+                $sql2 .= " AND id != $key ";
             }
-            $res = grr_sql_query($sql);
-            if ($res) {
-                for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
-                    if (authUserAccesArea(getUserName(), $row[0]) == 1) {
-                        print '      case "'.$row[0]."\":\n";
-                        $sql2 = 'SELECT id, room_name FROM '.TABLE_PREFIX."_room WHERE area_id='".$row[0]."'";
-                        $tab_rooms_noaccess = verif_acces_ressource(getUserName(), 'all');
-                        foreach ($tab_rooms_noaccess as $key) {
-                            $sql2 .= " AND id != $key ";
-                        }
-                        $sql2 .= ' ORDER BY room_name';
-                        $res2 = grr_sql_query($sql2);
-                        if ($res2) {
-                            $len = grr_sql_count($res2);
-                            print 'roomsObj.size='.min($longueur_liste_ressources_max, $len).";\n";
-                            for ($j = 0; ($row2 = grr_sql_row($res2, $j)); ++$j) {
-                                print "roomsObj.options[$j] = new Option(\"".str_replace('"', '\\"', $row2[1]).'",'.$row2[0].")\n";
-                            }
-                            print "roomsObj.options[0].selected = true\n";
-                        }
-                        print "break\n";
-                    }
+            $sql2 .= ' ORDER BY room_name';
+            $res2 = grr_sql_query($sql2);
+            if ($res2) {
+                $len = grr_sql_count($res2);
+                $tplArrayEditEntry['areasIds'][$i]['roomsObjSize'] = min($longueur_liste_ressources_max, $len);
+                /*print 'roomsObj.size='.min($longueur_liste_ressources_max, $len).";\n";*/
+                for ($j = 0; ($row2 = grr_sql_row($res2, $j)); $j++) {
+                    $tplArrayEditEntry['areasIds'][$i]['roomsObjOption'][$j] = $row2;
+                    //print "roomsObj.options[$j] = new Option(\"".str_replace('"', '\\"', $row2[1]).'",'.$row2[0].")\n";
                 }
+                //print "roomsObj.options[0].selected = true\n";
             }
-            ?>
-		}
-	}
-</script>
+            //print "break\n";
+        }
+    }
+}
 
-<?php
 
-echo '<div id="error"></div>';
+
+
+/*echo '<div id="error"></div>';
 echo '<table class="table-bordered EditEntryTable"><tr>'.PHP_EOL;
 echo '<td style="width:50%; vertical-align:top; padding-left:15px; padding-top:5px; padding-bottom:5px;">'.PHP_EOL;
-echo '<table class="table-header">'.PHP_EOL;
+echo '<table class="table-header">'.PHP_EOL;*/
+
 if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) || (authGetUserLevel(getUserName(), $area, 'area') >= $qui_peut_reserver_pour)) && (($id == 0) || (($id != 0) && (authGetUserLevel(getUserName(), $room) > 2)))) {
     $flag_qui_peut_reserver_pour = 'yes';
-    echo '<tr>'.PHP_EOL;
+    $tplArrayEditEntry['flagQuiPeutReserverPour'] = 'yes';
+    $tplArrayEditEntry['vocab']['reservation_au_nom_de'] = get_vocab('reservation au nom de');
+    $tplArrayEditEntry['vocab']['personne_exterieure'] = get_vocab('personne exterieure');
+
+/*    echo '<tr>'.PHP_EOL;
     echo '<td class="E">'.PHP_EOL;
     echo '<b>'.ucfirst(trim(get_vocab('reservation au nom de'))).get_vocab('deux_points').'</b>'.PHP_EOL;
     echo '</td>'.PHP_EOL;
@@ -686,52 +475,70 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
     echo '<td class="CL">'.PHP_EOL;
     echo '<div class="col-xs-6">'.PHP_EOL;
     echo '<select size="1" class="form-control" name="beneficiaire" id="beneficiaire" onchange="setdefault(\'beneficiaire_default\',\'\');check_4();insertProfilBeneficiaire();">'.PHP_EOL;
-    echo '<option value="" >'.get_vocab('personne exterieure').'</option>'.PHP_EOL;
+    echo '<option value="" >'.get_vocab('personne exterieure').'</option>'.PHP_EOL;*/
+
+
     $sql = 'SELECT DISTINCT login, nom, prenom FROM '.TABLE_PREFIX."_utilisateurs WHERE (etat!='inactif' and statut!='visiteur' ) OR (login='".$beneficiaire."') ORDER BY nom, prenom";
     $res = grr_sql_query($sql);
     if ($res) {
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
-            echo '<option value="'.$row[0].'" ';
+            $tplArrayEditEntry['options'][$i]['value'] = $row[0];
+            //echo '<option value="'.$row[0].'" ';
             if ($id == 0 && isset($_COOKIE['beneficiaire_default'])) {
+                //$tplArrayEditEntry['options'][$i]['cookie'] = $_COOKIE['beneficiaire_default'];
                 $cookie = $_COOKIE['beneficiaire_default'];
             } else {
+                //$tplArrayEditEntry['options'][$i]['cookie'] = '';
                 $cookie = '';
             }
             if ((!$cookie && strtolower($beneficiaire) == strtolower($row[0])) || ($cookie && $cookie == $row[0])) {
-                echo ' selected="selected" ';
+                //echo ' selected="selected" ';
+                $tplArrayEditEntry['options'][$i]['selected'] = true;
             }
-            echo '>'.$row[1].' '.$row[2].'</option>'.PHP_EOL;
+            //echo '>'.$row[1].' '.$row[2].'</option>'.PHP_EOL;
+            $tplArrayEditEntry['options'][$i]['text'] = $row[1].' '.$row[2];
         }
     }
     $test = grr_sql_query1('SELECT login FROM '.TABLE_PREFIX."_utilisateurs WHERE login='".$beneficiaire."'");
     if (($test == -1) && ($beneficiaire != '')) {
-        echo '<option value="-1" selected="selected" >'.get_vocab('utilisateur_inconnu').$beneficiaire.')</option>'.PHP_EOL;
+        //echo '<option value="-1" selected="selected" >'.get_vocab('utilisateur_inconnu').$beneficiaire.')</option>'.PHP_EOL;
+        $tplArrayEditEntry['optionBeneficiaireInconnu'] = $beneficiaire;
+        $tplArrayEditEntry['vocab']['utilisateur_inconnu'] = get_vocab('utilisateur_inconnu');
+
+    } else {
+        $tplArrayEditEntry['optionBeneficiaireInconnu'] = false;
     }
-    echo '</select>'.PHP_EOL;
+/*    echo '</select>'.PHP_EOL;
     echo '</div>'.PHP_EOL;
     echo '<input type="button" class="btn btn-primary" value="'.get_vocab('definir par defaut').'" onclick="setdefault(\'beneficiaire_default\',document.getElementById(\'main\').beneficiaire.options[document.getElementById(\'main\').beneficiaire.options.selectedIndex].value)" />'.PHP_EOL;
     echo '<div id="div_profilBeneficiaire">'.PHP_EOL;
-    echo '</div>'.PHP_EOL;
+    echo '</div>'.PHP_EOL;*/
     if (isset($statut_beneficiaire)) {
-        echo $statut_beneficiaire;
+        $tplArrayEditEntry['statusBeneficiaire'] = $statut_beneficiaire;
+    } else {
+        $tplArrayEditEntry['statusBeneficiaire'] = false;
     }
-    if (isset($statut_beneficiaire)) {
+    /*if (isset($statut_beneficiaire)) {
         echo $statut_beneficiaire;
-    }
-    echo '</td></tr>'.PHP_EOL;
-    if ($tab_benef['nom'] != '') {
+    }*/
+    /*echo '</td></tr>'.PHP_EOL;*/
+    $tplArrayEditEntry['tabBenef']['nom'] = strip_tags($tab_benef['nom']);
+    $tplArrayEditEntry['tabBenef']['email'] = htmlspecialchars($tab_benef['email']);
+
+    /* if ($tab_benef['nom'] != '') {
         echo '<tr id="menu4"><td>'.PHP_EOL;
     } else {
         echo '<tr style="display:none" id="menu4"><td>'.PHP_EOL;
-    }
-    echo '<div class="form-group">'.PHP_EOL;
+    }*/
+/*    echo '<div class="form-group">'.PHP_EOL;
     echo '    <div class="input-group">'.PHP_EOL;
     echo '      <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>'.PHP_EOL;
     echo '      <input class="form-control" type="text" name="benef_ext_nom" value="'.htmlspecialchars($tab_benef['nom']).'" placeholder="'.get_vocab('nom beneficiaire').'">'.PHP_EOL;
     echo '    </div>'.PHP_EOL;
-    echo '  </div>'.PHP_EOL;
+    echo '  </div>'.PHP_EOL;*/
     $affiche_mess_asterisque = true;
-    if (Settings::get('automatic_mail') == 'yes') {
+    $tplArrayEditEntry['settings']['automaticMail'] = Settings::get('automatic_mail');
+/*    if (Settings::get('automatic_mail') == 'yes') {
         echo '<div class="form-group">'.PHP_EOL;
         echo '    <div class="input-group">'.PHP_EOL;
         echo '      <div class="input-group-addon"><span class="glyphicon glyphicon-envelope" ></span></div>'.PHP_EOL;
@@ -739,11 +546,12 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
         echo '    </div>'.PHP_EOL;
         echo '  </div>'.PHP_EOL;
     }
-    echo "</td></tr>\n";
+    echo "</td></tr>\n";*/
 } else {
     $flag_qui_peut_reserver_pour = 'no';
+    $tplArrayEditEntry['flagQuiPeutReserverPour'] = 'no';
 }
-echo '<tr><td class="E">'.PHP_EOL;
+/*echo '<tr><td class="E">'.PHP_EOL;
 echo '<b>'.$B.'</b>'.PHP_EOL;
 echo '</td></tr>'.PHP_EOL;
 echo '<tr><td class="CL">'.PHP_EOL;
@@ -758,74 +566,125 @@ echo '</td></tr>'.PHP_EOL;
 echo '<tr><td>'.PHP_EOL;
 echo '<div id="div_champs_add">'.PHP_EOL;
 echo '</div>'.PHP_EOL;
-echo '</td></tr>'.PHP_EOL;
+echo '</td></tr>'.PHP_EOL;*/
 
-echo '<tr><td class="E"><br>'.PHP_EOL;
+/*echo '<tr><td class="E"><br>'.PHP_EOL;
 echo '<b>'.get_vocab('status_clef').get_vocab('deux_points').'</b>'.PHP_EOL;
 echo '</td></tr>'.PHP_EOL;
 echo '<tr><td class="CL">'.PHP_EOL;
-echo '<input name="keys" type="checkbox" value="y" ';
+echo '<input name="keys" type="checkbox" value="y" ';*/
+
+/* todo déplacer vocab avec ceux plus haut */
+$tplArrayEditEntry['vocab']['msg_clef'] = get_vocab('msg_clef');
+$tplArrayEditEntry['vocab']['status_clef'] = get_vocab('status_clef');
+$tplArrayEditEntry['vocab']['status_courrier'] = get_vocab('status_courrier');
+$tplArrayEditEntry['vocab']['msg_courrier'] = get_vocab('msg_courrier');
+$tplArrayEditEntry['vocab']['period'] = get_vocab('period');
+$tplArrayEditEntry['vocab']['time'] = get_vocab('time');
+$tplArrayEditEntry['vocab']['unit'] = strip_tags(get_vocab('unit'));
+$tplArrayEditEntry['vocab']['all_day'] = get_vocab('all_day');
+$tplArrayEditEntry['vocab']['fin_reservation'] = get_vocab('fin_reservation');
+
 if (isset($clef) && $clef == 1) {
-    echo 'checked';
+    //echo 'checked';
+    $tplArrayEditEntry['clef'] = true;
+} else {
+    $tplArrayEditEntry['clef'] = false;
 }
-echo ' > '.get_vocab('msg_clef');
-echo '</td></tr>'.PHP_EOL;
-echo '<tr><td class="E"><br>'.PHP_EOL;
+/*echo ' > '.get_vocab('msg_clef');
+echo '</td></tr>'.PHP_EOL;*/
+/*echo '<tr><td class="E"><br>'.PHP_EOL;
 echo '<b>'.get_vocab('status_courrier').get_vocab('deux_points').'</b>'.PHP_EOL;
 echo '</td></tr>'.PHP_EOL;
 echo '<tr><td class="CL">'.PHP_EOL;
-echo '<input name="courrier" type="checkbox" value="y" ';
+echo '<input name="courrier" type="checkbox" value="y" ';*/
 if (isset($courrier) && $courrier == 1) {
-    echo 'checked';
+    //echo 'checked';
+    $tplArrayEditEntry['courrier'] = true;
+} else {
+    $tplArrayEditEntry['courrier'] = false;
 }
-echo ' > '.get_vocab('msg_courrier');
-echo '</td></tr>'.PHP_EOL;
 
-echo '<tr><td class="E">'.PHP_EOL;
+/*echo ' > '.get_vocab('msg_courrier');
+echo '</td></tr>'.PHP_EOL;*/
+
+/*echo '<tr><td class="E">'.PHP_EOL;
 echo '<b>'.$F.'</b>'.PHP_EOL;
 echo '</td></tr>'.PHP_EOL;
-echo '<tr><td class="CL">'.PHP_EOL;
+echo '<tr><td class="CL">'.PHP_EOL;*/
 
-echo '<div class="form-group">'.PHP_EOL;
-jQuery_DatePicker('start');
+/*echo '<div class="form-group">'.PHP_EOL;*/
+
+/* todo faire un helper twig pour les select renvoyés ici */
+$tplArrayEditEntry['rawSelectDate'] = jQuery_DatePicker('start', true);
+$tplArrayEditEntry['typeDate'] = "start";
 
 if ($enable_periods == 'y') {
-    echo '<b>'.get_vocab('period').'</b>'.PHP_EOL;
+    $tplArrayEditEntry['enablePeriod'] = true;
+    $tplArrayEditEntry['period'] = $period;
+    $tplArrayEditEntry['periodStartMin'] = $start_min;
 
-    echo '<select name="period">'.PHP_EOL;
+/*    echo '<b>'.get_vocab('period').'</b>'.PHP_EOL;
+
+    echo '<select name="period">'.PHP_EOL;*/
     foreach ($periods_name as $p_num => $p_val) {
-        echo '<option value="'.$p_num.'"';
+        $tplArrayEditEntry['periods'][$p_num] = $p_val;
+/*        echo '<option value="'.$p_num.'"';
         if ((isset($period) && $period == $p_num) || $p_num == $start_min) {
             echo ' selected="selected"';
         }
         echo '>'.$p_val.'</option>'.PHP_EOL;
-    }
-    echo '</select>'.PHP_EOL;
+   */
+   }
+/*    echo '</select>'.PHP_EOL;*/
 } else {
-    echo '<b>'.get_vocab('time').' : </b>';
+$tplArrayEditEntry['enablePeriod'] = false;
+    /*echo '<b>'.get_vocab('time').' : </b>';*/
     if (isset($_GET['id'])) {
+
+        //$tplArrayEditEntry['EnvGetId'] = $_GET['id'];
+        //$tplArrayEditEntry['dureeParDefautReservationArea'] = $duration;
         $duree_par_defaut_reservation_area = $duration;
-        jQuery_TimePicker('start_', $start_hour, $start_min, $duree_par_defaut_reservation_area);
+        $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', $start_hour, $start_min, $duree_par_defaut_reservation_area, true);
     } else {
-        jQuery_TimePicker('start_', '', '', $duree_par_defaut_reservation_area);
+        //$tplArrayEditEntry['EnvGetId'] = false;
+
+        $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', '', '', $duree_par_defaut_reservation_area, true);
     }
     if (!$twentyfourhour_format) {
-        $checked = ($start_hour < 12) ? 'checked="checked"' : '';
+        $tplArrayEditEntry['24hFormat'] = true;
+        if ($start_hour < 12) {
+            $tplArrayEditEntry['ampm'] = 'am';
+        } else {
+            $tplArrayEditEntry['ampm'] = 'pm';
+        }
+        $tplArrayEditEntry['amTime'] =  date('a', mktime(1, 0, 0, 1, 1, 1970));
+        $tplArrayEditEntry['pmTime'] =  date('a', mktime(13, 0, 0, 1, 1, 1970));
+        /*$checked = ($start_hour < 12) ? 'checked="checked"' : '';
         echo '<input name="ampm" type="radio" value="am" '.$checked.' />'.date('a', mktime(1, 0, 0, 1, 1, 1970));
         $checked = ($start_hour >= 12) ? 'checked="checked"' : '';
-        echo '<input name="ampm" type="radio" value="pm" '.$checked.' />'.date('a', mktime(13, 0, 0, 1, 1, 1970));
+        echo '<input name="ampm" type="radio" value="pm" '.$checked.' />'.date('a', mktime(13, 0, 0, 1, 1, 1970));*/
+    } else {
+        $tplArrayEditEntry['24hFormat'] = false;
+
     }
+
 }
-echo '</div>'.PHP_EOL;
-echo '</td></tr>'.PHP_EOL;
+
+/*echo '</div>'.PHP_EOL;
+echo '</td></tr>'.PHP_EOL;*/
+
 if ($type_affichage_reser == 0) {
-    echo '<tr><td class="E">'.PHP_EOL;
+    $tplArrayEditEntry['typeAffichageReser'] = true;
+    $tplArrayEditEntry['spinner']['duration'] = $duration;
+/*    echo '<tr><td class="E">'.PHP_EOL;
     echo '<b>'.get_vocab('duration').'</b>'.PHP_EOL;
     echo '</td></tr>'.PHP_EOL;
     echo '<tr><td class="CL">'.PHP_EOL;
-    echo '<div class="form-group">'.PHP_EOL;
-    spinner($duration);
-    echo '<select class="form-control" name="dur_units" size="1">'.PHP_EOL;
+    echo '<div class="form-group">'.PHP_EOL;*/
+
+    //spinner($duration);
+    //echo '<select class="form-control" name="dur_units" size="1">'.PHP_EOL;
     if ($enable_periods == 'y') {
         $units = array('periods', 'days');
     } else {
@@ -842,14 +701,17 @@ if ($type_affichage_reser == 0) {
             $units = array('minutes', 'hours', 'days', 'weeks');
         }
     }
-    while (list(, $unit) = each($units)) {
+    $tplArrayEditEntry['units'] = $units;
+    $tplArrayEditEntry['durUnits'] = $dur_units;
+
+/*    while (list(, $unit) = each($units)) {
         echo '<option value="'.$unit.'"';
         if ($dur_units ==  get_vocab($unit)) {
             echo ' selected="selected"';
         }
         echo '>'.get_vocab($unit).'</option>'.PHP_EOL;
     }
-    echo '</select>'.PHP_EOL;
+    echo '</select>'.PHP_EOL;*/
 
     $fin_jour = $eveningends;
     $minute = $resolution / 60;
@@ -865,33 +727,51 @@ if ($type_affichage_reser == 0) {
         $heure_finale = $nb_jour.' '.$vocab['days'].' + '.$heure_finale_restante;
     }
     $af_fin_jour = $heure_finale.' H '.$minute_restante;
-    echo '<input name="all_day" type="checkbox" value="yes" />'.get_vocab('all_day');
-    if ($enable_periods != 'y') {
+
+    /*echo '<input name="all_day" type="checkbox" value="yes" />'.get_vocab('all_day');*/
+    /*if ($enable_periods != 'y') {
         echo ' ('.$morningstarts.' H - '.$af_fin_jour.')';
-    }
-    echo '</div>'.PHP_EOL;
-    echo '</td></tr>'.PHP_EOL;
+    }*/
+    $tplArrayEditEntry['morningStarts'] = $morningstarts;
+    $tplArrayEditEntry['afFinJour'] = $af_fin_jour;
+
+/*    echo '</div>'.PHP_EOL;
+    echo '</td></tr>'.PHP_EOL;*/
+
+
 } else {
-    echo '<tr><td class="E"><b>'.get_vocab('fin_reservation').get_vocab('deux_points').'</b></td></tr>'.PHP_EOL;
+
+
+    $tplArrayEditEntry['typeAffichageReser'] = false;
+/*    echo '<tr><td class="E"><b>'.get_vocab('fin_reservation').get_vocab('deux_points').'</b></td></tr>'.PHP_EOL;
     echo '<tr><td class="CL" >'.PHP_EOL;
 
-    echo '<div class="form-group">'.PHP_EOL;
-    jQuery_DatePicker('end');
+    echo '<div class="form-group">'.PHP_EOL;*/
+    $tplArrayEditEntry['rawSelectDateEnd'] = jQuery_DatePicker('end', true);
 
     if ($enable_periods == 'y') {
-        echo '<b>'.get_vocab('period').'</b>';
+        if (isset($end_period)) {
+            $tplArrayEditEntry['endPeriod'] = $end_period;
+        } else {
+            $tplArrayEditEntry['endPeriod'] = false;
+        }
+        $tplArrayEditEntry['endMin'] = $end_min;
+
+/*        echo '<b>'.get_vocab('period').'</b>';
         echo "<td class=\"CL\">\n";
-        echo '<select class="form-control" name="end_period">';
-        foreach ($periods_name as $p_num => $p_val) {
+        echo '<select class="form-control" name="end_period">';*/
+/*        foreach ($periods_name as $p_num => $p_val) {
             echo '<option value="'.$p_num.'"';
             if ((isset($end_period) && $end_period == $p_num) || ($p_num + 1) == $end_min) {
                 echo ' selected="selected"';
             }
             echo ">$p_val</option>\n";
         }
-        echo '</select>'.PHP_EOL;
+        echo '</select>'.PHP_EOL;*/
+
     } else {
-        echo '<b>'.get_vocab('time').' : </b>';
+
+/*        echo '<b>'.get_vocab('time').' : </b>';
         if (isset($_GET['id'])) {
             jQuery_TimePicker('end_', $end_hour, $end_min, $duree_par_defaut_reservation_area);
         } else {
@@ -902,48 +782,80 @@ if ($type_affichage_reser == 0) {
             echo "<input name=\"ampm\" type=\"radio\" value=\"am\" $checked />".date('a', mktime(1, 0, 0, 1, 1, 1970));
             $checked = ($end_hour >= 12) ? 'checked="checked"' : '';
             echo "<input name=\"ampm\" type=\"radio\" value=\"pm\" $checked />".date('a', mktime(13, 0, 0, 1, 1, 1970));
-        }
+        }*/
     }
-    echo '</div>'.PHP_EOL;
-    echo '</td></tr>'.PHP_EOL;
+/*    echo '</div>'.PHP_EOL;
+    echo '</td></tr>'.PHP_EOL;*/
 }
+
 if (($delais_option_reservation > 0) && (($modif_option_reservation == 'y') || ((($modif_option_reservation == 'n') && ($option_reservation != -1))))) {
+    $tplArrayEditEntry['delaisEtModifOk'] = true;
+    $tplArrayEditEntry['opitonReservation'] = $option_reservation;
     $day = date('d');
     $month = date('m');
     $year = date('Y');
-    echo '<tr><td class="E"><br><div class="col-xs-12"><div class="alert alert-danger" role="alert"><b>'.get_vocab('reservation_a_confirmer_au_plus_tard_le').'</div>'.PHP_EOL;
+
+    $tplArrayEditEntry['vocab']['reservation_a_confirmer_au_plus_tard_le'] = get_vocab('reservation_a_confirmer_au_plus_tard_le');
+    $tplArrayEditEntry['vocab']['confirmer'] = get_vocab('confirmer');
+    $tplArrayEditEntry['vocab']['confirmer'] = get_vocab('confirmer');
+    $tplArrayEditEntry['vocab']['confirmer_reservation'] = get_vocab('confirmer reservation');
+    $tplArrayEditEntry['vocab']['Reservation_confirmee'] = get_vocab('Reservation confirmee');
+
+
+    /*echo '<tr><td class="E"><br><div class="col-xs-12"><div class="alert alert-danger" role="alert"><b>'.get_vocab('reservation_a_confirmer_au_plus_tard_le').'</div>'.PHP_EOL;*/
+
+/* todo refacto, supprimer code inutilisé grâce a twig, ex: $aff_options */
     if ($modif_option_reservation == 'y') {
-        echo '<select class="form-control" name="option_reservation" size="1">'.PHP_EOL;
+        $tplArrayEditEntry['modifiable'] = true;
+        /*echo '<select class="form-control" name="option_reservation" size="1">'.PHP_EOL;*/
         $k = 0;
         $selected = 'n';
+        $tplArrayEditEntry['selected'] = false;
         $aff_options = '';
         while ($k < $delais_option_reservation + 1) {
             $day_courant = $day + $k;
             $date_courante = mktime(0, 0, 0, $month, $day_courant, $year);
+            $tplArrayEditEntry['optionResa'][$k]['dateCourante'] = $date_courante;
             $aff_date_courante = time_date_string_jma($date_courante, $dformat);
+            /* j'essaye sans utiliser time_date_string_jma pour voir si on peut s'en passer */
+            $tplArrayEditEntry['optionResa'][$k]['affDateCourante'] = strftime($dformat, $date_courante);
+
             $aff_options .= '<option value = "'.$date_courante.'" ';
             if ($option_reservation == $date_courante) {
                 $aff_options .= ' selected="selected" ';
                 $selected = 'y';
+                $tplArrayEditEntry['selected'] = true;
             }
             $aff_options .= '>'.$aff_date_courante."</option>\n";
             ++$k;
         }
-        echo '<option value = "-1">'.get_vocab('Reservation confirmee')."</option>\n";
-        if (($selected == 'n') and ($option_reservation != -1)) {
-            echo '<option value = "'.$option_reservation.'" selected="selected">'.time_date_string_jma($option_reservation, $dformat)."</option>\n";
-        }
+        /*echo '<option value = "-1">'.get_vocab('Reservation confirmee')."</option>\n";
+        */if (($selected == 'n') and ($option_reservation != -1)) {
+            //echo '<option value = "'.$option_reservation.'" selected="selected">'.time_date_string_jma($option_reservation, $dformat)."</option>\n";
+            $tplArrayEditEntry['selectedNo'] = strftime($dformat, $option_reservation);
+        }/*
         echo $aff_options;
-        echo '</select>';
+        echo '</select>';*/
+
+
     } else {
-        echo '<input type="hidden" name="option_reservation" value="'.$option_reservation.'" /> <b>'.
+        $tplArrayEditEntry['selectedNo'] = strftime($dformat, $option_reservation);
+    /*  echo '<input type="hidden" name="option_reservation" value="'.$option_reservation.'" /> <b>'.
         time_date_string_jma($option_reservation, $dformat)."</b>\n";
-        echo '<br /><input type="checkbox" name="confirm_reservation" value="y" />'.get_vocab('confirmer reservation')."\n";
+        echo '<br /><input type="checkbox" name="confirm_reservation" value="y" />'.get_vocab('confirmer reservation')."\n";*/
     }
-    echo '<br /><div class="alert alert-danger" role="alert">'.get_vocab('avertissement_reservation_a_confirmer').'</b></div>'.PHP_EOL;
-    echo "</div></td></tr>\n";
+    /*echo '<br /><div class="alert alert-danger" role="alert">'.get_vocab('avertissement_reservation_a_confirmer').'</b></div>'.PHP_EOL;
+    echo "</div></td></tr>\n";*/
+} else {
+    $tplArrayEditEntry['delaisEtModifOk'] = false;
 }
-echo '<tr ';
+
+$tplArrayEditEntry['nbAreas'] = $nb_areas;
+
+/* todo rassembler vocab*/
+$tplArrayEditEntry['vocab']['match_area'] = get_vocab('match_area');
+$tplArrayEditEntry['vocab']['rooms'] = get_vocab('rooms');
+/*echo '<tr ';
 if ($nb_areas == 1) {
     echo 'style="display:none" ';
 }
@@ -953,7 +865,7 @@ if ($nb_areas == 1) {
     echo 'style="display:none" ';
 }
 echo "><td class=\"CL\" style=\"vertical-align:top;\" >\n";
-echo '<div class="col-xs-3"><select class="form-control" id="areas" name="areas" onchange="changeRooms(this.form);insertChampsAdd();insertTypes()" >';
+echo '<div class="col-xs-3"><select class="form-control" id="areas" name="areas" onchange="changeRooms(this.form);insertChampsAdd();insertTypes()" >';*/
 if ($enable_periods == 'y') {
     $sql = 'SELECT id, area_name FROM '.TABLE_PREFIX."_area WHERE id='".$area."' ORDER BY area_name";
 } else {
@@ -961,20 +873,25 @@ if ($enable_periods == 'y') {
 }
 $res = grr_sql_query($sql);
 if ($res) {
-    for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
+    for ($i = 0; ($row = grr_sql_row($res, $i)); $i++) {
         if (authUserAccesArea(getUserName(), $row[0]) == 1) {
             $selected = '';
+            $tplArrayEditEntry['areasAuth'][]['0'] = $row[0];
+            $tplArrayEditEntry['areasAuth'][]['1'] = $row[1];
             if ($row[0] == $area) {
-                $selected = 'selected="selected"';
+                //$selected = 'selected="selected"';
+                $tplArrayEditEntry['areasAuth'][]['selected'] = true;
+            } else {
+                $tplArrayEditEntry['areasAuth'][]['selected'] = false;
             }
-            print '<option '.$selected.' value="'.$row[0].'">'.$row[1].'</option>'.PHP_EOL;
+            //print '<option '.$selected.' value="'.$row[0].'">'.$row[1].'</option>'.PHP_EOL;
         }
     }
 }
-echo '</select>',PHP_EOL,'</div>',PHP_EOL,'</td>',PHP_EOL,'</tr>',PHP_EOL;
+//echo '</select>',PHP_EOL,'</div>',PHP_EOL,'</td>',PHP_EOL,'</tr>',PHP_EOL;
 
-echo '<!-- ************* Ressources edition ***************** -->',PHP_EOL;
-echo '<tr><td class="E"><b>'.get_vocab('rooms').get_vocab('deux_points')."</b></td></tr>\n";
+/*echo '<!-- ************* Ressources edition ***************** -->',PHP_EOL;
+echo '<tr><td class="E"><b>'.get_vocab('rooms').get_vocab('deux_points')."</b></td></tr>\n";*/
 $sql = 'SELECT id, room_name, description FROM '.TABLE_PREFIX."_room WHERE area_id=$area_id ";
 $tab_rooms_noaccess = verif_acces_ressource(getUserName(), 'all');
 foreach ($tab_rooms_noaccess as $key) {
@@ -984,7 +901,8 @@ $sql .= ' ORDER BY order_display,room_name';
 $res = grr_sql_query($sql);
 $len = grr_sql_count($res);
 
-echo '<tr><td class="CL" style="vertical-align:top;"><table border="0"><tr><td><select name="rooms[]" size="'.min($longueur_liste_ressources_max, $len).'" multiple="multiple">';
+$tplArrayEditEntry['longeurListeRessourcesMax'] = min($longueur_liste_ressources_max, $len);
+/*echo '<tr><td class="CL" style="vertical-align:top;"><table border="0"><tr><td><select name="rooms[]" size="'.min($longueur_liste_ressources_max, $len).'" multiple="multiple">';*/
 //Sélection de la "room" dans l'"area"
 if ($res) {
     for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
@@ -1248,6 +1166,8 @@ if (($edit_type == 'series') || (isset($flag_periodicite))) {
         ?>
 	</script>
 	<?php
-    include 'include/trailer.inc.php';
+	echo $twig->render('editEntry.html.twig', $tplArrayEditEntry);
+	    include 'include/trailer.inc.php';
     include 'footer.php';
+
     ?>

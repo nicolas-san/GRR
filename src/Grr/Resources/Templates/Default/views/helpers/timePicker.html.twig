@@ -1,0 +1,13 @@
+<div class="input-group clockpicker">
+    <input name="{{ timePicker.typeTime }}" type="text" class="form-control" value="{{ timePicker.hour }}:{{ timePicker.minute }}">
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-time"></span>
+        </span>
+</div>
+<script type="text/javascript">
+    $('.clockpicker').clockpicker({
+    align: 'left',
+    placement: 'top',
+    donetext: 'Valider'
+    });
+</script>

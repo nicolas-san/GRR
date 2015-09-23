@@ -5,7 +5,7 @@ use Grr\Event\EditEntryForm;
 $dispatcher->addListener('editentry.form_before', function (EditEntryForm $event) {
     //echo $event->getTest();
     /* add a field */
-    echo 'Form modifié pour la gestion des repas';
+    return "ici";
 });
 
 $dispatcher->addListener('editentry.form_inside_plugin_area', function (EditEntryForm $event) {

@@ -1,0 +1,545 @@
+<script type="text/javascript" >
+    function insertChampsAdd(){
+        jQuery.ajax({
+            type: 'GET',
+            url: 'edit_entry_champs_add.php',
+            data: {
+                areas:'{{ area }}',
+                id: '{{ id }}',
+                room: '{{ room }}',
+            },
+            success: function(returnData)
+            {
+                $("#div_champs_add").html(returnData);
+            },
+            error: function(data)
+            {
+                alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_champs_add.php ');
+            }
+        });
+    }
+    function insertTypes(){
+        jQuery.ajax({
+            type: 'GET',
+            url: 'edit_entry_types.php',
+            data: {
+                areas:'{{ area }}',
+                type: '{{ etype }}',
+                room:'{{ room }}',
+            },
+            success: function(returnData){
+                $('#div_types').html(returnData);
+            },
+            error: function(data){
+                alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_types.php ');
+            }
+        });
+    }
+    function insertProfilBeneficiaire(){
+        jQuery.ajax({
+            type: 'GET',
+            url: 'edit_entry_beneficiaire.php',
+            data: {
+                beneficiaire:'ADMINISTRATEUR',
+                identifiant_beneficiaire: '{{ beneficiaire }}'
+            },
+            success: function(returnData)
+
+            {
+                $("#div_profilBeneficiaire").html(returnData);
+            },
+            error: function(data)
+
+            {
+                alert('Erreur lors de l execution de la commande AJAX pour le edit_entry_beneficiaire.php ');
+            }
+        });
+    }
+    function check_1 ()
+    {
+        menu = document.getElementById('menu2');
+        if (menu) {
+            if (!document.forms["main"].rep_type[2].checked) {
+                document.forms["main"].elements['rep_day[0]'].checked=false;
+                document.forms["main"].elements['rep_day[1]'].checked=false;
+                document.forms["main"].elements['rep_day[2]'].checked=false;
+                document.forms["main"].elements['rep_day[3]'].checked=false;
+                document.forms["main"].elements['rep_day[4]'].checked=false;
+                document.forms["main"].elements['rep_day[5]'].checked=false;
+                document.forms["main"].elements['rep_day[6]'].checked=false;
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "";
+            }
+        }
+        {% if settings.joursCyclesActif == 'Oui' %}
+            menu = document.getElementById('menuP');
+            if (menu)
+            {
+                if (!document.forms["main"].rep_type[5].checked)
+                {
+                    menu.style.display = "none";
+                }
+                else
+                {
+                    menu.style.display = "";
+                }
+            }
+        {% endif %}
+    }
+
+    function check_2 ()
+    {
+        document.forms["main"].rep_type[2].checked=true;
+        check_1 ();
+    }
+    function check_3 ()
+    {
+        document.forms["main"].rep_type[3].checked=true;
+    }
+    function check_4 ()
+    {
+        menu = document.getElementById('menu4');
+        if (menu) {
+            if (!document.forms["main"].beneficiaire.options[0].selected) {
+                menu.style.display = "none";
+                {% if settings.remplissageDescriptionBreve == '2' %}
+                    document.forms["main"].name.value=document.forms["main"].beneficiaire.options[document.forms["main"].beneficiaire.options.selectedIndex].text;
+                {% endif %}
+            } else {
+                menu.style.display = "";
+                {% if settings.remplissageDescriptionBreve == '2' %}
+                    document.forms["main"].name.value="";
+                {% endif %}
+            }
+        }
+    }
+
+    function check_5 ()
+    {
+        var menu; var menup; var menu2;
+        menu = document.getElementById('menu1');
+        menup = document.getElementById('menuP');
+        menu2 = document.getElementById('menu2');
+        if ((menu)&&(menu.style.display == "none")) {
+            menup.style.display = "none";
+            menu2.style.display = "none";
+        } else {
+            check_1();
+        }
+    }
+
+    function setdefault (name,input)
+    {
+        document.cookie = escape(name) + "=" + escape(input) +
+                ( "" ? ";expires=" + ( new Date( ( new Date() ).getTime() + ( 1000 * lifeTime ) ) ).toGMTString() : "" ) +
+                ( "" ? ";path=" + path : "") +
+                ( "" ? ";domain=" + domain : "") +
+                ( "" ? ";secure" : "");
+    }
+    function Load_entry ()
+    {
+        recoverInputs(document.forms["main"],retrieveCookie('Grr_entry'),true);
+        {% if id != '' %}
+            if (!document.forms["main"].rep_type[0].checked) {
+                clicMenu('1');
+            }
+        {% endif %}
+        {# Code d'origine, vérifier si la condition est valide : if (!$id != '') { #}
+    }
+    function Save_entry ()
+    {
+        setCookie('Grr_entry',getFormString(document.forms["main"],true));
+    }
+    function validate_and_submit ()
+    {
+        var err;
+        $("#error").html("");
+        if (document.forms["main"].benef_ext_nom) {
+            if ((document.forms["main"].beneficiaire.options[0].selected) &&(document.forms["main"].benef_ext_nom.value == "")) {
+                $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.you_have_not_entered }}{{ vocab.deux_points }}{{ vocab.nom_beneficiaire }}</div>');
+                err = 1;
+            }
+        }
+        {%  if settings.remplissage_description_breve == '1' or settings.remplissage_description_breve == '2' %}
+            if (document.forms["main"].name.value == "")
+            {
+                $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.you_have_not_entered }}{{ vocab.deux_points }}{{ vocab.brief_description }}</div>');
+                err = 1;
+            }
+        {% endif %}
+        {%  for fieldtype, fieldname in overload_fields %}
+            {% if overload_fields[fieldname]['obligatoire'] == 'y'  %}
+                {% if overload_fields[fieldname]['type'] != 'list' %}
+                    if ( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && document.forms['main'].addon_{{ overload_fields[fieldname]['id'] }}.value == " " ) {
+                {% else %}
+                    if ( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && (document.forms["main"].addon_{{ overload_fields[fieldname]['id'] }}.options[0].selected == true)) {
+                {% endif %}
+                    $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.required }} </div>');
+                    err = 1;
+                    }
+            {% endif %}
+            {% if overload_fields[fieldname]['type'] == 'numeric' %}
+                if ( isNaN( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && document.forms["main"].addon_{{ overload_fields[fieldname]['id'] }}.value ) ) {
+                    $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ overload_fields[fieldname]['name'] }}{{ vocab.deux_points }}{{ vocab.is_not_numeric }}</div>');
+                    err = 1;
+                }
+            {% endif %}
+        {% endfor %}
+    if  (document.forms["main"].type.value=='0')
+    {
+        $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.choose_a_type }}</div>' );
+        err = 1;
+    }
+    {% if edit_type == 'series' %}
+        i1 = parseInt(document.forms["main"].id.value);
+        i2 = parseInt(document.forms["main"].rep_id.value);
+        n = parseInt(document.forms["main"].rep_num_weeks.value);
+        if ((document.forms["main"].elements['rep_day[0]'].checked || document.forms["main"].elements['rep_day[1]'].checked || document.forms["main"].elements['rep_day[2]'].checked || document.forms["main"].elements['rep_day[3]'].checked || document.forms["main"].elements['rep_day[4]'].checked || document.forms["main"].elements['rep_day[5]'].checked || document.forms["main"].elements['rep_day[6]'].checked) && (!document.forms["main"].rep_type[2].checked))
+        {
+            $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.no_compatibility_with_repeat_type }} </div>');
+            err = 1;
+        }
+        if ((!document.forms["main"].elements['rep_day[0]'].checked && !document.forms["main"].elements['rep_day[1]'].checked && !document.forms["main"].elements['rep_day[2]'].checked && !document.forms["main"].elements['rep_day[3]'].checked && !document.forms["main"].elements['rep_day[4]'].checked && !document.forms["main"].elements['rep_day[5]'].checked && !document.forms["main"].elements['rep_day[6]'].checked) && (document.forms["main"].rep_type[2].checked))
+        {
+            $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.choose_a_day }} </div>');
+            err = 1;
+        }
+    {% endif %}
+    if (err == 1)
+        return false;
+    document.forms["main"].submit();
+    return true;
+    }
+</script>
+
+<h2>{{ titrePage }}</h2>
+{% if moderate %}
+    <h3><span class="texte_ress_moderee">{{ vocab.reservations_moderees }}</span></h3>
+{% endif %}
+<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">
+
+    <script type="text/javascript" >
+        function changeRooms( formObj ) {
+            areasObj = eval("formObj.areas");
+            area = areasObj[areasObj.selectedIndex].value
+            roomsObj = eval("formObj.elements['rooms[]']")
+            l = roomsObj.length;
+            for (i = l; i > 0; i--) {
+                roomsObj.options[i] = null
+            }
+            switch (area) {
+                    {% for area in areasIds %}
+                case "{{ area.id }}":
+                    roomsObj.size ={{ area.roomsObjSize }};
+                {% for option in area.roomsObjOption %}
+                    roomsObj.options[{{ loop.index0 }}] = new Option("{{ option.1 }},{{ option.0 }}");
+                {% endfor %}
+                    roomsObj.options[0].selected = true;
+                    break;
+                    {% endfor %}
+            }
+        }
+    </script>
+     <div id="error"></div>  
+     <table class="table-bordered EditEntryTable">
+        {% if flagQuiPeutReserverPour == 'yes' %}
+            <tr>
+                <td style="width:50%; vertical-align:top; padding-left:15px; padding-top:5px; padding-bottom:5px;">
+                    <table class="table-header">
+                        <tr>
+                            <td class="E">
+                                <b class="text-capitalize">{{ vocab.reservation_au_nom_de }}{{ vocab.deux_points }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CL">
+                                <div class="col-xs-6">
+                                    <select size="1" class="form-control" name="beneficiaire" id="beneficiaire" onchange="setdefault('beneficiaire_default','');check_4();insertProfilBeneficiaire();">
+                                         <option value="" >{{ vocab.personne_exterieure }}</option>
+                                         {% for option in options %}
+                                             <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %} >
+                                                 {{ option.text }}
+                                             </option>
+                                         {% endfor %}
+                                         {% if optionBeneficiaireInconnu %}
+                                             <option value="-1" selected="selected" >{{ vocab.utilisateur_inconnu }}{{ optionBeneficiaireInconnu }}</option>
+                                         {% endif %}
+                                    </select>
+                                </div>
+                            <input type="button" class="btn btn-primary" value="{{ vocab.definir_par_defaut }}" onclick="setdefault('beneficiaire_default',document.getElementById('main').beneficiaire.options[document.getElementById('main').beneficiaire.options.selectedIndex].value)" />
+                            <div id="div_profilBeneficiaire">
+                            </div>
+                            {% if statusBenficiaire %} {{ statusBeneficiaire }} {% endif %}
+                            </td>
+                        </tr>
+                        {% if tabBenef != '' %}
+                            <tr id="menu4">
+                                <td>
+                        {% else %}
+                            <tr style="display:none" id="menu4">
+                                <td>
+                        {% endif %}
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-user">
+
+                                                </span>
+                                            </div>
+                                            <input class="form-control" type="text" name="benef_ext_nom" value="{{ tabBenef.nom }}" placeholder="{{ vocab.nom_beneficiaire }}">
+                                        </div>
+                                    </div>
+                                    {% if settings.automaticMail == 'Yes' %}
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-envelope" ></span>
+                                            </div>
+                                                <input class="form-control" type="email" name="benef_ext_email" value="{{ tabBenef.email }}" placeholder="{{ vocab.email_beneficiaire }}">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+        {% endif %}
+                        <tr>
+                            <td class="E">
+                                <b>{{ nameBooker }}{{ vocab.deux_points }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CL">
+                                <input id="name" class="form-control" name="name" size="80" value="{{ breveDescription }}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="E">
+                                <b>{{ vocab.fulldescription }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TL">
+                                <textarea name="description" class="form-control" rows="4" cols="82">{{ description }}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="div_champs_add">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="E"><br>  
+                                  <b>{{ vocab.status_clef }}{{ vocab.deux_points }}</b>  
+                            </td>
+                        </tr>  
+                        <tr>
+                            <td class="CL">  
+                                <input name="keys" type="checkbox" value="y" {% if clef %}checked{% endif %}>{{ vocab.msg_clef }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="E"><br>  
+                                <b>{{ vocab.status_courrier }}{{ vocab.deux_points }}</b>  
+                            </td>
+                        </tr>  
+                        <tr>
+                            <td class="CL">  
+                                <input name="courrier" type="checkbox" value="y"  {% if courrier %}checked{% endif %}>{{ vocab.msg_courrier }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="E">
+                                <b>{{ vocab.date }}{{ vocab.deux_points }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CL">
+                                <div class="form-group">
+                                    {{ rawSelectDate|raw }}
+                                    <input type="hidden" disabled="disabled" id="mydate_{{ typeDate }}">
+                                    <script>
+                                        $(function() {
+                                            $.datepicker.setDefaults( $.datepicker.regional['fr'] );
+                                            $('#mydate_{{ typeDate }}').datepicker({
+                                            beforeShow: readSelected, onSelect: updateSelected,
+                                                    showOn: 'both', buttonImageOnly: true, buttonImage: 'images/calendar.png',buttonText: "Choisir la date"});
+                                            function readSelected()
+                                            {
+                                                $('#mydate_{{ typeDate }}').val( $('#{{ typeDate }}_day').val() + '\\' + $('#{{ typeDate }}_month').val() + '\\' + $('#{{ typeDate }}_year').val() );
+                                                return {};
+                                            }
+                                            function updateSelected(date)
+                                            {
+                                                $('#{{ typeDate }}_day').val(date.substring(0, 2));
+                                                $('#{{ typeDate }}_month').val(date.substring(3, 5));
+                                                $('#{{ typeDate }}_year').val(date.substring(6, 10));
+                                            }
+                                        });
+                                    </script>
+                                    {% if enablePeriod %}
+                                        <b>{{ vocab.period }}</b>
+
+                                        <select name="period">
+                                            {% for p_num, p_val in periods %}
+                                                <option value="{{ p_num }}" {% if period == p_num or p_num == periodStartMin %}selected="selected"{% endif %} {{ p_val }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <b>{{ vocab.time }}</b>
+                                        {{ include('helpers/timePicker.html.twig', timePicker) }}
+                                        {% if format24h %}
+                                            <input name="ampm" type="radio" value="am" {% if ampm == 'am' %}checked{% endif %} />{{ amTime }}
+                                            <input name="ampm" type="radio" value="pm" {% if ampm == 'pm' %}checked{% endif %} />{{ pmTime }}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% if typeAffichageReser %}
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.duration }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="CL">
+                                    <div class="form-group">
+                                        {{ include('helpers/spinner.html.twig', spinner) }}
+                                        <select class="form-control" name="dur_units" size="1">
+                                            {% for unit in units %}
+                                                <option value="{{ unit }}" {% if durUnits == vocab.unit %}selected="selected"{% endif %}>{{ unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input name="all_day" type="checkbox" value="yes" />{{ vocab.all_day }}
+                                        {% if enablePeriod %}( {{ morningStarts }} H - {{ afFinJour }} ){% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.fin_reservation }}{{ vocab.deux_points }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="CL" >
+                                    <div class="form-group">
+                                        {{ rawSelectDateEnd|raw }}
+                                        {% if enablePeriod %}
+                                            <b>{{ vocab.period }}</b>
+                                            <td class="CL">
+                                                <select class="form-control" name="end_period">
+                                                    {% for p_num, p_val in periods %}
+                                                        <option value="{{ p_num }}" {% if endPeriod == p_num or (p_num + 1) == endMin %}selected="selected"{% endif %} {{ p_val }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                        {% else %}
+                                            <b>{{ vocab.time }}</b>
+                                            {{ include('helpers/timePicker.html.twig', timePicker) }}
+                                            {% if format24h %}
+                                                <input name="ampm" type="radio" value="am" {% if ampm == 'am' %}checked{% endif %} />{{ amTime }}
+                                                <input name="ampm" type="radio" value="pm" {% if ampm == 'pm' %}checked{% endif %} />{{ pmTime }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if delaisEtModifOk %}
+                            <tr>
+                                <td class="E">
+                                    <br>
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-danger" role="alert">
+                                            <b>{{ vocab.reservation_a_confirmer_au_plus_tard_le }}
+                                        </div>
+                            {% if modifiable %}
+                                        <select class="form-control" name="option_reservation" size="1">
+                                            <option value = "-1">{{ vocab.Reservation_confirmee }}</option>
+                                            {% if selected and optionReservation != -1 %}
+                                                <option value = "'.$option_reservation.'" selected="selected">{{ selectedNo }}</option>
+                                            {% endif %}
+                                            {% for option in optionResa %}
+                                                <option value = "{{ option.dateCourante }}{% if option.dateCourante == optionReservation %}selected="selected"{% endif %}>{{ option.affDateCourante }}</option>
+                                            {% endfor %}
+                                        </select>
+                            {% else %}
+                                <input type="hidden" name="option_reservation" value="{{ optionReservation }}" />
+                                <b>{{ selectedNo }}</b>
+                                <br />
+                                <input type="checkbox" name="confirm_reservation" value="y" />{{ vocab.confirmer_reservation }}
+                            {% endif %}
+                            <br />
+                                        <div class="alert alert-danger" role="alert">{{ vocab.avertissement_reservation_a_confirmer }}</b></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr {% if nbAreas == 1 %}style="display:none"{% endif %}>
+                            <td class="E">
+                                <b>{{ vocab.match_area }}{{ vocab.deux_points }}</b>
+                            </td>
+                        </tr>
+                        <tr {% if nbAreas == 1 %}style="display:none"{% endif %}>
+                            <td class="CL" style="vertical-align:top;" >
+                                <div class="col-xs-3">
+                                    <select class="form-control" id="areas" name="areas" onchange="changeRooms(this.form);insertChampsAdd();insertTypes()" >
+                                        {% for area in areasAuth %}
+                                            <option {% if area.selected %}selected="selected"{% endif %} value="{{ area.0 }}">{{ area.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- ************* Ressources edition ***************** -->
+                        <tr>
+                            <td class="E">
+                                <b>{{ vocab.rooms }}{{ vocab.deux_points }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CL" style="vertical-align:top;">
+                                <table border="0">
+                                    <tr>
+                                        <td>
+                                            <select name="rooms[]" size="{{ longueurListeRessourcesMax }}" multiple="multiple">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

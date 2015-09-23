@@ -1898,6 +1898,12 @@ function time_date_string($t, $dformat)
     }
 }
 
+/**
+* @param $t
+* @param $dformat
+ * @return string
+ * @deprecated Je ne comprends pas à quoi sert cette fonction
+ */
 function time_date_string_jma($t, $dformat)
 {
     global $twentyfourhour_format;
@@ -3861,8 +3867,8 @@ function get_planning_area_values($id_area)
 {
     global $resolution, $morningstarts, $eveningends, $eveningends_minutes, $weekstarts, $twentyfourhour_format, $enable_periods, $periods_name, $display_day, $nb_display_day;
     $sql = 'SELECT calendar_default_values, resolution_area, morningstarts_area, eveningends_area, eveningends_minutes_area, weekstarts_area, twentyfourhour_format_area, enable_periods, display_days
-	FROM '.TABLE_PREFIX."_area
-	WHERE id = '".protect_data_sql($id_area)."'";
+	        FROM '.TABLE_PREFIX."_area
+	        WHERE id = '".protect_data_sql($id_area)."'";
     $res = grr_sql_query($sql);
     if (!$res) {
         //fatal_error(0, grr_sql_error());
@@ -3871,7 +3877,7 @@ function get_planning_area_values($id_area)
     }
     $row_ = grr_sql_row($res, 0);
     $nb_display_day = 0;
-    for ($i = 0; $i < 7; ++$i) {
+    for ($i = 0; $i < 7; $i++) {
         if (substr($row_[8], $i, 1) == 'y') {
             $display_day[$i] = 1;
             ++$nb_display_day;
@@ -4465,7 +4471,14 @@ function effectuer_correspondance_profil_statut($codefonction, $libellefonction)
     }
 }
 
-function jQuery_DatePicker($typeDate)
+/**
+ * Initialise le DatePicker, sert à retourner typeDate, si echoOff est true, ça return la valeur pour le template Twig au lieu du echo,
+ * les echos sont à supprimer dès que l'intégration twig est terminée
+ *
+* @param $typeDate
+* @param bool|false $echoOff
+ */
+function jQuery_DatePicker($typeDate, $echoOff = false)
 {
     if (@file_exists('../include/connect.inc.php')) {
         $racine = '../';
@@ -4523,31 +4536,41 @@ function jQuery_DatePicker($typeDate)
             $year = date('Y');
         }
     }
-    genDateSelector(''.$typeDate.'_', "$day", "$month", "$year", '');
-    echo '<input type="hidden" disabled="disabled" id="mydate_'.$typeDate.'">'.PHP_EOL;
-    echo '<script>'.PHP_EOL;
-    echo '	$(function() {'.PHP_EOL;
-    echo '$.datepicker.setDefaults( $.datepicker.regional[\'fr\'] );'.PHP_EOL;
-    echo '	$(\'#mydate_'.$typeDate.'\').datepicker({'.PHP_EOL;
-    echo '		beforeShow: readSelected, onSelect: updateSelected,'.PHP_EOL;
-    echo '		showOn: \'both\', buttonImageOnly: true, buttonImage: \'images/calendar.png\',buttonText: "Choisir la date"});'.PHP_EOL;
-    echo '		function readSelected()'.PHP_EOL;
-    echo '		{'.PHP_EOL;
-    echo '			$(\'#mydate_'.$typeDate.'\').val($(\'#'.$typeDate.'_day\').val() + \'/\' +'.PHP_EOL;
-    echo '			$(\'#'.$typeDate.'_month\').val() + \'/\' + $(\'#'.$typeDate.'_year\').val());'.PHP_EOL;
-    echo '			return {};'.PHP_EOL;
-    echo '		}'.PHP_EOL;
-    echo '		function updateSelected(date)'.PHP_EOL;
-    echo '		{'.PHP_EOL;
-    echo '			$(\'#'.$typeDate.'_day\').val(date.substring(0, 2));'.PHP_EOL;
-    echo '			$(\'#'.$typeDate.'_month\').val(date.substring(3, 5));'.PHP_EOL;
-    echo '			$(\'#'.$typeDate.'_year\').val(date.substring(6, 10));'.PHP_EOL;
-    echo '		}'.PHP_EOL;
-    echo '	});'.PHP_EOL;
-    echo '</script>'.PHP_EOL;
+
+
+    if ( $echoOff ) {
+        //$tplArrayDatePicker['typeDate'] = $typeDate;
+
+
+        return genDateSelectorForm(''.$typeDate.'_', "$day", "$month", "$year", '');
+    } else {
+        genDateSelector(''.$typeDate.'_', "$day", "$month", "$year", '');
+
+        echo '<input type="hidden" disabled="disabled" id="mydate_'.$typeDate.'">'.PHP_EOL;
+        echo '<script>'.PHP_EOL;
+        echo '	$(function() {'.PHP_EOL;
+        echo '$.datepicker.setDefaults( $.datepicker.regional[\'fr\'] );'.PHP_EOL;
+        echo '	$(\'#mydate_'.$typeDate.'\').datepicker({'.PHP_EOL;
+        echo '		beforeShow: readSelected, onSelect: updateSelected,'.PHP_EOL;
+        echo '		showOn: \'both\', buttonImageOnly: true, buttonImage: \'images/calendar.png\',buttonText: "Choisir la date"});'.PHP_EOL;
+        echo '		function readSelected()'.PHP_EOL;
+        echo '		{'.PHP_EOL;
+        echo '			$(\'#mydate_'.$typeDate.'\').val($(\'#'.$typeDate.'_day\').val() + \'/\' +'.PHP_EOL;
+        echo '			$(\'#'.$typeDate.'_month\').val() + \'/\' + $(\'#'.$typeDate.'_year\').val());'.PHP_EOL;
+        echo '			return {};'.PHP_EOL;
+        echo '		}'.PHP_EOL;
+        echo '		function updateSelected(date)'.PHP_EOL;
+        echo '		{'.PHP_EOL;
+        echo '			$(\'#'.$typeDate.'_day\').val(date.substring(0, 2));'.PHP_EOL;
+        echo '			$(\'#'.$typeDate.'_month\').val(date.substring(3, 5));'.PHP_EOL;
+        echo '			$(\'#'.$typeDate.'_year\').val(date.substring(6, 10));'.PHP_EOL;
+        echo '		}'.PHP_EOL;
+        echo '	});'.PHP_EOL;
+        echo '</script>'.PHP_EOL;
+    }
 }
 
-function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaultsec)
+function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaultsec, $echoOff = false)
 {
     if (isset($_GET['id'])) {
         if (isset($start_hour) && isset($start_min)) {
@@ -4600,20 +4623,28 @@ function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaults
     if ($minute == 0) {
         $minute = '00';
     }
-    // MAJ
-    echo '<div class="input-group clockpicker">
-	<input name="'.$typeTime.'" type="text" class="form-control" value="'.$hour.':'.$minute.'">
-	<span class="input-group-addon">
-		<span class="glyphicon glyphicon-time"></span>
-	</span>
-</div>';
-    echo '<script type="text/javascript">
-$(\'.clockpicker\').clockpicker({
-	align: \'left\',
-	placement: \'top\',
-	donetext: \'Valider\'
-});
-</script>';
+    if ($echoOff) {
+        $tplTimePicker['hour'] = $hour;
+        $tplTimePicker['minute'] = $minute;
+        $tplTimePicker['typeTime'] = $typeTime;
+
+        return $tplTimePicker;
+    } else {
+        // MAJ
+        echo '<div class="input-group clockpicker">
+        <input name="'.$typeTime.'" type="text" class="form-control" value="'.$hour.':'.$minute.'">
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-time"></span>
+        </span>
+        </div>';
+        echo '<script type="text/javascript">
+        $(\'.clockpicker\').clockpicker({
+        align: \'left\',
+        placement: \'top\',
+        donetext: \'Valider\'
+        });
+        </script>';
+    }
 }
 function spinner($duration)
 {
