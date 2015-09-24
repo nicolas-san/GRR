@@ -19,7 +19,7 @@
                         {{ messageAcceuil }}
                         {% if mailEtatDestEtNoSession %}
                     <td class="contactformulaire">
-                        <input class="btn btn-default" type="submit" rel="popup_name" value="Réserver" onClick="javascript:location.href={{ pathToReserver }}" >
+                        <input class="btn btn-{{ template }}" type="submit" rel="popup_name" value="Réserver" onClick="javascript:location.href={{ pathToReserver }}" >
                     </td>
                     {% endif %}
                     <td class="administration">
@@ -28,7 +28,7 @@
                         {% if pathToMyslqlSave != false %}
                             <form action="{{ pathToMyslqlSave }}" method='get'><div>
                                     <input type="hidden" name="flag_connect" value="yes" />
-                                    <input type="submit" class="btn btn-default" value="{{ vocab.submit_backup }}" /></div>
+                                    <input type="submit" class="btn btn-{{ template }}" value="{{ vocab.submit_backup }}" /></div>
                             </form>
                             <a href="{{ pathToViewConnexions }}">{{ nb_connect }} {% if nb_connect == 1 %} {{ vocab.one_connected }} {% else %} {{ several.one_connected }} {% endif %}</a>
                             {% if erreurVersion != false %}
@@ -50,11 +50,13 @@
                                 </div>
                             </div>
                         {% endif %}
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=fr"><img src="src/Grr/Resources/Templates/Default/public/images/base/fr_dp.png" alt="France" title="france" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=de"><img src="src/Grr/Resources/Templates/Default/public/images/base/de_dp.png" alt="Deutch" title="deutch" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=en"><img src="src/Grr/Resources/Templates/Default/public/images/base/en_dp.png" alt="English" title="English" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=it"><img src="src/Grr/Resources/Templates/Default/public/images/base/it_dp.png" alt="Italiano" title="Italiano" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=es"><img src="src/Grr/Resources/Templates/Default/public/images/base/es_dp.png" alt="Spanish" title="Spanish" width="20" height="13" class="image" /></a>
+
+                        {% if adminUserWithSession %}{% set root = '../' %}{% else %}{% set root = './' %}{% endif %}
+                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=fr"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/fr_dp.png" alt="France" title="france" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=de"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/de_dp.png" alt="Deutch" title="deutch" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=en"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/en_dp.png" alt="English" title="English" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=it"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/it_dp.png" alt="Italiano" title="Italiano" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=es"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/es_dp.png" alt="Spanish" title="Spanish" width="20" height="13" class="image" /></a>
                         {% if session == false %}
                             {% if ssoStatus == "cas_visiteur" or ssoStatus == "cas_utilisateur" %}
                                 <br />

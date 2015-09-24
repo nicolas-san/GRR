@@ -211,5 +211,7 @@ $grrSettings = array();
 #error_reporting (E_ALL ^ E_NOTICE);
 
 /* GESTION DES TEMPLATES */
+global $template;
 //$template = "Modern";
+
 $template = "Default";

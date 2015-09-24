@@ -5,5 +5,11 @@
  *
  * This file load the plugins
  */
-/* pas de ../ c'est chargé à partir des fichiers à la racine de GRR, todo test depuis l'admin si error, séparer plugins admin et front ? */
-include_once "src/Plugins/Acme/acme.php";
+
+/* todo séparer plugin admin et front ? */
+if (@file_exists('../include/connect.inc.php')) {
+    $racine = '../';
+} else {
+    $racine = './';
+}
+include_once $racine."src/Plugins/Acme/acme.php";

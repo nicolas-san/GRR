@@ -864,6 +864,9 @@ function begin_page($title, $page = 'with_session')
      */
     $tplArray = [];
     $tplArray['title'] = $title;
+    global $template;
+    $tplArray['template'] = $template;
+
     /**
      * global var twig
      */
@@ -934,8 +937,8 @@ function begin_page($title, $page = 'with_session')
 
     if (@file_exists('admin_accueil.php')) { // Si on est dans l'administration
 
-        //$tplArray['admin'] = true;
-
+        $tplArray['use_admin'] = true;
+        $tplArray['sheetcss'] = $sheetcss;
 
 
         return $twig->render('admin/header.html.twig', $tplArray);
@@ -1070,6 +1073,8 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
     global $twig;
     $tplArray = [];
     $tplArray['close'] = $close;
+    global $template;
+    $tplArray['template'] = $template;
 
     if (!($desactive_VerifNomPrenomUser)) {
         $desactive_VerifNomPrenomUser = 'n';
@@ -1179,7 +1184,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                 if ((authGetUserLevel(getUserName(), -1, 'area') >= 4) || (authGetUserLevel(getUserName(), -1, 'user') == 1)) {
                     $tplArray['adminUserWithSession'] = true;
                     //echo '<td class="administration">'.PHP_EOL;
-                    $tplArray['pathToAdmin'] = $racineAd."admin_accueil.php?day=".$day."&amp;month=".$month."&amp;year=".$year;
+                    $tplArray['pathToAdmin'] = $racineAd."admin_accueil.php?day=".$day."&month=".$month."&year=".$year;
                     $tplArray['vocab']['admin'] = get_vocab('admin');
                     //echo "<br><a href='{$racineAd}admin_accueil.php?day={$day}&amp;month={$month}&amp;year={$year}'>".get_vocab('admin').'</a>'.PHP_EOL;
                     if (authGetUserLevel(getUserName(), -1, 'area') >= 6) {
