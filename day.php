@@ -439,6 +439,7 @@ if (grr_sql_count($res) == 0) {
                         //$tplArray['vocab']['reservation_impossible'] = get_vocab('reservation_impossible');
                         //echo '<img src="img_grr/stop.png" alt="'.get_vocab('reservation_impossible').'"  title="'.get_vocab('reservation_impossible').'" width="16" height="16" class="'.$class_image.'" />'.PHP_EOL;
                     } else {
+                        $tplArray['creneauxHoraire'][$indexArray]['EstHorsReservation'] = false;
                         if (((authGetUserLevel(getUserName(), -1) > 1) || (auth_visiteur(getUserName(), $room) == 1))
                             && (UserRoomMaxBooking(getUserName(), $room, 1) != 0) && verif_booking_date(getUserName(), -1, $room, $date_booking, $date_now, $enable_periods)
                             && verif_delais_max_resa_room(getUserName(), $room, $date_booking)
@@ -446,7 +447,7 @@ if (grr_sql_count($res) == 0) {
                             && (($statut_room[$room] == '1') || (($statut_room[$room] == '0')
                             && (authGetUserLevel(getUserName(), $room) > 2))) && $_GET['pview'] != 1) {
 
-                            $tplArray['creneauxHoraire'][$indexArray]['EstHorsReservation'] = false;
+                            $tplArray['creneauxHoraire'][$indexArray]['EstReservable'] = true;
 
                             if ($enable_periods == 'y') {
                                 $tplArray['creneauxHoraire'][$indexArray]['period'] = true;
@@ -459,7 +460,7 @@ if (grr_sql_count($res) == 0) {
                             }
                         } else {
                             //echo ' ';
-                            $tplArray['creneauxHoraire'][$indexArray]['EstHorsReservation'] = 'empty';
+                            $tplArray['creneauxHoraire'][$indexArray]['EstReservable'] = false;
                         }
                     }
                     //echo '</td>'.PHP_EOL;
@@ -497,7 +498,7 @@ if (grr_sql_count($res) == 0) {
                             if ($settings->get('display_level_view_entry') == 0) {
                                 $currentPage = 'day';
                                 $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaDisplay'] = 'levelViewEntry';
-                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaLink'] = 'request('.$id.','.$day.','.$month.','.$year."','".$currentPage."',readData);" ;
+                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaLink'] = "request('$id','$day','$month','$year','$currentPage',readData);";
                                 //echo '<a title="'.htmlspecialchars($today[$room][$t]['who']).'" data-width="675" onclick="request('.$id.','.$day.','.$month.','.$year.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight">'.$descr.PHP_EOL;
                             } else {
                                 $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaDisplay'] = false;

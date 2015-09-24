@@ -173,7 +173,7 @@
                 {% if overload_fields[fieldname]['type'] != 'list' %}
                     if ( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && document.forms['main'].addon_{{ overload_fields[fieldname]['id'] }}.value == " " ) {
                 {% else %}
-                    if ( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && (document.forms["main"].addon_{{ overload_fields[fieldname]['id'] }}.options[0].selected == true)) {
+                    if ( document.getElementById('id_{{ idtmp }}_{{ overload_fields[fieldname]['id'] }}') && document.forms["main"].addon_{{ overload_fields[fieldname]['id'] }}.options[0].selected == true) {
                 {% endif %}
                     $("#error").append('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{{ vocab.required }} </div>');
                     err = 1;

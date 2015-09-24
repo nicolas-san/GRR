@@ -51,12 +51,12 @@
                             </div>
                         {% endif %}
 
-                        {% if adminUserWithSession %}{% set root = '../' %}{% else %}{% set root = './' %}{% endif %}
-                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=fr"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/fr_dp.png" alt="France" title="france" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=de"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/de_dp.png" alt="Deutch" title="deutch" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=en"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/en_dp.png" alt="English" title="English" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=it"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/it_dp.png" alt="Italiano" title="Italiano" width="20" height="13" class="image" /></a>
-                        <a onclick="charger();" href="{{ pathToReturn }}&{{ template }}_language=es"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/es_dp.png" alt="Spanish" title="Spanish" width="20" height="13" class="image" /></a>
+                        {% if dansRepAdmin == 1 %}{% set root = '../' %}{% else %}{% set root = './' %}{% endif %}
+                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=fr"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/fr_dp.png" alt="France" title="france" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=de"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/de_dp.png" alt="Deutch" title="deutch" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=en"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/en_dp.png" alt="English" title="English" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=it"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/it_dp.png" alt="Italiano" title="Italiano" width="20" height="13" class="image" /></a>
+                        <a onclick="charger();" href="{{ pathToReturn }}&default_language=es"><img src="{{ root }}src/Grr/Resources/Templates/{{ template }}/public/images/base/es_dp.png" alt="Spanish" title="Spanish" width="20" height="13" class="image" /></a>
                         {% if session == false %}
                             {% if ssoStatus == "cas_visiteur" or ssoStatus == "cas_utilisateur" %}
                                 <br />

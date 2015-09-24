@@ -1120,7 +1120,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                 $racine = './';
                 $racineAd = './admin/';
             }
-
+            $tplArray['dansRepAdmin'] = $adm;
             // Génération XML
             $generationXML = 1;
             if ((Settings::get('export_xml_actif') == 'Oui') && ($adm == 0)) {
@@ -3624,8 +3624,10 @@ function verif_heure_debut_fin($start_time, $end_time, $area)
         $year = date('Y', $end_time);
         $endday = mktime($eveningends, $eveningends_minutes, $resolution, $month, $day, $year);
         if ($start_time < $startday) {
+
             return false;
         } elseif ($end_time > $endday) {
+
             return false;
         }
     }

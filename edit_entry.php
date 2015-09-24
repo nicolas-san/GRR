@@ -354,6 +354,7 @@ $tplArrayEditEntry['vocab']['date'] = get_vocab('date');
 $tplArrayEditEntry['vocab']['definir_par_defaut'] = get_vocab('definir par defaut');
 $tplArrayEditEntry['vocab']['nom_beneficiaire'] = strip_tags(get_vocab('nom_beneficiaire'));
 $tplArrayEditEntry['vocab']['email_beneficiaire'] = get_vocab('email beneficiaire');
+$tplArrayEditEntry['vocab']['no_compatibility_with_repeat_type'] = get_vocab('no_compatibility_with_repeat_type');
 
 foreach ($allareas_id as $idtmp) {
     //$overload_fields = mrbsOverloadGetFieldslist($idtmp);
@@ -428,7 +429,10 @@ $res = grr_sql_query($sql);
 if ($res) {
     for ($i = 0; ($row = grr_sql_row($res, $i)); $i++) {
         if (authUserAccesArea(getUserName(), $row[0]) == 1) {
+            /*echo "AREA<br>";
+            var_dump($row);*/
             $tplArrayEditEntry['areasIds'][$i]['id'] = $row[0];
+            $tplArrayEditEntry['areasIds'][$i]['name'] = $row[1];
             /*print '      case "'.$row[0]."\":\n";*/
             $sql2 = 'SELECT id, room_name FROM '.TABLE_PREFIX."_room WHERE area_id='".$row[0]."'";
             $tab_rooms_noaccess = verif_acces_ressource(getUserName(), 'all');
@@ -874,18 +878,20 @@ if ($enable_periods == 'y') {
 }
 $res = grr_sql_query($sql);
 if ($res) {
+    $incrementForValidArea = 0;
     for ($i = 0; ($row = grr_sql_row($res, $i)); $i++) {
         if (authUserAccesArea(getUserName(), $row[0]) == 1) {
             $selected = '';
-            $tplArrayEditEntry['areasAuth'][]['0'] = $row[0];
-            $tplArrayEditEntry['areasAuth'][]['1'] = $row[1];
+            $tplArrayEditEntry['areasAuth'][$incrementForValidArea]['0'] = $row[0];
+            $tplArrayEditEntry['areasAuth'][$incrementForValidArea]['1'] = $row[1];
             if ($row[0] == $area) {
                 //$selected = 'selected="selected"';
-                $tplArrayEditEntry['areasAuth'][]['selected'] = true;
+                $tplArrayEditEntry['areasAuth'][$incrementForValidArea]['selected'] = true;
             } else {
-                $tplArrayEditEntry['areasAuth'][]['selected'] = false;
+                $tplArrayEditEntry['areasAuth'][$incrementForValidArea]['selected'] = false;
             }
             //print '<option '.$selected.' value="'.$row[0].'">'.$row[1].'</option>'.PHP_EOL;
+            $incrementForValidArea++;
         }
     }
 }
@@ -907,14 +913,14 @@ $tplArrayEditEntry['longeurListeRessourcesMax'] = min($longueur_liste_ressources
 //Sélection de la "room" dans l'"area"
 if ($res) {
     for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
-        $tplArrayEditEntry['rooms'][]['0'] = $row[0];
-        $tplArrayEditEntry['rooms'][]['1'] = $row[1];
+        $tplArrayEditEntry['rooms'][$i]['0'] = $row[0];
+        $tplArrayEditEntry['rooms'][$i]['1'] = $row[1];
         $selected = '';
         if ($row[0] == $room_id) {
             //$selected = 'selected="selected"';
-            $tplArrayEditEntry['rooms'][]['selected'] = true;
+            $tplArrayEditEntry['rooms'][$i]['selected'] = true;
         } else {
-            $tplArrayEditEntry['rooms'][]['selected'] = true;
+            $tplArrayEditEntry['rooms'][$i]['selected'] = true;
         }
         /*echo '<option ',$selected,' value="',$row[0],'">',$row[1],'</option>',PHP_EOL;*/
     }

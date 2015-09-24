@@ -47,7 +47,9 @@ if (!grr_resumeSession())
 	header("Location: ./logout.php?auto=1&url=$url");
 	die();
 }
-
+echo "<pre>";
+var_dump($_GET);
+echo "</pre>";
 // Paramètres langage
 include "include/language.inc.php";
 $erreur = 'n';
@@ -258,6 +260,19 @@ if ($type_affichage_reser == 0)
 		case "seconds":
 		break;
 	}
+/*    echo "<pre>";
+    var_dump($enable_periods);
+    echo "<br>";
+    var_dump($month);
+    echo "<br>";
+    var_dump($day);
+    echo "<br>";
+    var_dump($year);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "</pre>";*/
 	if (isset($all_day) && ($all_day == "yes") && ($dur_units != "days"))
 	{
 		if ($enable_periods == 'y')
@@ -344,6 +359,12 @@ else
 			$endtime += $resolution - $tmp;
 	}
 }
+echo "<pre>";
+var_dump($starttime);
+echo "<br>";
+var_dump($endtime);
+echo "</pre>";
+
 if ($endtime <= $starttime)
 	$erreur = 'y';
 if ($erreur == 'y')
@@ -731,7 +752,7 @@ if ($error_heure_debut_fin == 'yes')
 {
 	print_header();
 	echo "<h2>" . get_vocab("error_heure_debut_fin") ."</h2>";
-	echo $start_day;
+	echo $day;
 	echo "<a href=\"".$back."&amp;Err=yes\">".get_vocab('returnprev')."</a>";
 	include "include/trailer.inc.php";
 	die();

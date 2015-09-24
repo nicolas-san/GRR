@@ -108,6 +108,9 @@
                             </tr>
                             <tr>
                             {% for creneauHoraire in creneauxHoraire %}
+                                {#<tr><td>DUMP<br>
+                                    {{ dump(creneauHoraire.descRoomAccessRoomText) }}
+                                </td></tr>#}
                                 {% if loop.index is even %}
                                     <td class="cell_hours">
                                 {% else %}
@@ -124,20 +127,20 @@
                                     <td {% if creneauHoraire.class != false %}class="{{ creneauHoraire.class }}"{% endif %}
                                         {% if creneauHoraire.color != false %}style="background-color: {{ creneauHoraire.color }}"{% endif %} >
                                 {% endif %}
-                                {% if creneauHoraire.estHorsReservation == true and creneauHoraire.estHorsReservation != 'empty' %}
-                                    <img src="img_grr/stop.png" alt="{{ vocab.reservation_impossible }}"  title="{{ vocab.reservation_impossible }}" width="16" height="16" class="{{ classImage }}" />
-                                {% elseif creneauHoraire.estHorsReservation == false and creneauHoraire.estHorsReservation != 'empty' %}
+                                {% if creneauHoraire.estHorsReservation == true %}
+                                    <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="{{ vocab.reservation_impossible }}"  title="{{ vocab.reservation_impossible }}" width="16" height="16" class="{{ classImage }}" />
+                                {% elseif creneauHoraire.estHorsReservation == false and creneauHoraire.EstReservable == true %}
                                     <a href="{{ creneauHoraire.linkToResa }}" title="{{ vocab.cliquez_pour_effectuer_une_reservation }}" ><span class="glyphicon glyphicon-plus"></span></a>
                                 {% endif %}
-                                {% if roomIdSet == true %}
+                                {% if creneauHoraire.roomIdSet == true %}
                                     {% if creneauHoraire.descRoomEmpruntee %}
-                                        <img src="img_grr/buzy.png" alt="{{ vocab.ressource_actuellement_empruntee }}" title="{{ vocab.ressource_actuellement_empruntee }}" width="20" height="20" class="image" />
+                                        <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="{{ vocab.ressource_actuellement_empruntee }}" title="{{ vocab.ressource_actuellement_empruntee }}" width="20" height="20" class="image" />
                                     {% endif %}
                                     {% if creneauHoraire.descRoomResaPlusTard %}
-                                        <img src="img_grr/small_flag.png" alt="{{ vocab.reservation_a_confirmer_au_plus_tard_le }}" title="{{ vocab.reservation_a_confirmer_au_plus_tard_le }} {{ creneauHoraire.descRoomResaPlusTardDate }}" width="20" height="20" class="image" />
+                                        <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="{{ vocab.reservation_a_confirmer_au_plus_tard_le }}" title="{{ vocab.reservation_a_confirmer_au_plus_tard_le }} {{ creneauHoraire.descRoomResaPlusTardDate }}" width="20" height="20" class="image" />
                                     {% endif %}
                                     {% if creneauHoraire.descRoomResaModeration %}
-                                        <img src="img_grr/flag_moderation.png" alt="{{ vocab.en_attente_moderation }}" title="{{ vocab.en_attente_moderation }}" class="image" />
+                                        <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="{{ vocab.en_attente_moderation }}" title="{{ vocab.en_attente_moderation }}" class="image" />
                                     {% endif %}
                                     {% if creneauHoraire.descRoomAccessRoom %}
                                         {% if creneauHoraire.descRoomAccessRoomAndFicheResa %}
@@ -153,7 +156,7 @@
                                         {% endif %}
                                         {# boucle for pour les entry #}
                                         {% for entry in creneauHoraire.entries %}
-                                            {% if period %}
+                                            {% if period == false %}
                                                 <br />
                                                 {{ entry.startTime }} {{ vocab.to }} {{ entry.endTime }}
                                                 <br />
@@ -163,19 +166,18 @@
                                             {% endif %}
                                             <br />
                                             {% if entry.clef == 1 %}
-                                                <img src="img_grr/skey.png" alt="clef">
+                                                <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="clef">
                                             {% endif %}
                                             {% if entry.showCourrier %}
                                                 {% if entry.courrier == 1 %}
-                                                    <img src="img_grr/scourrier.png" alt="courrier">
+                                                    <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="courrier">
                                                 {% else %}
-                                                    <img src="img_grr/hourglass.png" alt="buzy">
-                                                {% endif %}
-                                                {% if entry.todayDesc != false %}
-                                                   {{ entry.todayDesc }}
+                                                    <img src="src/Grr/Resources/Templates/{{ template }}/public/images/base/stop.png" alt="buzy">
                                                 {% endif %}
                                             {% endif %}
-
+                                            {% if entry.todayDesc != false %}
+                                                {{ entry.todayDesc }}
+                                            {% endif %}
                                         {% endfor %}
                                     {% else %}
                                         {{  creneauHoraire.descRoomAccessRoomText }}
