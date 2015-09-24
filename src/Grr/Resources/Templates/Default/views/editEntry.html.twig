@@ -397,7 +397,7 @@
                                 </div>
                             </td>
                         </tr>
-                        {% if typeAffichageReser %}
+                        {% if typeAffichageReser == 0 %}
                             <tr>
                                 <td class="E">
                                     <b>{{ vocab.duration }}</b>
@@ -538,114 +538,192 @@
                     <table class="table-header">
                         <!-- ************* Periodic edition ***************** -->
                         {% if showPeriodicite %}
-                        <tr>
-                            <td id="ouvrir" style="cursor: inherit" align="center" class="fontcolor4">
-                                <span class="fontcolor1 btn btn-primary">
-                                    <b><a href="javascript:clicMenu(1);check_5()">{{ vocab.click_here_for_series_open|raw }}</a></b>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="display:none; cursor: inherit white;" id="fermer" align="center" class="fontcolor4">
-                                <span class="btn btn-primary fontcolor1 white">
-                                    <b><a href="javascript:clicMenu(1);check_5()">{{ vocab.click_here_for_series_close|raw }}</a></b>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table id="menu1" style="display:none;">
-                                    <tr>
-                                        <td class="F">
-                                            <b>{{ vocab.rep_type }}</b>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="CL">
-                                            <table class="table" >
-                                                {% for key, repetition in repetitions %}
-                                                    <tr>
-                                                        <td>
-                                                            <input name="rep_type" type="radio" value="{{ key }}" {% if repetition.checked %}checked="checked"{% endif %} onclick="check_1()" />
-                                                            {% if repetition.type == 2 %}
-                                                                <select class="form-control" name="rep_num_weeks" size="1" onfocus="check_2()" onclick="check_2()">
-                                                                    <option value="1" >{{ vocab.every_week }}</option>
-                                                                    {% for keyWeek, week in repetition.weeks %}
-                                                                        <option value="{{ keyWeek }}" {% if week.selected %}selected="selected"{% endif %}>{{ week.vocab }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            {% elseif repetition.type == 3 %}
-                                                                <select class="form-control" name="rep_month" size="1" onfocus="check_3()" onclick="check_3()">
-                                                                    <option value="3" {% if repetition.selected == 3 %}selected="selected"{% endif %}>{{ vocab.rep_type_3 }}</option>
-                                                                    <option value="5" {% if repetition.selected == 5 %}selected="selected"{% endif %} >{{ vocab.rep_type_3 }}</option>
-                                                                </select>
-                                                            {% elseif repetition.type == 7 %}
-                                                                <select class="form-control" name="rep_month_abs1" size="1" onfocus="check_7()" onclick="check_7()">
-                                                                    {% for keyWeek7, week7 in repetition.weeks7 %}
-                                                                        <option value="{{ keyWeek7 }}" >{{ week7.vocab }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                                <select class="form-control" name="rep_month_abs2" size="1" onfocus="check_8()" onclick="check_8()">
-                                                                    {% for keyWeekDayName, weekDayName in repetition.weeksDayName %}
-                                                                        <option value="{{ keyWeekDayName }}" >{{ weekDayName.vocab }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                                {{ vocab.ofmonth }}
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>  
+                            <tr>
+                                <td id="ouvrir" style="cursor: inherit" align="center" class="fontcolor4">
+                                    <span class="fontcolor1 btn btn-primary">
+                                        <b><a href="javascript:clicMenu(1);check_5()">{{ vocab.click_here_for_series_open|raw }}</a></b>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="display:none; cursor: inherit white;" id="fermer" align="center" class="fontcolor4">
+                                    <span class="btn btn-primary fontcolor1 white">
+                                        <b><a href="javascript:clicMenu(1);check_5()">{{ vocab.click_here_for_series_close|raw }}</a></b>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table id="menu1" style="display:none;">
+                                        <tr>
+                                            <td class="F">
+                                                <b>{{ vocab.rep_type }}</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CL">
+                                                <table class="table" >
+                                                    {% for key, repetition in repetitions %}
+                                                            <td>
+                                                                <input name="rep_type" type="radio" value="{{ key }}" {% if repetition.checked %}checked="checked"{% endif %} onclick="check_1()" />{{ repetition.vocab }}
+                                                                {% if repetition.type == 2 %}
+                                                                    <select class="form-control" name="rep_num_weeks" size="1" onfocus="check_2()" onclick="check_2()">
+                                                                        <option value="1" >{{ vocab.every_week }}</option>
+                                                                        {% for keyWeek, week in repetition.weeks %}
+                                                                            <option value="{{ keyWeek }}" {% if week.selected %}selected="selected"{% endif %}>{{ week.vocab }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                {% elseif repetition.type == 3 %}
+                                                                    <select class="form-control" name="rep_month" size="1" onfocus="check_3()" onclick="check_3()">
+                                                                        <option value="3" {% if repetition.selected == 3 %}selected="selected"{% endif %}>{{ vocab.rep_type_3 }}</option>
+                                                                        <option value="5" {% if repetition.selected == 5 %}selected="selected"{% endif %} >{{ vocab.rep_type_3 }}</option>
+                                                                    </select>
+                                                                {% elseif repetition.type == 7 %}
+                                                                    <select class="form-control" name="rep_month_abs1" size="1" onfocus="check_7()" onclick="check_7()">
+                                                                        {% for keyWeek7, week7 in repetition.weeks7 %}
+                                                                            <option value="{{ keyWeek7 }}" >{{ week7.vocab }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    <select class="form-control" name="rep_month_abs2" size="1" onfocus="check_8()" onclick="check_8()">
+                                                                        {% for keyWeekDayName, weekDayName in repetition.weeksDayName %}
+                                                                            <option value="{{ keyWeekDayName }}" >{{ weekDayName.vocab }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    {{ vocab.ofmonth }}
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </table>
+                                                <!-- ***** Fin de périodidité ***** -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="F">
+                                                <b>{{ vocab.rep_end_date }}</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CL">
+                                                {{ rawDatePickerRepEnd|raw }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="display:none" id="menu2" width="100%">
+                                        <tr>
+                                            <td class="F">
+                                                <b>{{ vocab.rep_rep_day }}</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CL">
+                                                {% for keyRepDay, repDay in repDays %}
+                                                    <input name="rep_day[{{ keyRepDay }}]" type="checkbox" {% if repDay.checked %}checked="checked"{% endif %} onclick="check_1()" />{{ repDay.vocab }}
                                                 {% endfor %}
-                                            </table>
-                                            <!-- ***** Fin de périodidité ***** -->
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="F">
-                                            <b>{{ vocab.rep_end_date }}</b>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="CL">
-                                            {{ rawDatePickerRepEnd|raw }}
-                                        </td>
-                                    </tr>
-                                </table>
-                                <table style="display:none" id="menu2" width="100%">
-                                    <tr>
-                                        <td class="F">
-                                            <b>{{ vocab.rep_rep_day }}</b>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="CL">
-                                            {% for keyRepDay, repDay in repDays %}
-                                                <input name="rep_day[{{ keyRepDay }}]" type="checkbox" {% if repDay.checked %}checked="checked"{% endif %} onclick="check_1()" />{{ repDay.vocab }}
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                </table>
-                                <table style="display:none" id="menuP" width="100%">
-                                    <tr>
-                                        <td class="F">
-                                            <b>Jours/Cycle</b>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="CL">
-                                            {% for keyRepRadioJour, repRadioJour in repRadioJours %}
-                                                <input type="radio" name="rep_jour_" value="{{ keyRepRadioJour }}" {% if repRadioJour.checked %}checked="checked"{% endif %} onclick="check_1()" />{{ vocab.rep_type_6 }} {{ keyRepRadioJour }}
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="display:none" id="menuP" width="100%">
+                                        <tr>
+                                            <td class="F">
+                                                <b>Jours/Cycle</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CL">
+                                                {% for keyRepRadioJour, repRadioJour in repRadioJours %}
+                                                    <input type="radio" name="rep_jour_" value="{{ keyRepRadioJour }}" {% if repRadioJour.checked %}checked="checked"{% endif %} onclick="check_1()" />{{ vocab.rep_type_6 }} {{ keyRepRadioJour }}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
 
                         {% else %}
-
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.periodicite_associe }}{{ vocab.deux_points }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.rep_type }}</b>{{ pasPeriodique.vocab }}
+                                </td>
+                            </tr>
+                            {% if pasPeriode.opt != false %}
+                                <tr>
+                                    <td class="E">
+                                        <b>{% if pasPeriode.nb == 1 %}{{ vocab.rep_rep_day }}{% else %}{{ vocab.rep_rep_days }}{% endif %}</b>
+                                        {{ pasPeriode.opt }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.date }}{{ vocab.deux_points }}</b>{{ pasPeriode.startDate }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.duration }}</b>{{ pasPeriode.duration }}{{ pasPeriode.dur_units }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="E">
+                                    <b>{{ vocab.rep_end_date }}</b>{{ pasPeriode.repEndDate }}
+                                </td>
+                            </tr>
 
                         {% endif %}
+                    </table>
+                </td>
+            </tr>
+    </table>
+    <div id="fixe">
+        <input type="button" class="btn btn-primary" value="{{ vocab.cancel }}" onclick="window.location.href='{{ cancelPageLink }}'" />
+        <input type="button" class="btn btn-primary" value="{{ vocab.save }}" onclick="Save_entry();validate_and_submit();" />
+        <input type="hidden" name="rep_id"    value="{{ repId }}" />
+        <input type="hidden" name="edit_type" value="{{ editType }}" />
+        <input type="hidden" name="page" value="{{ page }}" />
+        <input type="hidden" name="room_back" value="{{ roomId }}" />
+        {% if inputHiddenBeneficiaire %}
+            <input type="hidden" name="beneficiaire" value="{{ beneficiaire }}" />
+        {% endif %}
+        <input type="hidden" name="statut_entry" value="{{ statusEntry }}" />
+        <input type="hidden" name="create_by" value="{{ createBy }}" />
+        {% if idForHidden %}
+            <input type="hidden" name="id" value="{{ idForHidden }}" />
+        {% endif %}
+        <input type="hidden" name="type_affichage_reser" value="{{ typeAffichageReser }}" />
+    </div>
+</form>
+<script type="text/javascript">
+    insertProfilBeneficiaire();
+    insertChampsAdd();
+    insertTypes()
+</script>
+<script type="text/javascript">
+    $('#areas').on('change', function(){
+        $('.multiselect').multiselect('destroy');
+        $('.multiselect').multiselect();
+    });
+    $(document).ready(function() {
+        $('.multiselect').multiselect();
+        $("#select2").select2();
+    });
+</script>
+<script type="text/javascript" >
+    /*document.getElementById('main').name.focus();*/
 
+    {% if cookie %}check_4();{% endif %}
+    {% if idNotVideEtPeriodicite %}clicMenu('1'); check_5();{% endif %}
+    {% if err %}timeoutID = window.setTimeout("Load_entry();check_5();",500){% endif %}
+    </script>
+
+{{ include('footer.html.twig') }}
+</body>
+</html>
 
 
 

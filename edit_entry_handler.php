@@ -47,6 +47,7 @@ if (!grr_resumeSession())
 	header("Location: ./logout.php?auto=1&url=$url");
 	die();
 }
+
 // Paramètres langage
 include "include/language.inc.php";
 $erreur = 'n';

@@ -673,9 +673,9 @@ $tplArrayEditEntry['enablePeriod'] = false;
 
 /*echo '</div>'.PHP_EOL;
 echo '</td></tr>'.PHP_EOL;*/
-
+$tplArrayEditEntry['typeAffichageReser'] = $type_affichage_reser;
 if ($type_affichage_reser == 0) {
-    $tplArrayEditEntry['typeAffichageReser'] = true;
+    //$tplArrayEditEntry['typeAffichageReser'] = false;
     $tplArrayEditEntry['spinner']['duration'] = $duration;
 /*    echo '<tr><td class="E">'.PHP_EOL;
     echo '<b>'.get_vocab('duration').'</b>'.PHP_EOL;
@@ -742,7 +742,7 @@ if ($type_affichage_reser == 0) {
 } else {
 
 
-    $tplArrayEditEntry['typeAffichageReser'] = false;
+    //$tplArrayEditEntry['typeAffichageReser'] = true;
 /*    echo '<tr><td class="E"><b>'.get_vocab('fin_reservation').get_vocab('deux_points').'</b></td></tr>'.PHP_EOL;
     echo '<tr><td class="CL" >'.PHP_EOL;
 
@@ -949,6 +949,7 @@ $res = grr_sql_query($sql);
 $weeklist = array('unused','every week','week 1/2','week 1/3','week 1/4','week 1/5');
 $monthlist = array('firstofmonth','secondofmonth','thirdofmonth','fouthofmonth','fiveofmonth','lastofmonth');
 
+$tplArrayEditEntry['editType'] = $edit_type;
 if (($edit_type == 'series') || (isset($flag_periodicite))) {
 
     /* todo rassembler les vocab */
@@ -1121,15 +1122,24 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
     $tplArrayEditEntry['showPeriodicite'] = false;
 
     $tplArrayEditEntry['vocab']['periodicite_associe'] = get_vocab('periodicite_associe');
+    $tplArrayEditEntry['vocab']['rep_type'] = get_vocab('rep_type');
+    $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
+    $tplArrayEditEntry['vocab']['rep_rep_days'] = get_vocab('rep_rep_days');
+    $tplArrayEditEntry['vocab']['date'] = get_vocab('date');
+    $tplArrayEditEntry['vocab']['duration'] = get_vocab('duration');
+    $tplArrayEditEntry['vocab']['rep_end_date'] = get_vocab('rep_end_date');
 
-    echo '<tr><td class="E"><b>'.get_vocab('periodicite_associe').get_vocab('deux_points')."</b></td></tr>\n";
+    /*echo '<tr><td class="E"><b>'.get_vocab('periodicite_associe').get_vocab('deux_points')."</b></td></tr>\n";*/
     if ($rep_type == 2) {
+        $tplArrayEditEntry['pasPeriodique']['vocab'] = get_vocab($weeklist[$rep_num_weeks]);
         $affiche_period = get_vocab($weeklist[$rep_num_weeks]);
     } else {
+        $tplArrayEditEntry['pasPeriodique']['vocab'] = get_vocab('rep_type_'.$rep_type);
         $affiche_period = get_vocab('rep_type_'.$rep_type);
     }
-    echo '<tr><td class="E"><b>'.get_vocab('rep_type').'</b> '.$affiche_period.'</td></tr>'."\n";
+    //echo '<tr><td class="E"><b>'.get_vocab('rep_type').'</b> '.$affiche_period.'</td></tr>'."\n";
     if ($rep_type != 0) {
+        //$tplArrayEditEntry['pasPeriodique']['repTypeNot0'] = true;
         $opt = '';
         if ($rep_type == 2) {
             $nb = 0;
@@ -1149,11 +1159,17 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
             $opt .= get_vocab('jour_cycle').' '.$jours_c;
         }
         if ($opt) {
-            if ($nb == 1) {
+            $tplArrayEditEntry['pasPeriode']['opt'] = $opt;
+            $tplArrayEditEntry['pasPeriode']['nb'] = $nb;
+
+            /*if ($nb == 1) {
+
                 echo '<tr><td class="E"><b>'.get_vocab('rep_rep_day').'</b> '.$opt.'</td></tr>'."\n";
             } else {
                 echo '<tr><td class="E"><b>'.get_vocab('rep_rep_days').'</b> '.$opt.'</td></tr>'."\n";
-            }
+            }*/
+        } else {
+            $tplArrayEditEntry['pasPeriode']['opt'] = false;
         }
         if ($enable_periods == 'y') {
             list($start_period, $start_date) = period_date_string($start_time);
@@ -1166,15 +1182,19 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
         } else {
             toTimeString($duration, $dur_units, true);
         }
-        echo '<tr><td class="E"><b>'.get_vocab('date').get_vocab('deux_points').'</b> '.$start_date.'</td></tr>'."\n";
+        $tplArrayEditEntry['pasPeriode']['startDate'] = $start_date;
+        $tplArrayEditEntry['pasPeriode']['duration'] = $duration;
+        $tplArrayEditEntry['pasPeriode']['durUnits'] = $dur_units;
+        $tplArrayEditEntry['pasPeriode']['repEndDate'] = $rep_end_date;
+
+        /*echo '<tr><td class="E"><b>'.get_vocab('date').get_vocab('deux_points').'</b> '.$start_date.'</td></tr>'."\n";
         echo '<tr><td class="E"><b>'.get_vocab('duration').'</b> '.$duration.' '.$dur_units.'</td></tr>'."\n";
-        echo '<tr><td class="E"><b>'.get_vocab('rep_end_date').'</b> '.$rep_end_date.'</td></tr>'."\n";
+        echo '<tr><td class="E"><b>'.get_vocab('rep_end_date').'</b> '.$rep_end_date.'</td></tr>'."\n";*/
     }
 }
-    echo '</table>',PHP_EOL;
-    echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;
-    ?>
-    <?php
+/*    echo '</table>',PHP_EOL;
+    echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;*/
+
         /**
         * Ici l'espace dédié aux plugins de edit_entry
         */
@@ -1182,32 +1202,55 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
         * je dispatch l'event
         */
         $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
-     ?>
-	<div id="fixe">
+
+        $tplArrayEditEntry['vocab']['cancel'] = get_vocab('cancel');
+        $tplArrayEditEntry['vocab']['save'] = get_vocab('save');
+        $tplArrayEditEntry['vocab']['cancel'] = get_vocab('cancel');
+
+
+        $tplArrayEditEntry['cancelPageLink'] = $page.'.php?year='.$year.'&month='.$month.'&day='.$day.'&area='.$area.'&room='.$room;
+        $tplArrayEditEntry['repId'] = $rep_id;
+        $tplArrayEditEntry['page'] = $page;
+        $tplArrayEditEntry['roomId'] = $room_id;
+
+
+
+	/*<div id="fixe">
 		<input type="button" class="btn btn-primary" value="<?php echo get_vocab('cancel')?>" onclick="window.location.href='<?php echo $page.'.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$area.'&amp;room='.$room; ?>'" />
 		<input type="button" class="btn btn-primary" value="<?php echo get_vocab('save')?>" onclick="Save_entry();validate_and_submit();" />
 		<input type="hidden" name="rep_id"    value="<?php echo $rep_id?>" />
 		<input type="hidden" name="edit_type" value="<?php echo $edit_type?>" />
 		<input type="hidden" name="page" value="<?php echo $page?>" />
-		<input type="hidden" name="room_back" value="<?php echo $room_id?>" />
-		<?php
+		<input type="hidden" name="room_back" value="<?php echo $room_id?>" />*/
+
         if ($flag_qui_peut_reserver_pour == 'no') {
-            echo '<input type="hidden" name="beneficiaire" value="'.$beneficiaire.'" />'.PHP_EOL;
+            $tplArrayEditEntry['inputHiddenBeneficiaire'] = true;
+            //echo '<input type="hidden" name="beneficiaire" value="'.$beneficiaire.'" />'.PHP_EOL;
         }
         if (!isset($statut_entry)) {
             $statut_entry = '-';
         }
-        echo '<input type="hidden" name="statut_entry" value="'.$statut_entry.'" />'.PHP_EOL;
-        echo '<input type="hidden" name="create_by" value="'.$create_by.'" />'.PHP_EOL;
+
+        $tplArrayEditEntry['statusEntry'] = $statut_entry;
+        $tplArrayEditEntry['createBy'] = $create_by;
+
+        /*echo '<input type="hidden" name="statut_entry" value="'.$statut_entry.'" />'.PHP_EOL;
+        echo '<input type="hidden" name="create_by" value="'.$create_by.'" />'.PHP_EOL;*/
         if ($id != 0) {
             if (isset($_GET['copier'])) {
                 $id = null;
+                $tplArrayEditEntry['idForHidden'] = false;
             } else {
-                echo '<input type="hidden" name="id" value="'.$id.'" />'.PHP_EOL;
+                $tplArrayEditEntry['idForHidden'] = $id;
+                //echo '<input type="hidden" name="id" value="'.$id.'" />'.PHP_EOL;
             }
+        } else {
+            $tplArrayEditEntry['idForHidden'] = false;
         }
-            echo '<input type="hidden" name="type_affichage_reser" value="'.$type_affichage_reser.'" />'.PHP_EOL;
-            ?>
+        /* todo vérif si nécessaire */
+        $tplArrayEditEntry['typeAffichageReser'] = $type_affichage_reser;
+            //echo '<input type="hidden" name="type_affichage_reser" value="'.$type_affichage_reser.'" />'.PHP_EOL;
+        /*
 		</div>
 	</form>
 	<script type="text/javascript">
@@ -1227,21 +1270,30 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
 	</script>
 	<script type="text/javascript" >
 		document.getElementById('main').name.focus();
-		<?php
+		*/
         if (isset($cookie) && $cookie) {
-            echo 'check_4();';
+            $tplArrayEditEntry['cookie'] = true;
+            //echo 'check_4();';
+        } else {
+            $tplArrayEditEntry['cookie'] = false;
         }
         if (($id != '') && (!isset($flag_periodicite))) {
-            echo "clicMenu('1'); check_5();\n";
+            $tplArrayEditEntry['idNotVideEtPeriodicite'] = true;
+            //echo "clicMenu('1'); check_5();\n";
+        } else {
+            $tplArrayEditEntry['idNotVideEtPeriodicite'] = false;
         }
         if (isset($Err) && $Err == 'yes') {
-            echo "timeoutID = window.setTimeout(\"Load_entry();check_5();\",500);\n";
+            $tplArrayEditEntry['err'] = true;
+            //echo "timeoutID = window.setTimeout(\"Load_entry();check_5();\",500);\n";
+        } else {
+            $tplArrayEditEntry['err'] = false;
         }
-        ?>
-	</script>
-	<?php
-	echo $twig->render('editEntry.html.twig', $tplArrayEditEntry);
-	    include 'include/trailer.inc.php';
-    include 'footer.php';
 
-    ?>
+/*	</script>*/
+
+	echo $twig->render('editEntry.html.twig', $tplArrayEditEntry);
+	   // include 'include/trailer.inc.php';
+    //include 'footer.php';
+
+
