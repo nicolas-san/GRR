@@ -10,15 +10,28 @@ use Symfony\Component\EventDispatcher\Event;
 
 class EditEntryForm extends Event
 {
-    private $test;
+    private $tpl;
 
-    public function __construct()
+    public function __construct(array $tpl)
     {
-        $this->test = "test";
+        $this->tpl = $tpl;
     }
 
-    public function getTest()
+    /**
+     * @return array
+     */
+    public function getTpl()
     {
-        return $this->test;
+        return $this->tpl;
     }
+
+    /**
+     * @param array $tpl
+     */
+    public function setTpl($tpl)
+    {
+        $this->tpl = $tpl;
+    }
+
+
 }

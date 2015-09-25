@@ -679,7 +679,23 @@
                     </table>
                 </td>
             </tr>
-    </table>
+         <tr>
+             <td>
+                {# début area plugin #}
+                {% if plugins != false %}
+                    {# je fais un for, car il peut y avoir plusieurs plugin, chaque plugin doit avoir son FQPN - full qualified plugin - name comme key du tableau  #}
+                    {% for key, plugin in plugins %}
+                        {# si j'ai un tpl je fais un include #}
+                        {% if plugin.tpl is defined and plugin.nom is defined and plugin.vars is defined %}
+                            <!-- Plugin {{ key }} -->
+                            {{ include( plugin.nom ~'/views/'~ plugin.tpl ~'.html.twig', plugin.vars) }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {# fin area plugin #}
+             </td>
+         </tr>
+     </table>
     <div id="fixe">
         <input type="button" class="btn btn-primary" value="{{ vocab.cancel }}" onclick="window.location.href='{{ cancelPageLink }}'" />
         <input type="button" class="btn btn-primary" value="{{ vocab.save }}" onclick="Save_entry();validate_and_submit();" />

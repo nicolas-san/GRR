@@ -38,7 +38,7 @@ $autoloader->register();
  * Twig init
  */
 global $twig;
-$loader = new Twig_Loader_Filesystem($racine.'src/Grr/Resources/Templates/'.$template.'/views/');
+$loader = new Twig_Loader_Filesystem([ $racine.'src/Grr/Resources/Templates/'.$template.'/views/', $racine.'src/Plugins/' ]);
 /*
  * debug true, and profiler, only for dev env, todo : manage env dev or prod
  */

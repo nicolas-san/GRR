@@ -13,3 +13,4 @@ if (@file_exists('../include/connect.inc.php')) {
     $racine = './';
 }
 include_once $racine."src/Plugins/Acme/acme.php";
+include_once $racine."src/Plugins/Restauration/restauration.php";

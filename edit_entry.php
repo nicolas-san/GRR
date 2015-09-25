@@ -34,9 +34,6 @@ include 'include/admin.inc.php';
 use Grr\Event\EditEntryForm;
 use Grr\Event\EditEntryEvent;
 
-// crée le EntryFormEvent et le répartit
-$event = new EditEntryForm();
-
 $grr_script_name = 'edit_entry.php';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -416,6 +413,8 @@ $tplArrayEditEntry['moderate'] = $moderate;
 /**
 * Avant le formulaire
  */
+// crée le EntryFormEvent et le répartit
+$event = new EditEntryForm($tplArrayEditEntry);
 $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
 /*echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;*/
@@ -1201,14 +1200,6 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
 /*    echo '</table>',PHP_EOL;
     echo '</td>',PHP_EOL,'</tr>',PHP_EOL,'</table>',PHP_EOL;*/
 
-        /**
-        * Ici l'espace dédié aux plugins de edit_entry
-        */
-        /**
-        * je dispatch l'event
-        */
-        $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
-
         $tplArrayEditEntry['vocab']['cancel'] = get_vocab('cancel');
         $tplArrayEditEntry['vocab']['save'] = get_vocab('save');
         $tplArrayEditEntry['vocab']['cancel'] = get_vocab('cancel');
@@ -1296,8 +1287,21 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
             $tplArrayEditEntry['err'] = false;
         }
 
-/*	</script>*/
-
+    /*	</script>*/
+    /**
+     * Ici l'espace dédié aux plugins de edit_entry
+     */
+    /**
+     * je dispatch l'event
+     */
+    /* si ça reste à false, c'est qu'il n'y a pas de plugin */
+    $tplArrayEditEntry['plugins'] = false;
+    // crée le EntryFormEvent et le répartit
+    $event = new EditEntryForm($tplArrayEditEntry);
+    $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
+    /* mise à jour du tableau du template avec le retour des events */
+    $tplArrayEditEntry = $event->getTpl();
+    //var_dump($tplArrayEditEntry['plugins']);
 	echo $twig->render('editEntry.html.twig', $tplArrayEditEntry);
 	   // include 'include/trailer.inc.php';
     //include 'footer.php';
