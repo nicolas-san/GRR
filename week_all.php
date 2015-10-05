@@ -36,6 +36,7 @@ include "include/$dbsys.inc.php";
 include 'include/mincals.inc.php';
 include 'include/mrbs_sql.inc.php'; include 'include/init.php';
 $grr_script_name = 'week_all.php';
+$tplArray = [];
 // Settings
 require_once './include/settings.class.php';
 //Chargement des valeurs de la table settingS
@@ -50,8 +51,10 @@ include 'include/language.inc.php';
 $affiche_pview = '1';
 if (!isset($_GET['pview'])) {
     $_GET['pview'] = 0;
+    $tplArray['pview'] = false;
 } else {
     $_GET['pview'] = 1;
+    $tplArray['pview'] = true;
 }
 if ($_GET['pview'] == 1) {
     $class_image = 'print_image';
@@ -64,15 +67,19 @@ if (empty($debug_flag)) {
 include 'include/setdate.php';
 if ((Settings::get('authentification_obli') == 0) && (getUserName() == '')) {
     $type_session = 'no_session';
+    $tplArray['typeSession'] = 'no_session';
 } else {
     $type_session = 'with_session';
+    $tplArray['typeSession'] = 'with_session';
 }
 $back = '';
 if (isset($_SERVER['HTTP_REFERER'])) {
     $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
 }
 Definition_ressource_domaine_site();
-print_header($day, $month, $year, $type_session);
+
+print_header($day, $month, $year, $type_session, false);
+
 if (check_begin_end_bookings($day, $month, $year)) {
     showNoBookings($day, $month, $year, $back);
     exit();
@@ -269,20 +276,38 @@ if (!$res) {
 if (grr_sql_count($res) == 0) {
     echo '<h1>',get_vocab('no_rooms_for_area'),'</h1>';
     grr_sql_free($res);
-} else {    //DEBUT HTML
-    echo '<div class="row">'.PHP_EOL;
+} else {
+    //DEBUT HTML
+//    echo '<div class="row">'.PHP_EOL;
+
+    /* menu_gauche fait un echo render du template menuGauche */
     include 'menu_gauche.php';
-    if ($_GET['pview'] != 1) {
+    /**
+     * todo voir pour transformer ces includes en fonction ? Vérifier portée des var par rapport à l'include
+     * menu gauche crée la var tplArrayMenuGauche
+     */
+    $tplArray['tplArrayMenuGauche'] = $tplArrayMenuGauche;
+
+   /* if ($_GET['pview'] != 1) {
         echo '<div class="col-lg-9 col-md-12 col-xs-12">'.PHP_EOL;
         echo '<div id="planning">'.PHP_EOL;
     } else {
         echo '<div id="print_planning">'.PHP_EOL;
-    }
-    echo '<div class="row">'.PHP_EOL;
-    include 'chargement.php';
-    echo '<div class="titre_planning">'.PHP_EOL;
-    echo '<table class="table-header">'.PHP_EOL;
+    }*/
+   // echo '<div class="row">'.PHP_EOL;
+    //include 'chargement.php';
+   /* echo '<div class="titre_planning">'.PHP_EOL;
+    echo '<table class="table-header">'.PHP_EOL;*/
     if ((!isset($_GET['pview'])) || ($_GET['pview'] != 1)) {
+        $tplArray['vocab']['daybefore'] = get_vocab('daybefore');
+        $tplArray['vocab']['dayafter'] = get_vocab('dayafter');
+        $tplArray['linkBefore'] = 'day.php?year='.$yy.'&month='.$ym.'&day='.$yd.'&area='.$area;
+        $tplArray['linkAfter'] = 'day.php?year='.$ty.'&month='.$tm.'&day='.$td.'&area='.$area;
+
+    }
+    $tplArray['vocab']['all_rooms'] = get_vocab('all_rooms');
+    $tplArray['thisAreaName'] = $this_area_name;
+   /* if ((!isset($_GET['pview'])) || ($_GET['pview'] != 1)) {
         echo '<tr>'.PHP_EOL;
         echo '<td class="left">'.PHP_EOL;
         echo '<button class="btn btn-default btn-xs" onclick="charger();javascript: location.href=\'week_all.php?year='.$yy.'&amp;month='.$ym.'&amp;day='.$yd.'&amp;area='.$area.'\';"><span class="glyphicon glyphicon-backward"></span> '.get_vocab('weekbefore').' </button>'.PHP_EOL;
@@ -295,8 +320,11 @@ if (grr_sql_count($res) == 0) {
         echo '</td>'.PHP_EOL;
         echo '</tr>'.PHP_EOL;
         echo '</table>'.PHP_EOL;
-    }
-    echo '<h4 class="titre">'.$this_area_name.' - '.get_vocab('all_rooms').'<br> Du '.utf8_strftime($dformat, $date_start).' au '.utf8_strftime($dformat, $date_end).'</h4>'.PHP_EOL;
+    }*/
+    $tplArray['dateStart'] = utf8_strftime($dformat, $date_start);
+    $tplArray['dateEnd'] = utf8_strftime($dformat, $date_end);
+
+/*    echo '<h4 class="titre">'.$this_area_name.' - '.get_vocab('all_rooms').'<br> Du '.utf8_strftime($dformat, $date_start).' au '.utf8_strftime($dformat, $date_end).'</h4>'.PHP_EOL;
     echo '</div>'.PHP_EOL;
     echo '</div>'.PHP_EOL;
     echo '<div class="row">'.PHP_EOL;
@@ -304,18 +332,37 @@ if (grr_sql_count($res) == 0) {
     echo '<table class="table-bordered table-striped">'.PHP_EOL;
     echo '<thead>'.PHP_EOL;
     echo '<tr>'.PHP_EOL;
-    echo '<th class="jour_sem"> </th>'.PHP_EOL;
+    echo '<th class="jour_sem"> </th>'.PHP_EOL;*/
     $t = $time;
     $num_week_day = $weekstarts;
     $ferie = getHolidays($year);
-    for ($weekcol = 0; $weekcol < 7; ++$weekcol) {
+    $tplArray['vocab']['rep_type_6'] = get_vocab('rep_type_6');
+    /* boucle qui gère les colonnes de jours */
+    for ($weekcol = 0; $weekcol < 7; $weekcol++) {
+
+        $tplArray[$weekcol]['ferie'] = false;
+        $tplArray[$weekcol]['sh'] = false;
+
         $num_day = strftime('%d', $t);
+        $tplArray[$weekcol]['numDay'] = strftime('%d', $t);
+
         $temp_month = utf8_encode(strftime('%m', $t));
+        $tplArray[$weekcol]['tempMonth'] = utf8_encode(strftime('%m', $t));
+
         $temp_month2 = utf8_strftime('%b', $t);
+        $tplArray[$weekcol]['tempMonth2'] = utf8_strftime('%b', $t);
+
         $temp_year = strftime('%Y', $t);
+        $tplArray[$weekcol]['tempYear'] = strftime('%Y', $t);
+
         $tt = mktime(0, 0, 0, $temp_month, $num_day, $temp_year);
+        $tplArray[$weekcol]['tt'] = mktime(0, 0, 0, $temp_month, $num_day, $temp_year);
+
         $jour_cycle = grr_sql_query1('SELECT Jours FROM '.TABLE_PREFIX."_calendrier_jours_cycle WHERE day='$t'");
+        $tplArray[$weekcol]['jourCycle'] =
+
         $t += 86400;
+
         if (!isset($correct_heure_ete_hiver) || ($correct_heure_ete_hiver == 1)) {
             if (heure_ete_hiver('hiver', $temp_year, 0) == mktime(0, 0, 0, $temp_month, $num_day, $temp_year)) {
                 $t += 3600;
@@ -324,6 +371,8 @@ if (grr_sql_count($res) == 0) {
                 $t -= 3600;
             }
         }
+        $tplArray[$weekcol]['t'] = $t;
+
         if ($display_day[$num_week_day] == 1) {
             $class = '';
             $title = '';
@@ -332,6 +381,7 @@ if (grr_sql_count($res) == 0) {
                 foreach ($ferie as $key => $value) {
                     if ($tt == $value) {
                         $ferie_true = 1;
+                        $tplArray[$weekcol]['ferie'] = true;
                         break;
                     }
                 }
@@ -339,59 +389,109 @@ if (grr_sql_count($res) == 0) {
                 if ($sh[0] == true) {
                     $class .= 'vacance ';
                     $title = ' '.$sh[1];
+                    $tplArray[$weekcol]['sh'] = true;
+
                 }
                 if ($ferie_true) {
                     $class .= 'ferie ';
                 }
             }
-            echo '<th class="jour_sem">'.PHP_EOL;
-            echo '<a class="lienPlanning '.$class.'" href="day.php?year='.$temp_year.'&amp;month='.$temp_month.'&amp;day='.$num_day.'&amp;area='.$area.'" title="'.$title.'">'.day_name(($weekcol + $weekstarts) % 7).' '.$num_day.' '.$temp_month2.'</a>'.PHP_EOL;
-            if (Settings::get('jours_cycles_actif') == 'Oui' && intval($jour_cycle) > -1) {
+            //echo '<th class="jour_sem">'.PHP_EOL;
+
+            //echo '<a class="lienPlanning '.$class.'" href="day.php?year='.$temp_year.'&amp;month='.$temp_month.'&amp;day='.$num_day.'&amp;area='.$area.'" title="'.$title.'">'.day_name(($weekcol + $weekstarts) % 7).' '.$num_day.' '.$temp_month2.'</a>'.PHP_EOL;
+            $tplArray[$weekcol]['lienPlaning'] = "day.php?year=".$temp_year."&month=".$temp_month."&day=".$num_day."&area=".$area;
+            $tplArray[$weekcol]['lienPlaningText'] = day_name(($weekcol + $weekstarts) % 7).' '.$num_day.' '.$temp_month2;
+            $tplArray[$weekcol]['lienPlaningTitle'] = $title;
+
+            /*if (Settings::get('jours_cycles_actif') == 'Oui' && intval($jour_cycle) > -1) {
                 if (intval($jour_cycle) > 0) {
                     echo '<br />'.get_vocab('rep_type_6').' '.$jour_cycle;
                 } else {
                     echo '<br />'.$jour_cycle;
                 }
+            }*/
+            if ($settings->get('jours_cycles_actif') == 'Oui' && intval($jour_cycle) > -1) {
+                $tplArray[$weekcol]['jourCycleInt'] = intval($jour_cycle);
+                $tplArray[$weekcol]['jourCycle'] = $jour_cycle;
+
+            } else {
+                $tplArray[$weekcol]['jourCycleInt'] = false;
             }
-            echo '</th>'.PHP_EOL;
+            //echo '</th>'.PHP_EOL;
         }
-        ++$num_week_day;
+        $num_week_day++;
         $num_week_day = $num_week_day % 7;
     }
-    echo '</tr>'.PHP_EOL;
-    echo '</thead>'.PHP_EOL;
+/*    echo '</tr>'.PHP_EOL;
+    echo '</thead>'.PHP_EOL;*/
+    $tplArray['vocab']['number_max2'] = get_vocab('number_max2');
+    $tplArray['vocab']['number_max'] = get_vocab('number_max');
+    $tplArray['vocab']['week'] = get_vocab('week');
+    $tplArray['vocab']['month'] = get_vocab('month');
+    $tplArray['vocab']['fiche_ressource'] = get_vocab('fiche_ressource');
+    $tplArray['vocab']['ressource_temporairement_indisponible'] = get_vocab('ressource_temporairement_indisponible');
+    $tplArray['vocab']['reservations_moderees'] = get_vocab('reservations_moderees');
+    $tplArray['vocab']['see_week_for_this_room'] = htmlspecialchars(get_vocab('see_week_for_this_room'));
+
     $li = 0;
+    $roomVisibleForUser = 0;
+
     for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
         $verif_acces_ressource = verif_acces_ressource(getUserName(), $row['2']);
+
         if ($verif_acces_ressource) {
+
             $acces_fiche_reservation = verif_acces_fiche_reservation(getUserName(), $row['2']);
             $UserRoomMaxBooking = UserRoomMaxBooking(getUserName(), $row['2'], 1);
             $authGetUserLevel = authGetUserLevel(getUserName(), -1);
             $auth_visiteur = auth_visiteur(getUserName(), $row['2']);
-            echo '<tr>'.PHP_EOL;
+
+            //echo '<tr>'.PHP_EOL;
             if ($ir % 2 == 1) {
                 echo tdcell('cell_hours');
             } else {
                 echo tdcell('cell_hours2');
             }
-            echo '<a title="'.htmlspecialchars(get_vocab('see_week_for_this_room')).'" href="week.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$area.'&amp;room='.$row['2'].'">'.htmlspecialchars($row[0]).'</a><br />'.PHP_EOL;
-            if ($row['4'] == '0') {
+            //echo '<a title="'.htmlspecialchars(get_vocab('see_week_for_this_room')).'" href="week.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$area.'&amp;room='.$row['2'].'">'.htmlspecialchars($row[0]).'</a><br />'.PHP_EOL;
+            $tplArray['rooms'][$roomVisibleForUser]['linkForWeek'] = "week.php?year=".$year."&month=".$month."&day=".$day."&area=".$area."&room=".$row['2'];
+
+            /* informations depuis la bdd */
+            $tplArray['rooms'][$roomVisibleForUser]['name'] = htmlspecialchars($row['0']);
+            $tplArray['rooms'][$roomVisibleForUser]['capacity'] = $row['1'];
+            $tplArray['rooms'][$roomVisibleForUser]['id'] = $row['2'];
+            $tplArray['rooms'][$roomVisibleForUser]['description'] = htmlspecialchars($row['3']);
+            $tplArray['rooms'][$roomVisibleForUser]['status'] = $row['4'];
+            /*$tplArray['rooms'][$roomVisibleForUser]['showFic'] = $row['5'];
+            $tplArray['rooms'][$roomVisibleForUser]['delaisOptionReservation'] = $row['6'];
+            $tplArray['rooms'][$roomVisibleForUser]['moderate'] = $row['7'];*/
+            /* informations supplémentaires */
+            $tplArray['rooms'][$roomVisibleForUser]['accessFicheReservation'] = verif_acces_fiche_reservation(getUserName(), $tplArray['rooms'][$roomVisibleForUser]['id']);
+
+            /*if ($row['4'] == '0') {
                 echo '<span class="texte_ress_tempo_indispo">'.get_vocab('ressource_temporairement_indisponible').'</span><br />'.PHP_EOL;
-            }
+            }*/
+
             if (verif_display_fiche_ressource(getUserName(), $row['2']) && $_GET['pview'] != 1) {
-                echo '<a href="javascript:centrerpopup(\'view_room.php?id_room='.$row['2'].'\',600,480,\'scrollbars=yes,statusbar=no,resizable=yes\')" title="'.get_vocab('fiche_ressource').'">'.PHP_EOL;
-                echo '<span class="glyphcolor glyphicon glyphicon-search"></span></a>'.PHP_EOL;
+                /*echo '<a href="javascript:centrerpopup(\'view_room.php?id_room='.$row['2'].'\',600,480,\'scrollbars=yes,statusbar=no,resizable=yes\')" title="'.get_vocab('fiche_ressource').'">'.PHP_EOL;
+                echo '<span class="glyphcolor glyphicon glyphicon-search"></span></a>'.PHP_EOL;*/
+                $tplArray['rooms'][$roomVisibleForUser]['displayFicheRessourceOk'] = true;
+            } else {
+                $tplArray['rooms'][$roomVisibleForUser]['displayFicheRessourceOk'] = false;
             }
             if (authGetUserLevel(getUserName(), $row['2']) > 2 && $_GET['pview'] != 1) {
-                echo '<a href="./admin/admin_edit_room.php?room='.$row['2'].'"><span class="glyphcolor glyphicon glyphicon-cog"></span></a>'.PHP_EOL;
+                //echo '<a href="./admin/admin_edit_room.php?room='.$row['2'].'"><span class="glyphcolor glyphicon glyphicon-cog"></span></a>'.PHP_EOL;
+                $tplArray['rooms'][$roomVisibleForUser]['userLevel'] = authGetUserLevel(getUserName(), $row['2']);
             }
-            affiche_ressource_empruntee($row['2']);
-            echo '</td>'.PHP_EOL;
-            ++$li;
+            $tplArray['rooms'][$roomVisibleForUser]['afficheRessourceEmprunte'] = affiche_ressource_empruntee($row['2']);
+
+            //affiche_ressource_empruntee($row['2']);
+            //echo '</td>'.PHP_EOL;
+            $li++;
             $t = $time;
             $t2 = $time;
             $num_week_day = $weekstarts;
-            for ($k = 0; $k <= 6; ++$k) {
+
+            for ($k = 0; $k <= 6; $k++) {
                 $cday = date('j', $t2);
                 $cmonth = strftime('%m', $t2);
                 $cyear = strftime('%Y', $t2);
@@ -411,7 +511,7 @@ if (grr_sql_count($res) == 0) {
                     $no_td = true;
                     if ((isset($d[$cday]['id'][0])) && !(est_hors_reservation(mktime(0, 0, 0, $cmonth, $cday, $cyear), $area))) {
                         $n = count($d[$cday]['id']);
-                        for ($i = 0; $i < $n; ++$i) {
+                        for ($i = 0; $i < $n; $i++) {
                             if ($d[$cday]['id_room'][$i] == $row['2']) {
                                 if ($no_td) {
                                     echo '<td class="cell_month">'.PHP_EOL;
@@ -422,6 +522,8 @@ if (grr_sql_count($res) == 0) {
                                         $currentPage = 'week_all';
                                         $id = $d[$cday]['id'][$i];
                                         echo '<a title="'.htmlspecialchars($d[$cday]['who'][$i]).'" data-width="675" onclick="request('.$id.','.$cday.','.$cmonth.','.$cyear.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight" style = "border-bottom:1px solid #FFF">'.PHP_EOL;
+
+                                        $tplArray['rooms'][$roomVisibleForUser][$k][$i]['ficheResaOnclick'] = "request(".$id.",".$cday.",".$cmonth.",".$cyear.",'".$currentPage."',readData);";
                                     } else {
                                         echo '<a class="lienCellule" title="'.htmlspecialchars($d[$cday]['who'][$i]).'" href="view_entry.php?id='.$d[$cday]['id'][$i].'&amp;page=week_all&amp;day='.$cday.'&amp;month='.$cmonth.'&amp;year='.$cyear.'&amp;">'.PHP_EOL;
                                     }
@@ -546,7 +648,10 @@ if (grr_sql_count($res) == 0) {
 			
 			<?php
             echo '</tr>'.PHP_EOL;
+
+            $roomVisibleForUser++;
         }
+
     }
 }
 echo '</table>'.PHP_EOL;
@@ -565,6 +670,6 @@ echo '</div>'.PHP_EOL;
 echo '</div>'.PHP_EOL;
 
 echo '<div id="popup_name" class="popup_block col-xs-12" ></div>'.PHP_EOL;
-
-include 'footer.php';
+echo $twig->render('day.html.twig', $tplArray);
+//include 'footer.php';
 ?>
