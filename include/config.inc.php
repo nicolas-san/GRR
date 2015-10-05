@@ -212,6 +212,6 @@ $grrSettings = array();
 
 /* GESTION DES TEMPLATES */
 global $template;
-//$template = "Modern";
+$template = "Modern";
 
 $template = "Default";

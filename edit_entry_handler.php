@@ -47,9 +47,9 @@ if (!grr_resumeSession())
 	header("Location: ./logout.php?auto=1&url=$url");
 	die();
 }
-echo "<pre>";
+/*echo "<pre>";
 var_dump($_GET);
-echo "</pre>";
+echo "</pre>";*/
 // Paramètres langage
 include "include/language.inc.php";
 $erreur = 'n';
@@ -359,11 +359,11 @@ else
 			$endtime += $resolution - $tmp;
 	}
 }
-echo "<pre>";
+/*echo "<pre>";
 var_dump($starttime);
 echo "<br>";
 var_dump($endtime);
-echo "</pre>";
+echo "</pre>";*/
 
 if ($endtime <= $starttime)
 	$erreur = 'y';

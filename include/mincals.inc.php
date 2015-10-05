@@ -304,6 +304,8 @@ function minicals($year, $month, $day, $area, $room, $dmy)
             //$weekd = $week;
             //$s .= '<div class="btn-group">';
 
+            $tplArray = $this->getFirstDays();
+
             //$s .= $this->createlink(0, -1, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'previous_year', 'backward');
             $tplArray['previousYear'] = $this->createlink(0, -1, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'previous_year', 'backward');
 
@@ -335,7 +337,7 @@ function minicals($year, $month, $day, $area, $room, $dmy)
             /*echo "avant dayOfMonth<br>";
             var_dump($tplArray);*/
 
-            $tplArray = $this->getFirstDays();
+
             //$s .= "</tr>\n";
             $d = 1 - $first;
             $temp = 1;

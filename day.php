@@ -382,7 +382,9 @@ if (grr_sql_count($res) == 0) {
             $tplArray['creneauxHoraire'][$indexArray]['periodeNameOrHeure'] = affiche_heure_creneau($t, $resolution);
             //echo affiche_heure_creneau($t, $resolution).'</td>'.PHP_EOL;
         }
+        /* pour chaque creneau horaire je vérifie si les room ont des résa */
         while (list($key, $room) = each($rooms)) {
+            //var_dump($room);
             if (verif_acces_ressource(getUserName(), $room)) {
                 if (isset($today[$room][$t]['id'])) {
                     $id = $today[$room][$t]['id'];
