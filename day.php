@@ -298,7 +298,7 @@ if (grr_sql_count($res) == 0) {
 
     for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
         $id_room[$i] = $row['2'];
-        ++$nbcol;
+        $nbcol++;
         /**
          * une row = une room
          * row[0] = room_name
@@ -359,7 +359,7 @@ if (grr_sql_count($res) == 0) {
     }
 
     $tab_ligne = 3;
-    $indexArray = 0;
+    /*$indexArray = 0;*/
     /* todo refacto le for, pour éviter de faire $t = $am7 à tous les tour de boucle */
 
     /* get_vocab en dehors de la boucle */
@@ -377,12 +377,15 @@ if (grr_sql_count($res) == 0) {
             $time_t = date('i', $t);
             $time_t_stripped = preg_replace('/^0/', '', $time_t);
             //echo $periods_name[$time_t_stripped].'</td>'.PHP_EOL;
-            $tplArray['creneauxHoraire'][$indexArray]['periodeNameOrHeure'] = $periods_name[$time_t_stripped];
+            $tplArray['creneauxHoraire'][$t]['periodeNameOrHeure'] = $periods_name[$time_t_stripped];
         } else {
-            $tplArray['creneauxHoraire'][$indexArray]['periodeNameOrHeure'] = affiche_heure_creneau($t, $resolution);
+            $tplArray['creneauxHoraire'][$t]['periodeNameOrHeure'] = affiche_heure_creneau($t, $resolution);
             //echo affiche_heure_creneau($t, $resolution).'</td>'.PHP_EOL;
         }
         /* pour chaque creneau horaire je vérifie si les room ont des résa */
+        /*echo "<pre>";
+        var_dump($rooms);
+        echo "</pre>";*/
         while (list($key, $room) = each($rooms)) {
             //var_dump($room);
             if (verif_acces_ressource(getUserName(), $room)) {
@@ -394,16 +397,16 @@ if (grr_sql_count($res) == 0) {
                     unset($id);
                 }
                 if ((isset($id)) && (!est_hors_reservation(mktime(0, 0, 0, $month, $day, $year), $area))) {
-                    $tplArray['creneauxHoraire'][$indexArray]['color'] = getColor($color);
-                    $tplArray['creneauxHoraire'][$indexArray]['class'] = false;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['color'] = getColor($color);
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['class'] = false;
                     $c = $color;
                 } elseif ($statut_room[$room] == '0') {
-                    $tplArray['creneauxHoraire'][$indexArray]['color'] = false;
-                    $tplArray['creneauxHoraire'][$indexArray]['class'] = 'avertissement';
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['color'] = false;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['class'] = 'avertissement';
                     $c = 'avertissement';
                 } else {
-                    $tplArray['creneauxHoraire'][$indexArray]['color'] = false;
-                    $tplArray['creneauxHoraire'][$indexArray]['class'] = 'empty_cell';
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['color'] = false;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['class'] = 'empty_cell';
                     $c = 'empty_cell';
                 }
                 if ((isset($id)) && (!est_hors_reservation(mktime(0, 0, 0, $month, $day, $year), $area))) {
@@ -418,7 +421,7 @@ if (grr_sql_count($res) == 0) {
                                     if ( $step < 1 ) {
                                         $step = 1;
                                     }
-                                    $tplArray['creneauxHoraire'][$indexArray]['notHorsReservationStep'] =  $step;
+                                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['notHorsReservationStep'] =  $step;
                                 }
                             }
                         }
@@ -426,7 +429,7 @@ if (grr_sql_count($res) == 0) {
                     }
                     $compteur[$id] = 1;
                 } else {
-                    $tplArray['creneauxHoraire'][$indexArray]['notHorsReservationStep'] = false;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['notHorsReservationStep'] = false;
                     //tdcell($c);
                 }
                 /* utilisation d'une var pour éviter deux appels à est_hors_reservation et éconnomiser 2 reqêtes sql */
@@ -437,11 +440,11 @@ if (grr_sql_count($res) == 0) {
                     $minute = date('i', $t);
                     $date_booking = mktime($hour, $minute, 0, $month, $day, $year);
                     if ( $estHorsResa ) {
-                        $tplArray['creneauxHoraire'][$indexArray]['EstHorsReservation'] = true;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['EstHorsReservation'] = true;
                         //$tplArray['vocab']['reservation_impossible'] = get_vocab('reservation_impossible');
                         //echo '<img src="img_grr/stop.png" alt="'.get_vocab('reservation_impossible').'"  title="'.get_vocab('reservation_impossible').'" width="16" height="16" class="'.$class_image.'" />'.PHP_EOL;
                     } else {
-                        $tplArray['creneauxHoraire'][$indexArray]['EstHorsReservation'] = false;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['EstHorsReservation'] = false;
                         if (((authGetUserLevel(getUserName(), -1) > 1) || (auth_visiteur(getUserName(), $room) == 1))
                             && (UserRoomMaxBooking(getUserName(), $room, 1) != 0) && verif_booking_date(getUserName(), -1, $room, $date_booking, $date_now, $enable_periods)
                             && verif_delais_max_resa_room(getUserName(), $room, $date_booking)
@@ -449,66 +452,66 @@ if (grr_sql_count($res) == 0) {
                             && (($statut_room[$room] == '1') || (($statut_room[$room] == '0')
                             && (authGetUserLevel(getUserName(), $room) > 2))) && $_GET['pview'] != 1) {
 
-                            $tplArray['creneauxHoraire'][$indexArray]['EstReservable'] = true;
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['EstReservable'] = true;
 
                             if ($enable_periods == 'y') {
-                                $tplArray['creneauxHoraire'][$indexArray]['period'] = true;
-                                $tplArray['creneauxHoraire'][$indexArray]['linkToResa'] = 'edit_entry.php?room='.$room.'&period='.$time_t_stripped.'&year='.$year.'&month='.$month.'&day='.$day.'&page=day';
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['period'] = true;
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['linkToResa'] = 'edit_entry.php?room='.$room.'&period='.$time_t_stripped.'&year='.$year.'&month='.$month.'&day='.$day.'&page=day';
                                 //echo '<a href="" title="'.get_vocab('cliquez_pour_effectuer_une_reservation').'" ><span class="glyphicon glyphicon-plus"></span></a>'.PHP_EOL;
                             } else {
-                                $tplArray['creneauxHoraire'][$indexArray]['period'] = true;
-                                $tplArray['creneauxHoraire'][$indexArray]['linkToResa'] = 'edit_entry.php?room='.$room.'&hour='.$hour.'&minute='.$minute.'&year='.$year.'&month='.$month.'&day='.$day.'&page=day';
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['period'] = true;
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['linkToResa'] = 'edit_entry.php?room='.$room.'&hour='.$hour.'&minute='.$minute.'&year='.$year.'&month='.$month.'&day='.$day.'&page=day';
                                 //echo '<a href="edit_entry.php?room='.$room.'&amp;hour='.$hour.'&amp;minute='.$minute.'&amp;year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;page=day" title="'.get_vocab('cliquez_pour_effectuer_une_reservation').'" ><span class="glyphicon glyphicon-plus"></span></a>'.PHP_EOL;
                             }
                         } else {
                             //echo ' ';
-                            $tplArray['creneauxHoraire'][$indexArray]['EstReservable'] = false;
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['EstReservable'] = false;
                         }
                     }
                     //echo '</td>'.PHP_EOL;
-                    $tplArray['creneauxHoraire'][$indexArray]['roomIdSet'] = false;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['roomIdSet'] = false;
                 } elseif ($descr != '') {
-                    $tplArray['creneauxHoraire'][$indexArray]['roomIdSet'] = true;
-                    $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomText'] = $descr;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['roomIdSet'] = true;
+                    $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomText'] = $descr;
 
-                    if ((isset($today[$room][$t]['statut'])) && ($today[$room][$t]['statut'] != '-')) {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomEmpruntee'] = true;
+                    if ((isset($today[$t][$room]['statut'])) && ($today[$t][$room]['statut'] != '-')) {
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomEmpruntee'] = true;
                         //echo '<img src="img_grr/buzy.png" alt="'.get_vocab('ressource actuellement empruntee').'" title="'.get_vocab('ressource actuellement empruntee').'" width="20" height="20" class="image" />'.PHP_EOL;
                     } else {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomEmpruntee'] = false;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomEmpruntee'] = false;
                     }
                     if (($delais_option_reservation[$room] > 0) && (isset($today[$room][$t]['option_reser'])) && ($today[$room][$t]['option_reser'] != -1)) {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomResaPlusTard'] = true;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomResaPlusTard'] = true;
                         /* todo gérer l'ffichage de la date avec twig */
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomResaPlusTardDate'] = time_date_string_jma($today[$room][$t]['option_reser'], $dformat);
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomResaPlusTardDate'] = time_date_string_jma($today[$room][$t]['option_reser'], $dformat);
 
                         //echo '<img src="img_grr/small_flag.png" alt="'.get_vocab('reservation_a_confirmer_au_plus_tard_le').'" title="'.get_vocab('reservation_a_confirmer_au_plus_tard_le').' '.time_date_string_jma($today[$room][$t]['option_reser'], $dformat).'" width="20" height="20" class="image" />'.PHP_EOL;
                     } else {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomResaPlusTard'] = false;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomResaPlusTard'] = false;
                     }
                     if ((isset($today[$room][$t]['moderation'])) && ($today[$room][$t]['moderation'] == '1')) {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomResaModeration'] = true;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomResaModeration'] = true;
                         //echo '<img src="img_grr/flag_moderation.png" alt="'.get_vocab('en_attente_moderation').'" title="'.get_vocab('en_attente_moderation').'" class="image" />'.PHP_EOL;
                     } else {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomResaModeration'] = false;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomResaModeration'] = false;
                     }
                     if (($statut_room[$room] == '1') || (($statut_room[$room] == '0') && (authGetUserLevel(getUserName(), $room) > 2))) {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoom'] = true;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoom'] = true;
                         if ($acces_fiche_reservation) {
-                            $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResa'] = true;
-                            $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaWho'] = htmlspecialchars($today[$room][$t]['who']);
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResa'] = true;
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResaWho'] = htmlspecialchars($today[$room][$t]['who']);
                             if ($settings->get('display_level_view_entry') == 0) {
                                 $currentPage = 'day';
-                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaDisplay'] = 'levelViewEntry';
-                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaLink'] = "request('$id','$day','$month','$year','$currentPage',readData);";
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResaDisplay'] = 'levelViewEntry';
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResaLink'] = "request('$id','$day','$month','$year','$currentPage',readData);";
                                 //echo '<a title="'.htmlspecialchars($today[$room][$t]['who']).'" data-width="675" onclick="request('.$id.','.$day.','.$month.','.$year.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight">'.$descr.PHP_EOL;
                             } else {
-                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaDisplay'] = false;
-                                $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResaLink'] = 'view_entry.php?id='.$id.'&day='.$day.'&month='.$month.'&year='.$year.'&page=day';
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResaDisplay'] = false;
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResaLink'] = 'view_entry.php?id='.$id.'&day='.$day.'&month='.$month.'&year='.$year.'&page=day';
                                // echo '<a class="lienCellule" title="',htmlspecialchars($today[$room][$t]['who']),'" href="view_entry.php?id=',$id,'&amp;day=',$day,'&amp;month=',$month,'&amp;year=',$year,'&amp;page=day\>',$descr;
                             }
                         } else {
-                            $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoomAndFicheResa'] = false;
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResa'] = false;
                             //echo ' '.$descr;
                         }
                         $sql = 'SELECT type_name,start_time,end_time,clef,courrier FROM '.TABLE_PREFIX.'_type_area ,'.TABLE_PREFIX.'_entry  WHERE  '.TABLE_PREFIX.'_entry.id= '.$today[$room][$t]['id'].' AND '.TABLE_PREFIX.'_entry.type= '.TABLE_PREFIX.'_type_area.type_letter';
@@ -519,29 +522,29 @@ if (grr_sql_count($res) == 0) {
                             $end_time = $row['2'];
                             $clef = $row['3'];
                             $courrier = $row['4'];
-                            $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['typeName'] = $row['0'];
-                            $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['clef'] = $row['3'];
-                            $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['courrier'] = $row['4'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['typeName'] = $row['0'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['clef'] = $row['3'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['courrier'] = $row['4'];
 
                             if ($enable_periods != 'y') {
-                                $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['startTime'] = date('H:i',$row['1']);
-                                $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['endTime'] = date('H:i',$row['2']);
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['startTime'] = date('H:i',$row['1']);
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['endTime'] = date('H:i',$row['2']);
                                 //echo '<br/>',date('H:i', $start_time),get_vocab('to'),date('H:i', $end_time),'<br/>';
                             }
                             if (Settings::get('show_courrier') == 'y') {
-                                $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['showCourrier'] = true;
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['showCourrier'] = true;
                             } else {
-                                $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['showCourrier'] = false;
+                                $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['showCourrier'] = false;
                             }
                         }
                         if ($today[$room][$t]['description'] != '') {
-                            $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['todayDesc'] = $today[$room][$t]['description'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['todayDesc'] = $today[$room][$t]['description'];
                             //echo '<br /><i>',$today[$room][$t]['description'],'</i>';
                         } else {
-                            $tplArray['creneauxHoraire'][$indexArray]['entries'][$i]['todayDesc'] = false;
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['todayDesc'] = false;
                         }
                     } else {
-                        $tplArray['creneauxHoraire'][$indexArray]['descRoomAccessRoom'] = false;
+                        $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoom'] = false;
                         //echo ' '.$descr;
                     }
 
@@ -549,7 +552,7 @@ if (grr_sql_count($res) == 0) {
             }
         }
         reset($rooms);
-        $indexArray++;
+        /*$indexArray++;*/
     }
 
 }
