@@ -1907,7 +1907,7 @@ function time_date_string($t, $dformat)
 * @param $t
 * @param $dformat
  * @return string
- * @deprecated Je ne comprends pas à quoi sert cette fonction
+ * @deprecated Je ne comprends pas à quoi sert cette fonction - je remplace pour l'instant par utf8_strftime($dformat, $t)
  */
 function time_date_string_jma($t, $dformat)
 {
