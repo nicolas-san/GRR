@@ -316,7 +316,7 @@ if ($res) {
     }
 }
 $use_select2 = 'y';
-print_header($day, $month, $year, $type = 'with_session');
+print_header($day, $month, $year, 'with_session', false);
 
 /* intégration de twig, premier passage, probablement à refactoriser pour éviter les variables assignées deux fois */
 $tplArrayEditEntry['area'] = $area;
@@ -649,10 +649,12 @@ $tplArrayEditEntry['enablePeriod'] = false;
         //$tplArrayEditEntry['dureeParDefautReservationArea'] = $duration;
         $duree_par_defaut_reservation_area = $duration;
         $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', $start_hour, $start_min, $duree_par_defaut_reservation_area, true);
+        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', $start_hour, $start_min, $duree_par_defaut_reservation_area, true);
     } else {
         //$tplArrayEditEntry['EnvGetId'] = false;
 
         $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', '', '', $duree_par_defaut_reservation_area, true);
+        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', '', '', $duree_par_defaut_reservation_area, true);
     }
     if (!$twentyfourhour_format) {
         $tplArrayEditEntry['24hFormat'] = true;

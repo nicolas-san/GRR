@@ -1,3 +1,8 @@
+{% if close %}
+        </div>
+    </div>
+</div>
+{% endif %}
 <div class="container">
     <div class="row">
         <div class="col-md-12 col-md-offset-2">
@@ -42,9 +47,12 @@
                     </table>
                 </div>
             {% endfor %}
+        {% if close == false %}
         </div>
     </div>
 </div>
+        {% endif %}
+
 <div class="row">
     {% if menuGaucheMonthAll2 %}
     <div id="menuGaucheMonthAll2">

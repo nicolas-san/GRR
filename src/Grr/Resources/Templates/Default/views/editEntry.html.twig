@@ -388,6 +388,7 @@
                                         </select>
                                     {% else %}
                                         <b>{{ vocab.time }}</b>
+                                        {#{{ dump(timePicker) }}#}
                                         {{ include('helpers/timePicker.html.twig', timePicker) }}
                                         {% if format24h %}
                                             <input name="ampm" type="radio" value="am" {% if ampm == 'am' %}checked{% endif %} />{{ amTime }}
@@ -424,9 +425,29 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="CL" >
+                                <td class="CL">
                                     <div class="form-group">
                                         {{ rawSelectDateEnd|raw }}
+                                        <input type="hidden" disabled="disabled" id="mydate_end">
+                                        <script>
+                                            $(function() {
+                                                $.datepicker.setDefaults( $.datepicker.regional['fr'] );
+                                                $('#mydate_end').datepicker({
+                                                    beforeShow: readSelected, onSelect: updateSelected,
+                                                    showOn: 'both', buttonImageOnly: true, buttonImage: 'images/calendar.png',buttonText: "Choisir la date"});
+                                                function readSelected()
+                                                {
+                                                    $('#mydate_end').val( $('#end_day').val() + '\\' + $('#end_month').val() + '\\' + $('#end_year').val() );
+                                                    return {};
+                                                }
+                                                function updateSelected(date)
+                                                {
+                                                    $('#end_day').val(date.substring(0, 2));
+                                                    $('#end_month').val(date.substring(3, 5));
+                                                    $('#end_year').val(date.substring(6, 10));
+                                                }
+                                            });
+                                        </script>
                                         {% if enablePeriod %}
                                             <b>{{ vocab.period }}</b>
                                             <td class="CL">
@@ -437,7 +458,8 @@
                                                 </select>
                                         {% else %}
                                             <b>{{ vocab.time }}</b>
-                                            {{ include('helpers/timePicker.html.twig', timePicker) }}
+                                            {#{{ dump(timePickerEnd) }}#}
+                                            {{ include('helpers/timePicker.html.twig', timePickerEnd) }}
                                             {% if format24h %}
                                                 <input name="ampm" type="radio" value="am" {% if ampm == 'am' %}checked{% endif %} />{{ amTime }}
                                                 <input name="ampm" type="radio" value="pm" {% if ampm == 'pm' %}checked{% endif %} />{{ pmTime }}
@@ -459,7 +481,7 @@
                                         <select class="form-control" name="option_reservation" size="1">
                                             <option value = "-1">{{ vocab.Reservation_confirmee }}</option>
                                             {% if selected and optionReservation != -1 %}
-                                                <option value = "'.$option_reservation.'" selected="selected">{{ selectedNo }}</option>
+                                                <option value = "{{ optionReservation }}" selected="selected">{{ selectedNo }}</option>
                                             {% endif %}
                                             {% for option in optionResa %}
                                                 <option value = "{{ option.dateCourante }}{% if option.dateCourante == optionReservation %}selected="selected"{% endif %}>{{ option.affDateCourante }}</option>
