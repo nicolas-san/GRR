@@ -319,9 +319,10 @@ $weekcol = 0;
 $sql = 'SELECT room_name, capacity, id, description FROM '.TABLE_PREFIX."_room WHERE area_id=$area ORDER BY order_display,room_name";
 $res = grr_sql_query($sql);
 //echo "<tr><th></th>\n";
-
+//$t2 = mktime(0, 0, 0, $month, 1, $year);
 for ($k = 1; $k <= $days_in_month; $k++) {
     /* un tour de boucle par jour du mois */
+    $t2 = mktime(0, 0, 0, $month, $k, $year);
     $cday = date('j', $t2);
     $cweek = date('w', $t2);
     $name_day = ucfirst(utf8_strftime('%a %d', $t2));
@@ -368,19 +369,7 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
     $verif_acces_ressource = verif_acces_ressource(getUserName(), $row[2]);
     if ($verif_acces_ressource) {
         $tplArray['rooms'][$incrementRoomAccessible]['nom'] = strip_tags(htmlspecialchars($row[0]));
-        echo "<br>";
-        echo "<br>";
-        echo "<br>";
-        echo "<br>";
-        echo "<br>";
-        echo "<br>";
-        echo "<br>";
-        echo "<hr>";
 
-        echo "<pre>";
-        var_dump($row);
-        echo "</pre>";
-        echo "<hr>";
         $acces_fiche_reservation = verif_acces_fiche_reservation(getUserName(), $row[2]);
         //echo '<tr><th class="tableau_month_all2">'.htmlspecialchars($row[0])."</th>\n";
         $li++;
@@ -390,16 +379,15 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
             $t2 = mktime(0, 0, 0, $month,$k,$year);
             $cday = date('j', $t2);
             $cweek = date('w', $t2);
-            echo "<pre>";
+            /*echo "<pre>";
             echo "<br>MONTH -> ".$month;
             echo "<br>T2  -> ".$t2;
             echo "<br>year -> ".$year;
             echo "<br>K -> ".$k;
             echo "<br>WEEK -> ".$cday;
             echo "<br>DAY -> ".$cweek;
-            echo "</pre>";
-            $cday = date('j', $t2);
-            $cweek = date('w', $t2);
+            echo "</pre>";*/
+
             //$t2 += 86400;
             if ($display_day[$cweek] == 1) {
                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['display'] = true;
