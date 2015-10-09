@@ -321,6 +321,9 @@ function minicals($year, $month, $day, $area, $room, $dmy)
                 //$s .= '<button type="button" title="'.htmlspecialchars(get_vocab('see_all_the_rooms_for_the_month'))."\" class=\"btn btn-default btn-xs\" onclick=\"charger();javascript: location.href='".$type_month_all.".php?year=$this->year&amp;month=$this->month&amp;day=1&amp;area=$this->area';\">$monthName $this->year</button>\n";
                 $tplArray['linkAllRoomsForTheMonth'] = $type_month_all.'.php?year='.$this->year.'&month='.$this->month.'&day=1&area='.$this->area;
             }
+            /* ajouté pour avoir le month_all2 tout le temps prêt pour twig */
+            $tplArray['linkAllRoomsForTheMonth2'] = 'month_all2.php?year='.$this->year.'&month='.$this->month.'&day=1&area='.$this->area;
+
             //$s .= $this->createlink(1, 0, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'see_month_for_this_room', 'chevron-right');
             $tplArray['monthForThisRoomRight'] = $this->createlink(1, 0, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'see_month_for_this_room', 'chevron-right');
 

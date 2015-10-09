@@ -447,16 +447,16 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
                                             //$currentPage = 'week_all';
                                             //$id = $d[$cday]['id'][$i];
                                             //echo '<a title="'.htmlspecialchars($d[$cday]['who'][$i]).'" data-width="675" onclick="request('.$id.','.$cday.','.$cmonth.','.$cyear.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight" style = "border-bottom:1px solid #FFF">'.PHP_EOL;
-
-                                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkOnclick'] = "request('.$d[$cday]['id'][$i].','.$cday.','.$cmonth.','.$cyear.','month_all2',readData);";
+                                                                                                //var_dump($d[$cday]['id'][$i]);
+                                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkOnclick'] = 'request('.$d[$cday]['id'][$i].','.$cday.','.$month.','.$year.',\'month_all2\',readData);';
                                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkHref'] = false;
                                         } else {
                                             //echo '<a class="lienCellule" title="'.htmlspecialchars($d[$cday]['who'][$i]).'" href="view_entry.php?id='.$d[$cday]['id'][$i].'&amp;page=week_all&amp;day='.$cday.'&amp;month='.$cmonth.'&amp;year='.$cyear.'&amp;">'.PHP_EOL;
                                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkOnclick'] = false;
-                                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkHref'] = 'view_entry.php?id='.$d[$cday]['id'][$i].'&page=week_all&day='.$cday.'&month='.$cmonth.'&year='.$cyear;
+                                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkHref'] = 'view_entry.php?id='.$d[$cday]['id'][$i].'&page=week_all&day='.$cday.'&month='.$month.'&year='.$year;
                                         }
 
-                                        $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkTitle'] = strip_tags(htmlspecialchars($d[$cday]['who'][$i]));
+                                        $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['linkTitle'] = strip_tags(htmlspecialchars($d[$cday]['who1'][$i]));
                                         /*if (Settings::get('display_level_view_entry') == 0) {
                                             $currentPage = 'month_all2';
                                             $id = $d[$cday]['id'][$i];

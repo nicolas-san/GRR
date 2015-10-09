@@ -539,7 +539,7 @@ if (grr_sql_count($res) == 0) {
                                         //$id = $d[$cday]['id'][$i];
                                         //echo '<a title="'.htmlspecialchars($d[$cday]['who'][$i]).'" data-width="675" onclick="request('.$id.','.$cday.','.$cmonth.','.$cyear.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight" style = "border-bottom:1px solid #FFF">'.PHP_EOL;
 
-                                        $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkOnclick'] = "request('.$d[$cday]['id'][$i].','.$cday.','.$cmonth.','.$cyear.','week_all',readData);";
+                                        $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkOnclick'] = 'request('.$d[$cday]['id'][$i].','.$cday.','.$cmonth.','.$cyear.',\'week_all\',readData);';
                                         $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkHref'] = false;
                                     } else {
                                         //echo '<a class="lienCellule" title="'.htmlspecialchars($d[$cday]['who'][$i]).'" href="view_entry.php?id='.$d[$cday]['id'][$i].'&amp;page=week_all&amp;day='.$cday.'&amp;month='.$cmonth.'&amp;year='.$cyear.'&amp;">'.PHP_EOL;

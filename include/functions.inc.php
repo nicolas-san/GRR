@@ -2,23 +2,22 @@
 /**
  * include/functions.inc.php
  * fichier Bibliothèque de fonctions de GRR
- * Dernière modification : $Date: 2015-17-09 15:38:14 $.
  *
  * @author		Laurent Delineau <laurent.delineau@ac-poitiers.fr>
  * @author		Marc-Henri PAMISEUX <marcori@users.sourceforge.net>
  * @copyright	Copyright 2003-2005 Laurent Delineau
  * @copyright	Copyright 2008 Marc-Henri PAMISEUX
  *
- * @link		http://www.gnu.org/licenses/licenses.html
+ * @author      Bouteillier Nicolas <bouteillier.nicolas@kaizendo.fr>
+ * @copyright	Copyright 2015 Bouteillier Nicolas
  *
- * @version		$Id: functions.inc.php,v 1.33 2010-04-07 15:38:14 grr Exp $
- * @filesource
+ * @link		http://www.gnu.org/licenses/licenses.html
  *
  * This file is part of GRR.
  *
  * GRR is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GRR is distributed in the hope that it will be useful,
@@ -30,7 +29,7 @@
  * along with GRR; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-header('Cache-Control:no-cache');
+@header('Cache-Control:no-cache');
 function returnmsg($type, $test, $status, $msg = '')
 {
     echo encode_message_utf8('<div class="alert alert-'.$type.'" role="alert"><h3>'.$test);
