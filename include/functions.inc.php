@@ -2267,7 +2267,7 @@ function make_room_selection_fields($link, $current_area, $current_room, $year, 
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
             if (verif_acces_ressource(getUserName(), $row[0])) {
                 if ($row[2]) {
-                    $temp = ' ('.$row[2].')';
+                    $temp = ' ('.mb_substr ( $row[2] , 0, 10).'... )';
                 } else {
                     $temp = '';
                 }
@@ -2518,16 +2518,31 @@ function send_mail($id_entry, $action, $dformat, $tab_id_moderes = array())
     define('GRR_FROMNAME', Settings::get('grr_mail_fromname'));
 
     require_once './include/mail.inc.php';
-    $m = new my_phpmailer();
+    //$m = new my_phpmailer();
 
     $mail = new PHPMailer();
 
-    $mail->isSMTP();
-//	$mail->SMTPDebug = 0;
+    if (Settings::get('grr_mail_method') == 'smtp') {
+        $smtpUsername = Settings::get('grr_mail_Username');
+        $smtpPassword = Settings::get('grr_mail_Password');
+
+        $mail->isSMTP();
+    }
+
+    if ($smtpUsername != "") {
+        $mail->SMTPAuth = true;
+        $mail->Username = $smtpUsername;
+        $mail->Password = $smtpPassword;
+
+    } else {
+        $mail->SMTPAuth = true;
+    }
+
+//	$mail->SMTPDebug = 2;
 //	$mail->Debugoutput = 'html';
     $mail->Host = Settings::get('grr_mail_smtp');
-    $mail->Port = 25;
-    $mail->SMTPAuth = false;
+    $mail->Port = 587;
+
     $mail->CharSet = 'UTF-8';
     $mail->setFrom(GRR_FROM, GRR_FROMNAME);
 
