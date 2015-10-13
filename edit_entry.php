@@ -995,17 +995,18 @@ if (($edit_type == 'series') || (isset($flag_periodicite))) {
         if ($i != 5) {
             //echo '<tr>',PHP_EOL,'<td>',PHP_EOL,'<input name="rep_type" type="radio" value="',$i,'"';
             if ($i == $rep_type) {
+                //echo $i;
                 $tplArrayEditEntry['repetitions'][$i]['checked'] = true;
                 //echo ' checked="checked"';
             } else {
                 $tplArrayEditEntry['repetitions'][$i]['checked'] = false;
             }
-            if (($i == 3) && ($rep_type == 5)) {
+            if (($i == 3) && ($rep_type == 5) && $tplArrayEditEntry['repetitions'][$i]['checked'] == false) {
                 //echo ' checked="checked"';
                 $tplArrayEditEntry['repetitions'][$i]['checked'] = true;
-            } else {
+            } /*else {
                 $tplArrayEditEntry['repetitions'][$i]['checked'] = false;
-            }
+            }*/
             //echo ' onclick="check_1()" />',PHP_EOL,'</td>',PHP_EOL,'<td>',PHP_EOL;
 
             if (($i != 2) && ($i != 3)) {

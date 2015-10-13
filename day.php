@@ -514,7 +514,7 @@ if (grr_sql_count($res) == 0) {
                             $tplArray['creneauxHoraire'][$t]['rooms'][$room]['descRoomAccessRoomAndFicheResa'] = false;
                             //echo ' '.$descr;
                         }
-                        $sql = 'SELECT type_name,start_time,end_time,clef,courrier FROM '.TABLE_PREFIX.'_type_area ,'.TABLE_PREFIX.'_entry  WHERE  '.TABLE_PREFIX.'_entry.id= '.$today[$room][$t]['id'].' AND '.TABLE_PREFIX.'_entry.type= '.TABLE_PREFIX.'_type_area.type_letter';
+                        $sql = 'SELECT type_name,start_time,end_time,clef,courrier,beneficiaire, beneficiaire_ext FROM '.TABLE_PREFIX.'_type_area ,'.TABLE_PREFIX.'_entry  WHERE  '.TABLE_PREFIX.'_entry.id= '.$today[$room][$t]['id'].' AND '.TABLE_PREFIX.'_entry.type= '.TABLE_PREFIX.'_type_area.type_letter';
                         $res = grr_sql_query($sql);
                         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
                             $type_name = $row['0'];
@@ -525,6 +525,8 @@ if (grr_sql_count($res) == 0) {
                             $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['typeName'] = $row['0'];
                             $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['clef'] = $row['3'];
                             $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['courrier'] = $row['4'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['beneficiaire'] = $row['5'];
+                            $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['beneficiaire_ext'] = $row['6'];
 
                             if ($enable_periods != 'y') {
                                 $tplArray['creneauxHoraire'][$t]['rooms'][$room]['entries'][$i]['startTime'] = date('H:i',$row['1']);
