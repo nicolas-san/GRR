@@ -64,3 +64,6 @@ $dispatcher = new EventDispatcher();
  * je charge les plugins.
  */
 include_once 'plugins.php';
+
+/* ical export class */
+
