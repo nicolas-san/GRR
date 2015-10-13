@@ -329,6 +329,8 @@ $tplArrayEditEntry['edit_type'] = $edit_type;
 /* settings */
 $tplArrayEditEntry['settings']['joursCyclesActif'] = Settings::get('jours_cycles_actif');
 $tplArrayEditEntry['settings']['remplissageDescriptionBreve'] = Settings::get('remplissage_description_breve');
+/* je ne suis pas sûr que show_courrier serve à ça, mais comme les champs pour le courrier ne sont pas soumis à un if, et que ça me paraît cohérent pour le moment, je vais utiliser show_courrier pour cacher les champs courrier */
+$tplArrayEditEntry['settings']['showCourrier'] = Settings::get('show_courrier');
 
 /* vocable */
 $tplArrayEditEntry['vocab']['you_have_not_entered'] = get_vocab('you_have_not_entered');
@@ -644,12 +646,15 @@ if ($enable_periods == 'y') {
 $tplArrayEditEntry['enablePeriod'] = false;
     /*echo '<b>'.get_vocab('time').' : </b>';*/
     if (isset($_GET['id'])) {
+        /*var_dump($duree_par_defaut_reservation_area);
+        var_dump($end_hour);
+        var_dump($end_min);*/
 
         //$tplArrayEditEntry['EnvGetId'] = $_GET['id'];
         //$tplArrayEditEntry['dureeParDefautReservationArea'] = $duration;
         $duree_par_defaut_reservation_area = $duration;
         $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', $start_hour, $start_min, $duree_par_defaut_reservation_area, true);
-        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', $start_hour, $start_min, $duree_par_defaut_reservation_area, true);
+        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', $end_hour, $end_min, $duree_par_defaut_reservation_area, true);
     } else {
         //$tplArrayEditEntry['EnvGetId'] = false;
 
@@ -914,6 +919,7 @@ $tplArrayEditEntry['longeurListeRessourcesMax'] = min($longueur_liste_ressources
 //Sélection de la "room" dans l'"area"
 if ($res) {
     for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
+        /*var_dump($row);echo "<br>";*/
         $tplArrayEditEntry['rooms'][$i]['0'] = $row[0];
         $tplArrayEditEntry['rooms'][$i]['1'] = $row[1];
         $selected = '';
@@ -921,7 +927,7 @@ if ($res) {
             //$selected = 'selected="selected"';
             $tplArrayEditEntry['rooms'][$i]['selected'] = true;
         } else {
-            $tplArrayEditEntry['rooms'][$i]['selected'] = true;
+            $tplArrayEditEntry['rooms'][$i]['selected'] = false;
         }
         /*echo '<option ',$selected,' value="',$row[0],'">',$row[1],'</option>',PHP_EOL;*/
     }
