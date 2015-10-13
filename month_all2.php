@@ -403,7 +403,7 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
                         for ($i = 0; $i < $n; $i++) {
                             /* un tour de boucle par résa pour ce jour */
                             if ($i == 11 && $n > 12) {
-                                echo " ...\n";
+                                //echo " ...\n";
                                 break;
                             }
                             for ($i = 0; $i < $n; $i++) {
@@ -496,7 +496,7 @@ bouton_retour_haut();*/
 /*echo ' </div>';
 echo ' </div>';
 echo ' </div>';*/
-affiche_pop_up(get_vocab('message_records'), 'user');
+//affiche_pop_up(get_vocab('message_records'), 'user');
 /*include 'footer.php';*/
 echo $twig->render('monthAll2.html.twig', $tplArray);
 ?>
