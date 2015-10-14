@@ -9,16 +9,16 @@
  * @author    Laurent Delineau <laurent.delineau@ac-poitiers.fr>
  * @copyright Copyright 2003-2008 Laurent Delineau
  *
- * @link      http://www.gnu.org/licenses/licenses.html
+ * @author      Bouteillier Nicolas <bouteillier.nicolas@kaizendo.fr>
+ * @copyright	Copyright 2015 Bouteillier Nicolas
  *
- * @version   $Id: edit_entry_handler.php,v 1.12 2010-03-03 14:41:34 grr Exp $
- * @filesource
+ * @link		http://www.gnu.org/licenses/licenses.html
  *
  * This file is part of GRR.
  *
  * GRR is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GRR is distributed in the hope that it will be useful,
@@ -682,8 +682,9 @@ grr_sql_mutex_unlock(''.TABLE_PREFIX.'_entry');
 /**
  * Après la gestion de l'entry, je dispatch l'event pour les plugins
  */
-$getData = filter_input_array(INPUT_GET);
-$event = new EditEntryHandler($getData);
+$dataFromGet = filter_input_array(INPUT_GET);
+$dataFromGet['idLastInsert'] = grr_sql_insert_id();
+$event = new EditEntryHandler($dataFromGet);
 $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
 
 if ($error_booking_in_past == 'yes') {

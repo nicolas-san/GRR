@@ -8,16 +8,16 @@
  * @author    Laurent Delineau <laurent.delineau@ac-poitiers.fr>
  * @copyright Copyright 2003-2008 Laurent Delineau
  *
- * @link      http://www.gnu.org/licenses/licenses.html
+ * @author      Bouteillier Nicolas <bouteillier.nicolas@kaizendo.fr>
+ * @copyright	Copyright 2015 Bouteillier Nicolas
  *
- * @version   $Id: edit_entry.php,v 1.17 2010-04-07 15:38:14 grr Exp $
- * @filesource
+ * @link		http://www.gnu.org/licenses/licenses.html
  *
  * This file is part of GRR.
  *
  * GRR is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GRR is distributed in the hope that it will be useful,
