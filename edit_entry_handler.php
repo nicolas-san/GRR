@@ -34,8 +34,13 @@ include 'include/connect.inc.php';
 include 'include/config.inc.php';
 include 'include/functions.inc.php';
 include "include/$dbsys.inc.php";
-include 'include/mrbs_sql.inc.php'; include 'include/init.php';
+include 'include/mrbs_sql.inc.php';
+include 'include/init.php';
 include 'include/misc.inc.php';
+
+use Grr\Event\EditEntryHandler;
+use Grr\Event\EditEntryHandlerEvent;
+
 $grr_script_name = 'edit_entry_handler.php';
 // Settings
 require_once './include/settings.class.php';
@@ -52,7 +57,8 @@ if (!grr_resumeSession()) {
 }
 /*echo "<pre>";
 var_dump($_GET);
-echo "</pre>";*/
+echo "</pre>";
+die();*/
 // Paramètres langage
 include 'include/language.inc.php';
 $erreur = 'n';
@@ -672,6 +678,13 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
 }
 
 grr_sql_mutex_unlock(''.TABLE_PREFIX.'_entry');
+
+/**
+ * Après la gestion de l'entry, je dispatch l'event pour les plugins
+ */
+$getData = filter_input_array(INPUT_GET);
+$event = new EditEntryHandler($getData);
+$dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
 
 if ($error_booking_in_past == 'yes') {
     $str_date = utf8_strftime('%d %B %Y, %H:%M', $date_now);

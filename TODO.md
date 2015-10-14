@@ -17,7 +17,7 @@
 * Modification du numéro de version - OK
 
 
-# Future Ajout
+# Futur Ajout
 * Mise en place de la generation de pdf avancé - Partiel
 * Envois d'une lettre en pdf avec le mail de confirmation - 0%
 * Sauvegarde de la lettre sur le serveur - 0%
@@ -27,3 +27,6 @@
 * IMPORTANT sécuriser toutes les entrées utilisateurs avec strip_tags, possibilité actuellement d'XSS dans la bdd 
 * refacto begin_page pour l'intégrer à print_header puisque les deux préparent les infos pour afficher le début de page
 * dé dupliquer le code des fonctions make_site_*
+
+# Warnings
+* Les vars sont passées en GET à edit_entry_handler, avec les plugins risque de dépasser la taille max du _GET, il faudrait passer en POST
