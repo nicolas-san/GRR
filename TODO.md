@@ -30,3 +30,4 @@
 
 # Warnings
 * Les vars sont passées en GET à edit_entry_handler, avec les plugins risque de dépasser la taille max du _GET, il faudrait passer en POST
+* tester les events sans passer le tpl, et faire les get et set tpl, peut être event dispatcher à accès aux vars en cours directement ?

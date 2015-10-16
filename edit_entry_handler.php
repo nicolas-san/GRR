@@ -62,6 +62,7 @@ die();*/
 include 'include/language.inc.php';
 $erreur = 'n';
 $message_error = '';
+$idPourEvent = false;
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     settype($id, 'integer');
@@ -619,6 +620,8 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
         }
         if ($rep_type != 0) {
             mrbsCreateRepeatingEntrys($starttime, $endtime, $rep_type, $rep_enddate, $rep_opt, $room_id, $create_by, $beneficiaire, $beneficiaire_ext, $name, $type, $description, $rep_num_weeks, $option_reservation, $overload_data, $entry_moderate, $rep_jour_c, $courrier, $rep_month_abs1, $rep_month_abs2);
+            /* var globale crée par la fonction ci dessus */
+            $idPourEvent = $id_first_resa;
             if (Settings::get('automatic_mail') == 'yes') {
                 if (isset($id) && ($id != 0)) {
                     if ($send_mail_moderate) {
@@ -642,6 +645,8 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
             }
             mrbsCreateSingleEntry($starttime, $endtime, $entry_type, $repeat_id, $room_id, $create_by, $beneficiaire, $beneficiaire_ext, $name, $type, $description, $option_reservation, $overload_data, $entry_moderate, $rep_jour_c, $statut_entry, $keys, $courrier);
             $new_id = grr_sql_insert_id();
+            echo('HERERERERERE :'.$new_id);
+            $idPourEvent = $new_id;
             if (Settings::get('automatic_mail') == 'yes') {
                 if (isset($id) && ($id != 0)) {
                     if ($send_mail_moderate) {
@@ -667,6 +672,17 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
         }
     }
     grr_sql_mutex_unlock(''.TABLE_PREFIX.'_entry');
+
+    /* si tout s'est bien passé */
+    /**
+     * Après la gestion de l'entry, je dispatch l'event pour les plugins
+     */
+
+    $dataFromGet = filter_input_array(INPUT_GET);
+    $dataFromGet['idLastInsert'] = $idPourEvent;
+    $event = new EditEntryHandler($dataFromGet);
+    $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
+
     $area = mrbsGetRoomArea($room_id);
     $_SESSION['displ_msg'] = 'yes';
     if ($message_error != '') {
@@ -678,13 +694,7 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
 
 grr_sql_mutex_unlock(''.TABLE_PREFIX.'_entry');
 
-/**
- * Après la gestion de l'entry, je dispatch l'event pour les plugins
- */
-$dataFromGet = filter_input_array(INPUT_GET);
-$dataFromGet['idLastInsert'] = grr_sql_insert_id();
-$event = new EditEntryHandler($dataFromGet);
-$dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
+
 
 if ($error_booking_in_past == 'yes') {
     $str_date = utf8_strftime('%d %B %Y, %H:%M', $date_now);
