@@ -987,9 +987,10 @@ if (isset($keys) && isset($courrier)) {
     $tplArray['keyEtCourrier'] = false;
 }
 /* dispatch de l'event à la fin de view_entry */
-$event = new EntryEventClass($id);
+$event = new EntryEventClass($id, $tplArray);
 $dispatcher->dispatch(ViewEntryEvent::VIEWENTRY_END, $event);
-
+/* mise à jour du template avec le retour du plugin */
+$tplArray = $event->getTpl();
 //include_once 'include/trailer.inc.php';
 echo $twig->render('viewEntry.html.twig', $tplArray);
                 //echo '</div>',PHP_EOL;

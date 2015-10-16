@@ -11,10 +11,12 @@ use Symfony\Component\EventDispatcher\Event;
 class EntryEventClass extends Event
 {
     private $id;
+    private $tpl;
 
-    public function __construct($id)
+    public function __construct($id, $tpl)
     {
         $this->id = $id;
+        $this->tpl = $tpl;
     }
 
     /**
@@ -31,6 +33,22 @@ class EntryEventClass extends Event
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTpl()
+    {
+        return $this->tpl;
+    }
+
+    /**
+     * @param mixed $tpl
+     */
+    public function setTpl($tpl)
+    {
+        $this->tpl = $tpl;
     }
 
 
