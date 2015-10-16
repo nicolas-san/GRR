@@ -47,6 +47,9 @@ include_once 'include/init.php';
 // Paramètres langage
 include 'include/language.inc.php';
 
+use Grr\Event\EntryEventClass;
+use Grr\Event\ViewEntryEvent;
+
 $page = verif_page();
 
 $fin_session = 'n';
@@ -983,6 +986,10 @@ if (isset($keys) && isset($courrier)) {
 } else {
     $tplArray['keyEtCourrier'] = false;
 }
+/* dispatch de l'event à la fin de view_entry */
+$event = new EntryEventClass($id);
+$dispatcher->dispatch(ViewEntryEvent::VIEWENTRY_END, $event);
+
 //include_once 'include/trailer.inc.php';
 echo $twig->render('viewEntry.html.twig', $tplArray);
                 //echo '</div>',PHP_EOL;
