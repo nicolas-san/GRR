@@ -1,5 +1,4 @@
 <?php
-
 /**
  * edit_entry_handler.php
  * Permet de vérifier la validitée de l'édition ou de la création d'une réservation

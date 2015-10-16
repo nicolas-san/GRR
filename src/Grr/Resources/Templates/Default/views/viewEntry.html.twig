@@ -1,0 +1,457 @@
+{#
+/**
+ * viewEntry.html.twig
+ * Template viewEntry
+ * Ce script fait partie de l'application GRR
+ *
+ * @author      Bouteillier Nicolas <bouteillier.nicolas@kaizendo.fr>
+ * @copyright	Copyright 2015 Bouteillier Nicolas
+ *
+ * @link		http://www.gnu.org/licenses/licenses.html
+ *
+ * This file is part of GRR.
+ *
+ * GRR is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GRR is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GRR; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+#}
+<div>
+    <fieldset><legend style="font-size:12pt;font-weight:bold">{{ vocab.entry }}{{ vocab.deux_points }}{{ lienResaPlanning }}</legend>
+        <table border="0">
+            <tr>
+                <td>
+                    <b>
+                        {{ vocab.description }}
+                    </b>
+                </td>
+                <td>
+                    {{ description }}
+                </td>
+            </tr>
+            {% for field in overloadData %}
+                <tr>
+                    <td>
+                        <b>{{ field.name }} {{ vocab.deux_points }}</b>
+                    </td>
+                    <td>
+                        {{ field.value }}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <b>
+
+                        {{ vocab.room }} {{ vocab.deux_points }}
+
+                    </b>
+                </td>
+                <td>
+
+                    {{ areaName}} - {{ roomName }}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>
+
+                        {{ vocab.start_date }}{{ vocab.deux_points}}
+
+                    </b>
+                </td>
+                <td>
+
+                    {{ startDate }}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>
+
+                        {{ vocab.duration }}
+
+                    </b>
+                </td>
+                <td>
+
+                    {{ duration }} {{ durUnits }}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>
+                        {{ vocab.end_date }}
+
+			        </b>
+                </td>
+                <td>
+
+                    {{ endDate }}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b> {{ vocab.type }}{{ vocab.deux_points }}</b>
+                </td>
+                <td>
+                    {{ typeName }}
+                </td>
+            </tr>
+            {% if beneficiaireExt %}
+                <tr>
+                    <td>
+                        <b>
+
+                            {{ vocab.reservation_au_nom_de }}{{ vocab.deux_points }}
+
+                        </b>
+                    </td>
+                    <td>
+
+                        {{ beneficiaireExtNomPrenom|raw }}
+
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    <b>
+
+                        {{ vocab.created_by }}{{ vocab.deux_points }}
+
+                    </b>
+                </td>
+                <td>
+                    &nbsp;{{ beneficiaireNomPrenom|raw }}
+                    &nbsp;{{ createdBy }}
+                    {% if empruntee %}
+                        <span class="avertissement">
+                            {{ vocab.reservation_en_cours }}
+                            <img src="img_grr/buzy_big.png" align=middle alt="{{ vocab.ressource_actuellement_empruntee }}" title="{{ vocab.ressource_actuellement_empruntee }}" border="0" width="30" height="30" class="print_image" />
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>
+
+                        {{ vocab.lastupdate }}{{ vocab.deux_points }}
+
+                    </b>
+                </td>
+                <td>
+
+                    {{ updated }}
+
+                </td>
+            </tr>
+            {% if keys %}
+                <tr>
+                    <td>
+                        <b>
+
+                        {{ vocab.clef }}{{ vocab.deux_points }}
+
+                        </b>
+                    </td>
+                    <td>
+
+                        <img src="img_grr/key.png" alt="clef">
+
+                    </td>
+                </tr>
+            {% endif %}
+            {% if courrier %}
+                <tr>
+	                <td>
+				        <b>
+
+                            {{ vocabourrier }}{{ vocab.deux_points }}
+
+	        			</b>
+			        </td>
+			        <td>
+
+                    <img src="img_grr/courrier.png" alt="courrier">';
+
+		    	    </td>
+		        </tr>
+            {% endif %}
+            {% if aConfirmerPlusTard %}
+                <tr>
+                    <td colspan="2">
+                        <div class="alert alert-danger" role="alert">
+                            <b> {{ vocab.reservation_a_confirmer_au_plus_tard_le }} {{ dateConfirmation }}</b></div>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if moderate == 1 %}
+                <tr>
+                    <td>
+                        <b>{{ vocab.moderation }}{{ vocab.deux_points }}</b>
+                    </td>
+                    <td class="avertissement">
+                        <strong>{{ vocab.en_attente_moderation }}</strong>
+                    </td>
+                </tr>
+            {% elseif moderate == 2 %}
+                {% if moderable %}
+                    <tr>
+                        <td>
+                            <b>{{ vocab.moderation }}{{ vocab.deux_points }}</b>
+                        </td>
+                        <td>
+                            <strong>{{ vocab.moderation_acceptee_par }} {{ nomModo }}</strong>
+                            {% if description %}
+                                <br />{{ description }}
+                            {% endif %}
+                        </td></tr>
+                {% endif %}
+            {% elseif moderate == 3 %}
+                {% if moderable %}
+                <tr>
+                    <td>
+                        <b>{{ vocab.moderation }} {{ vocab.deux_points }}</b>
+                    </td>
+                    <td class="avertissement">
+                        <strong> {{ vocab.moderation_refusee }} {{ nomModo }}</strong>
+                        {% if description %}
+                            <br />{{ description }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endif %}
+            <tr>
+                <td colspan="2">
+                    <button class="btn btn-primary" onclick="location.href='{{ onClickEdit }}'">{{ vocab.editentry }}</button>
+                    <button class="btn btn-info" onclick="location.href='{{ onClickCopy }}'">{{ vocab.copyentry }}</button>
+                    {% if canCreateOrDelete %}
+                        <a class="btn btn-danger" type="button" href="{{ deleteHref }}" onclick="return confirm('{{ messageConfirmation }}');">{{ vocab.deleteentry }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    {% if repeatId %}
+    <fieldset>
+        <legend style="font-weight:bold">{{ vocab.periodicite_associe }}</legend>
+        <table cellpadding="1">
+            <tr>
+                <td>
+                    <b>{{ vocab.rep_type }}</b>
+                </td>
+                <td>
+                    {{ affichePeriod }}
+                </td>
+            </tr>
+            {% if repType != 0 %}
+                {% if repType == 2 %}
+                    {% if opt != false %}
+                        <tr>
+                            <td>
+                                <b>{% if dayPluriel %}{{ vocab.rep_rep_days }}{% else %}{{ vocab.rep_rep_day }}{% endif %}</b>
+                            </td>
+                            <td>
+                                {{ opt }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+                {% if repType == 6 %}
+                    {% if joursCyclesActifs %}
+                        <tr>
+                            <td>
+                                <b>{{ vocab.rep_rep_day }}</b>
+                            </td>
+                            <td>
+                                {{ vocab.jour_cycle }} {{ jourCycle }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+                <tr>
+                    <td>
+                        <b>{{ vocab.date }}{{ vocab.deux_points }}</b>
+                    </td>
+                    <td>
+                        {{ startDate }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>{{ vocab.duration }}</b>
+                    </td>
+                    <td> 
+                        {{ duration }} {{ durUnits }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>{{ vocab.rep_end_date }}</b>
+                    </td>
+                    <td>
+                        {{ rep_end_date }}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="2">
+                        <input class="btn btn-primary" type="button" onclick="location.href='{{ seriesOnclickEdit }}'" value="{{ vocab.editseries }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <a class="btn btn-danger" type="button" href="{{ seriesHrefDelete }}" onclick="return confirm('{{ seriesMessageConfirmation }}');">{{ vocab.deleteseries }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </fieldset>
+    {% if pdfLink %}
+        <br>
+            <input class="btn btn-primary" onclick="myFunction('{{ id }}')" value="{{ vocab.Generer_pdf }}" >
+    {% endif %}
+    {% if moderationForm %}
+        <form action="view_entry.php" method="get">
+            <input type="hidden" name="action_moderate" value="y" />
+            <input type="hidden" name="id" value="{{ id }}" />
+            {% if page %}
+                <input type="hidden" name="page" value="{{ page }}" />
+            {% endif %}
+            <fieldset>
+                <legend style="font-weight:bold">{{ vocab.moderate_entry }}</legend>
+                <p>
+                    <label>
+                        <input type="radio" name="moderate" value="1" checked="checked" />{{ vocab.accepter_resa }}
+                    </label>
+                    <br />
+                    <label>
+                        <input type="radio" name="moderate" value="0" />{{ vocab.refuser_resa }}
+                    </label>
+                    {% if repeatId %}
+                        <br />
+                        {# todo add labels #}
+                        <input type="radio" name="moderate" value="S1" />{{ vocab.accepter_resa_serie }}
+                        <br />
+                        <input type="radio" name="moderate" value="S0" />{{ vocab.refuser_resa_serie }}
+                    {% endif %}
+                </p>
+                <p>
+                    <label for="description">{{ vocab.justifier_decision_moderation }}{{ vocab.deux_points }}</label>
+                    <textarea class="form-control" name="description" id="description" cols="40" rows="3"></textarea>';
+                </p>
+                <br />
+                    <div style="text-align:center;">
+                            <input class="btn btn-primary" type="submit" name="commit" value="{{ vocab.save }}" />
+                    </div>
+            </fieldset>
+        </form>
+    {% endif %}
+    
+    {% if ressourceEmprunteeForm %}
+        <form action="view_entry.php" method="get">
+            <fieldset><legend style="font-weight:bold">{{ vocab.reservation_en_cours }}</legend>
+                <span class="larger">{{ vocab.signaler_reservation_en_cours }}</span>{{ vocab.deux_points }}
+                <br />{{ vocab.explications_signaler_reservation_en_cours }}
+                {% if afficheRessourceEmprunte != 'yes' and afficheRessourceEmprunte is iterable %}
+                    {{ include('helpers/ressourceEmpruntee.html.twig', afficheRessourceEmprunte) }}
+                {% endif %}
+                <br />
+                <input type="radio" name="statut_id" value="-" {% if statusIdChecked1 %}checked="checked"{% endif %} />{{ vocab.signaler_reservation_en_cours_option_0 }}
+                <br />
+                <br />
+                <input type="radio" name="statut_id" value="y" {% if statusIdCheckedY %}checked="checked"{% endif %} />{{ vocab.signaler_reservation_en_cours_option_1 }}
+                <br />
+                <br />
+                <input type="radio" name="statut_id" value="e" {% if statusIdCheckedE %}checked="checked"{% endif %} {% if statusIdCheckedEDisabled %}disabled{% endif %} />{{ vocab.signaler_reservation_en_cours_option_2 }}
+                {% if necessiteFonctionMail %}
+                    <br />
+                    <i>{{ vocab.necessite_fonction_mail_automatique }}</i>
+                {% endif %}
+                {% if mailAuto %}
+                    <br />
+                    <br />
+                    <input type="checkbox" name="envoyer_mail" value="y" {% if mailExist == false %}disabled{% endif %} />{{ vocab.envoyer_maintenant_mail_retard }}
+                    <input type="hidden" name="mail_exist" value="{% if mailExist != false %}{{ mailExist }}{% endif %}" />
+                {% endif %}
+                {% if necessiteFonctionMail %}
+                    <br />
+                    <i>{{ vocab.necessite_fonction_mail_automatique }}</i>
+                {% endif %}
+                <br />
+                <div style="text-align:center;">
+                    <input class="btn btn-primary" type="submit" name="ok" value="{{ vocab.save }}" />
+                </div>
+            </fieldset>
+                <div>
+                    <input type="hidden" name="day" value="{{ day }}" />
+                    <input type="hidden" name="month" value="{{ month }}" />
+                    <input type="hidden" name="year" value="{{ year }}" />
+                    <input type="hidden" name="page" value="{{ page }}" />
+                    <input type="hidden" name="id" value="{{ id }}" />
+                    <input type="hidden" name="back" value="{{ back }}" />
+                </div>
+            </form>
+    {% endif %}
+    
+    {% if keyEtCourrier %}
+        <form action="view_entry.php" method="get">
+            <fieldset>
+                <legend style="font-weight:bold">{{ vocab.reservation_en_cours }}</legend>
+                <span class="larger">{{ vocab.status_clef }}{{ vocab.deux_points }}</span>
+                <br />
+                <input type="checkbox" name="clef" value="y" {% if keyChecked %}checked{% endif %} />{{ vocab.msg_clef }}
+                {% if showCourrier %}
+                    <br />
+                    <span class="larger">{{ vocab.status_courrier }}{{ vocab.deux_points }}</span>
+                    <br />
+                    <input type="checkbox" name="courrier" value="y" {% if courrierChecked %}checked{% endif %} />{{ vocab.msg_courrier }}
+                {% endif %}
+                <br />
+                <br />
+                <div style="text-align:center;">
+                    <input class="btn btn-primary" type="submit" name="ok" value="{{ vocab.save }}" />
+                </div>
+            </fieldset>
+            <div>
+                <input type="hidden" name="day" value="{{ day }}" />
+                <input type="hidden" name="month" value="{{ month }}" />
+                <input type="hidden" name="year" value="{{ year }}" />
+                <input type="hidden" name="page" value="{{ page }}" />
+                <input type="hidden" name="id" value="{{ id }}" />
+                <input type="hidden" name="back" value="{{ back }}" />
+            </div>
+        </form>
+    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
