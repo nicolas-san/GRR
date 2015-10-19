@@ -680,7 +680,7 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
 
     $dataFromGet = filter_input_array(INPUT_GET);
     $dataFromGet['idLastInsert'] = $idPourEvent;
-    $event = new EditEntryHandler($dataFromGet);
+    $event = new EditEntryHandler($area_id, $dataFromGet);
     $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
 
     $area = mrbsGetRoomArea($room_id);

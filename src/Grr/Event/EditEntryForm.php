@@ -11,10 +11,12 @@ use Symfony\Component\EventDispatcher\Event;
 class EditEntryForm extends Event
 {
     private $tpl;
+    private $idArea;
 
-    public function __construct(array $tpl)
+    public function __construct($idArea, array $tpl)
     {
         $this->tpl = $tpl;
+        $this->idArea = $idArea;
     }
 
     /**
@@ -31,6 +33,22 @@ class EditEntryForm extends Event
     public function setTpl($tpl)
     {
         $this->tpl = $tpl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdArea()
+    {
+        return $this->idArea;
+    }
+
+    /**
+     * @param mixed $idArea
+     */
+    public function setIdArea($idArea)
+    {
+        $this->idArea = $idArea;
     }
 
 

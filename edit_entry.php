@@ -416,7 +416,7 @@ $tplArrayEditEntry['moderate'] = $moderate;
 * Avant le formulaire
  */
 // crée le EntryFormEvent et le répartit
-$event = new EditEntryForm($tplArrayEditEntry);
+$event = new EditEntryForm($area_id, $tplArrayEditEntry);
 $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
 /*echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;*/
@@ -1306,7 +1306,7 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
     /* si ça reste à false, c'est qu'il n'y a pas de plugin */
     $tplArrayEditEntry['plugins'] = false;
     // crée le EntryFormEvent et le répartit
-    $event = new EditEntryForm($tplArrayEditEntry);
+    $event = new EditEntryForm($area_id, $tplArrayEditEntry);
     $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
     /* mise à jour du tableau du template avec le retour des events */
     $tplArrayEditEntry = $event->getTpl();

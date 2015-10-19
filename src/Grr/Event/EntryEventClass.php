@@ -11,11 +11,13 @@ use Symfony\Component\EventDispatcher\Event;
 class EntryEventClass extends Event
 {
     private $id;
+    private $idArea;
     private $tpl;
 
-    public function __construct($id, $tpl)
+    public function __construct($idArea, $id, $tpl)
     {
         $this->id = $id;
+        $this->idArea = $idArea;
         $this->tpl = $tpl;
     }
 
@@ -51,6 +53,21 @@ class EntryEventClass extends Event
         $this->tpl = $tpl;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getIdArea()
+    {
+        return $this->idArea;
+    }
+
+    /**
+     * @param mixed $idArea
+     */
+    public function setIdArea($idArea)
+    {
+        $this->idArea = $idArea;
+    }
 
 
 }
