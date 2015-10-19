@@ -4,6 +4,7 @@
         "twig/extensions": "^1.2",
         "symfony/event-dispatcher": "^2.7",
         "symfony/class-loader": "^2.7",
-        "eluceo/ical": "*"
+        "eluceo/ical": "*",
+        "symfony/yaml": "^2.7"
     }
 }

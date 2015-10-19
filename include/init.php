@@ -60,10 +60,16 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 global $dispatcher;
 $dispatcher = new EventDispatcher();
 
+/* ical export class */
+
+/* init of YAML component */
+use Symfony\Component\Yaml\Parser;
+
+global $yaml;
+$yaml = new Parser();
+
 /**
- * je charge les plugins.
+ * je charge les plugins en dernier, pour qu'ils aient accès à tous les composants
  */
 include_once 'plugins.php';
-
-/* ical export class */
 
