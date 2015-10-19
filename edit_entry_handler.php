@@ -645,7 +645,6 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
             }
             mrbsCreateSingleEntry($starttime, $endtime, $entry_type, $repeat_id, $room_id, $create_by, $beneficiaire, $beneficiaire_ext, $name, $type, $description, $option_reservation, $overload_data, $entry_moderate, $rep_jour_c, $statut_entry, $keys, $courrier);
             $new_id = grr_sql_insert_id();
-            echo('HERERERERERE :'.$new_id);
             $idPourEvent = $new_id;
             if (Settings::get('automatic_mail') == 'yes') {
                 if (isset($id) && ($id != 0)) {
