@@ -986,7 +986,9 @@ if (isset($keys) && isset($courrier)) {
 } else {
     $tplArray['keyEtCourrier'] = false;
 }
-global $id_site;
+/* get id site by id area */
+$id_site = mrbsGetAreaSite($area_id);
+
 /* dispatch de l'event à la fin de view_entry */
 $event = new EntryEventClass($id_site, $area_id, $id, $tplArray);
 $dispatcher->dispatch(ViewEntryEvent::VIEWENTRY_END, $event);
