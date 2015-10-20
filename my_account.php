@@ -35,6 +35,7 @@ include_once('include/functions.inc.php');
 require_once('include/'.$dbsys.'.inc.php');
 require_once('include/session.inc.php');
 include_once('include/settings.class.php');
+include_once('include/init.php');
 $grr_script_name = 'my_account.php';
 if (!Settings::load())
 	die('Erreur chargement settings');
