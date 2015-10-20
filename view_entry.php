@@ -987,10 +987,10 @@ if (isset($keys) && isset($courrier)) {
     $tplArray['keyEtCourrier'] = false;
 }
 /* get id site by id area */
-$id_site = mrbsGetAreaSite($area_id);
+$id_site = mrbsGetAreaSite($area);
 
 /* dispatch de l'event à la fin de view_entry */
-$event = new EntryEventClass($id_site, $area_id, $id, $tplArray);
+$event = new EntryEventClass($id_site, $area, $id, $tplArray);
 $dispatcher->dispatch(ViewEntryEvent::VIEWENTRY_END, $event);
 /* mise à jour du template avec le retour du plugin */
 $tplArray = $event->getTpl();
