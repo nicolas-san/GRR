@@ -20,12 +20,12 @@ if ($_GET['pview'] != 1) {
         $area_list_format = Settings::get('area_list_format');
     }
 
-    /* je récupére an tableau $tplArray par list ou false si il n'y a rien à affichier */
+    /* je récupére an tableau $tplArray par list ou false si il n'y a rien à afficher */
     $tplArrayMenuGauche['siteSelection'] = make_site_selection_fields('week_all.php', $id_site, $year, $month, $day, getUserName(), $area_list_format);
 
-    $tplArrayMenuGauche['areaSelection'] =make_area_selection_fields('week_all.php', $id_site, $area, $year, $month, $day, getUserName(), $area_list_format);
+    $tplArrayMenuGauche['areaSelection'] = make_area_selection_fields('week_all.php', $id_site, $area, $year, $month, $day, getUserName(), $area_list_format);
 
-    $tplArrayMenuGauche['roomSelection'] =make_room_selection_fields('week', $area, $room, $year, $month, $day, $area_list_format);
+    $tplArrayMenuGauche['roomSelection'] = make_room_selection_fields('week', $area, $room, $year, $month, $day, $area_list_format);
 
 
     if (Settings::get('legend') == '0') {
