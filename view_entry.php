@@ -986,8 +986,9 @@ if (isset($keys) && isset($courrier)) {
 } else {
     $tplArray['keyEtCourrier'] = false;
 }
+global $id_site;
 /* dispatch de l'event à la fin de view_entry */
-$event = new EntryEventClass($area_id, $id, $tplArray);
+$event = new EntryEventClass($id_site, $area_id, $id, $tplArray);
 $dispatcher->dispatch(ViewEntryEvent::VIEWENTRY_END, $event);
 /* mise à jour du template avec le retour du plugin */
 $tplArray = $event->getTpl();

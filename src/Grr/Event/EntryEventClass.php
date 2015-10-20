@@ -12,12 +12,14 @@ class EntryEventClass extends Event
 {
     private $id;
     private $idArea;
+    private $idSite;
     private $tpl;
 
-    public function __construct($idArea, $id, $tpl)
+    public function __construct($idSite, $idArea, $id, $tpl)
     {
         $this->id = $id;
         $this->idArea = $idArea;
+        $this->idSite = $idSite;
         $this->tpl = $tpl;
     }
 
@@ -67,6 +69,22 @@ class EntryEventClass extends Event
     public function setIdArea($idArea)
     {
         $this->idArea = $idArea;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdSite()
+    {
+        return $this->idSite;
+    }
+
+    /**
+     * @param mixed $idSite
+     */
+    public function setIdSite($idSite)
+    {
+        $this->idSite = $idSite;
     }
 
 
