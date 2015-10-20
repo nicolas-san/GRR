@@ -23,7 +23,11 @@
                     </td>
                     {% endif %}
                     <td class="administration">
-                        <br><a href="{{ pathToAdmin }}">{{ vocab.admin }}</a>
+                        <a class="btn btn-link" href="{{ pathToMyAccount }}" >{{ vocab.manage_my_account }}</a>
+                        <br>
+
+                        <a class="btn btn-link" href="{{ pathToAdmin }}" >{{ vocab.admin }}</a>
+
                         <br />
                         {% if pathToMyslqlSave != false %}
                             <form action="{{ pathToMyslqlSave }}" method='get'><div>

@@ -1272,7 +1272,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
             } else {
                 $tplArray['vocab']['welcome_to'] = get_vocab('welcome_to');
                 $tplArray['vocab']['manage_my_account'] = get_vocab('manage_my_account');
-                $tplArray['pathToMyAccount'] = $racine.'my_account.php?day='.$day.'&amp;year='.$year.'&amp;month='.$month;
+                $tplArray['pathToMyAccount'] = $racine.'my_account.php?day='.$day.'&year='.$year.'&amp='.$month;
                 $tplArray['prenom'] = htmlspecialchars($_SESSION['prenom']);
                 $tplArray['nom'] = htmlspecialchars($_SESSION['nom']);
                 /*echo '<br /> <b>'.get_vocab('welcome_to').htmlspecialchars($_SESSION['prenom']).' '.htmlspecialchars($_SESSION['nom']).'</b>'.PHP_EOL;

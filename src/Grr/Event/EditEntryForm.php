@@ -12,11 +12,13 @@ class EditEntryForm extends Event
 {
     private $tpl;
     private $idArea;
+    private $idSite;
 
-    public function __construct($idArea, array $tpl)
+    public function __construct($idSite, $idArea, array $tpl)
     {
         $this->tpl = $tpl;
         $this->idArea = $idArea;
+        $this->idSite = $idSite;
     }
 
     /**
@@ -49,6 +51,22 @@ class EditEntryForm extends Event
     public function setIdArea($idArea)
     {
         $this->idArea = $idArea;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdSite()
+    {
+        return $this->idSite;
+    }
+
+    /**
+     * @param mixed $idSite
+     */
+    public function setIdSite($idSite)
+    {
+        $this->idSite = $idSite;
     }
 
 
