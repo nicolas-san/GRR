@@ -398,10 +398,11 @@ $tplArrayEditEntry['description'] = htmlspecialchars(strip_tags($description));
 $F = get_vocab('date').get_vocab('deux_points');
 
 
-$sql = 'SELECT area_id FROM '.TABLE_PREFIX."_room WHERE id=$room_id";
+$sql = 'SELECT area_id, capacity FROM '.TABLE_PREFIX."_room WHERE id=$room_id";
 $res = grr_sql_query($sql);
 $row = grr_sql_row($res, 0);
 $area_id = $row[0];
+$tplArrayEditEntry['capacity'] = $row[1];
 $moderate = grr_sql_query1('SELECT moderate FROM '.TABLE_PREFIX."_room WHERE id='".$room_id."'");
 
 $tplArrayEditEntry['areaId'] = $row[0];
