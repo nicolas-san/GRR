@@ -63,7 +63,7 @@ if (authUserAccesArea(getUserName(), $areas) == 0)
 	exit();
 }
 header("Content-Type: text/html;charset=utf-8");
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+//header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 // Type de réservation
 $qui_peut_reserver_pour = grr_sql_query1("SELECT qui_peut_reserver_pour FROM grr_room WHERE id='".$room."'");
 $aff_default = ((authGetUserLevel(getUserName(),-1,"room") >= $qui_peut_reserver_pour) || (authGetUserLevel(getUserName(),$areas,"area") >= $qui_peut_reserver_pour));
@@ -73,7 +73,7 @@ $aff_type = max(authGetUserLevel(getUserName(),-1,"room"),authGetUserLevel(getUs
 $nb_type = 0;
 $type_nom_unique = "??";
 $type_id_unique = "??";
-$display_type = '<table width="100%"><tr><td class="E"><b>'.get_vocab("type").get_vocab("deux_points").'</b></td></tr>'.PHP_EOL;
+$display_type = '<table width="100%"><tr><td class="E"><b><span id="typeLabel">'.get_vocab("type")."</span>".get_vocab("deux_points").'</b></td></tr>'.PHP_EOL;
 $affiche_mess_asterisque = true;
 $display_type .= '<tr><td class="CL">'.PHP_EOL;
 $display_type .= '<div class="col-xs-3">'.PHP_EOL;

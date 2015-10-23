@@ -398,11 +398,13 @@ $tplArrayEditEntry['description'] = htmlspecialchars(strip_tags($description));
 $F = get_vocab('date').get_vocab('deux_points');
 
 
-$sql = 'SELECT area_id, capacity FROM '.TABLE_PREFIX."_room WHERE id=$room_id";
+$sql = 'SELECT area_id, capacity, room_name FROM '.TABLE_PREFIX."_room WHERE id=$room_id";
 $res = grr_sql_query($sql);
 $row = grr_sql_row($res, 0);
 $area_id = $row[0];
 $tplArrayEditEntry['capacity'] = $row[1];
+$tplArrayEditEntry['roomName'] = $row[2];
+
 $moderate = grr_sql_query1('SELECT moderate FROM '.TABLE_PREFIX."_room WHERE id='".$room_id."'");
 
 $tplArrayEditEntry['areaId'] = $row[0];
@@ -907,7 +909,7 @@ if ($res) {
 
 /*echo '<!-- ************* Ressources edition ***************** -->',PHP_EOL;
 echo '<tr><td class="E"><b>'.get_vocab('rooms').get_vocab('deux_points')."</b></td></tr>\n";*/
-$sql = 'SELECT id, room_name, description FROM '.TABLE_PREFIX."_room WHERE area_id=$area_id ";
+$sql = 'SELECT id, room_name, description, capacity FROM '.TABLE_PREFIX."_room WHERE area_id=$area_id ";
 $tab_rooms_noaccess = verif_acces_ressource(getUserName(), 'all');
 foreach ($tab_rooms_noaccess as $key) {
     $sql .= " and id != $key ";
@@ -924,6 +926,7 @@ if ($res) {
         /*var_dump($row);echo "<br>";*/
         $tplArrayEditEntry['rooms'][$i]['0'] = $row[0];
         $tplArrayEditEntry['rooms'][$i]['1'] = $row[1];
+        $tplArrayEditEntry['rooms'][$i]['capacity'] = $row[3];
         $selected = '';
         if ($row[0] == $room_id) {
             //$selected = 'selected="selected"';
