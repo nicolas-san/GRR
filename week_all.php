@@ -145,6 +145,7 @@ start_time <= $date_end AND
 end_time > $date_start
 ORDER by start_time, end_time, ".TABLE_PREFIX.'_entry.id';
 $res = grr_sql_query($sql);
+/*var_dump($sql);*/
 if (!$res) {
     echo grr_sql_error();
 } else {

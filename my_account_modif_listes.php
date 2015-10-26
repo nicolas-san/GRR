@@ -147,7 +147,8 @@ if ($_GET['type'] == "ressource")
 		}
 		$sql .= " ORDER BY order_display,room_name";
 		$resultat = grr_sql_query($sql);
-		$display_liste = '<table border="0"><tr><td>'.get_vocab('default_room').'</td><td><select class="form-control" name="id_room"><option value="-1"';
+		$display_liste = '<table border="0"><tr><td>'.get_vocab('default_room').'</td><td><select class="form-control" name="id_room">
+		<option value="-1"';
 		if ($default_room == -1)
 			$display_liste .= ' selected="selected" ';
 		$display_liste .= ' >'.get_vocab('default_room_all').'</option>'."\n".

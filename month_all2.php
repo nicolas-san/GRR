@@ -183,6 +183,7 @@ FROM '.TABLE_PREFIX.'_entry inner join '.TABLE_PREFIX.'_room on '.TABLE_PREFIX.'
 WHERE (start_time <= $month_end AND end_time > $month_start and area_id='".$area."')
 ORDER by start_time, end_time, ".TABLE_PREFIX.'_room.room_name';
 $res = grr_sql_query($sql);
+var_dump($sql);
 if (!$res) {
     echo grr_sql_error();
 } else {
