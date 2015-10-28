@@ -129,112 +129,168 @@ if (isset($_POST['login']) && isset($_POST['password']))
 		}
 	}
 }
+$tplArray = [];
 // Dans le cas d'une démo, on met à jour la base une fois par jour.
 MajMysqlModeDemo();
 //si on a interdit l'acces a la page login
 if ((Settings::get("Url_cacher_page_login") != "") && ((!isset($sso_super_admin)) || ($sso_super_admin == false)) && (!isset($_GET["local"])))
 	header("Location: ./index.php");
 echo begin_page(get_vocab("mrbs").get_vocab("deux_points").Settings::get("company"),"no_session");
-?>
-<script type="text/javascript" src="js/functions.js" ></script>
-<div class="center">
-	<?php
+
+
+/*<!--<script type="text/javascript" src="js/functions.js" ></script>
+<div class="center">-->*/
+
 	$nom_picture = "./images/".Settings::get("logo");
-	if ((Settings::get("logo") != '') && (@file_exists($nom_picture)))
-		echo "<a href=\"javascript:history.back()\"><img src=\"".$nom_picture."\" alt=\"logo\" /></a>\n";"";
-	?>
-	<h1>
+	if ((Settings::get("logo") != '') && (@file_exists($nom_picture))) {
+        $tplArray['pathLogo'] = $nom_picture;
+        /*echo "<a href=\"javascript:history.back()\"><img src=\"".$nom_picture."\" alt=\"logo\" /></a>\n";"";*/
+    } else {
+        $tplArray['pathLogo'] = false;
+    }
+	$tplArray['settings']['title'] = Settings::get("title_home_page");
+	$tplArray['settings']['company'] = Settings::get("company");
+	$tplArray['settings']['message'] = Settings::get("message_home_page");
+	$tplArray['settings']['disableLogin'] = Settings::get("disable_login");
+
+	$tplArray['vocab']['msg_login3'] = get_vocab("msg_login3");
+	/*<h1>
 		<?php
 		echo Settings::get("title_home_page");
-		?>
-	</h1>
+			</h1>
 	<h2>
-		<?php
+
 		echo Settings::get("company");
-		?>
+
 	</h2>
 	<br />
 	<p>
-		<?php echo Settings::get("message_home_page");
-		if ((Settings::get("disable_login")) == 'yes')
-			echo "<br /><br /><span class='avertissement'>".get_vocab("msg_login3")."</span>";
-		?>
-	</p>
-	<form action="login.php" method='post' style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
-		<?php
-		if ((isset($message)) && (Settings::get("disable_login")) != 'yes')
-			echo("<p><span class='avertissement'>" . $message . "</span></p>");
+	*/
+		//echo Settings::get("message_home_page");
+		/*if ((Settings::get("disable_login")) == 'yes') {
+            echo "<br /><br /><span class='avertissement'>" . get_vocab("msg_login3") . "</span>";
+        }*/
+
+	/*</p>*/
+	/*<form action="login.php" method='post' style="width: 100%; margin-top: 24px; margin-bottom: 48px;">*/
+		/*<?php*/
+$tplArray['vocab']['authentification_locale'] = get_vocab("authentification_locale");
+
+		if ((isset($message)) && (Settings::get("disable_login")) != 'yes') {
+            $tplArray['messageWarning'] = $message;
+            //echo("<p><span class='avertissement'>" . $message . "</span></p>");
+        } else {
+            $tplArray['messageWarning'] = false;
+        }
 		if ((Settings::get('sso_statut') == 'cas_visiteur') || (Settings::get('sso_statut') == 'cas_utilisateur'))
 		{
-			echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_CAS")."</a></span></p>";
-			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";
-		}
+            $tplArray['authLocale'] = true;
+            $tplArray['vocab']['authentification_CAS'] = get_vocab("authentification_CAS");
+
+
+			/*echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_CAS")."</a></span></p>";
+			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";*/
+		} else {
+            $tplArray['authLocale'] = false;
+        }
 		if ((Settings::get('sso_statut') == 'lemon_visiteur') || (Settings::get('sso_statut') == 'lemon_utilisateur'))
 		{
-			echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_lemon")."</a></span></p>";
-			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";
-		}
+            $tplArray['lemon'] = true;
+            $tplArray['vocab']['authentification_lemon'] = get_vocab("authentification_lemon");
+
+			/*echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_lemon")."</a></span></p>";
+			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";*/
+		} else {
+            $tplArray['lemon'] = false;
+        }
 		if (Settings::get('sso_statut') == 'lcs')
 		{
-			echo "<p><span style=\"font-size:1.4em\"><a href=\"".LCS_PAGE_AUTHENTIF."\">".get_vocab("authentification_lcs")."</a></span></p>";
-			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";
-		}
+            $tplArray['lcs'] = true;
+            $tplArray['lcsLink'] = LCS_PAGE_AUTHENTIF;
+            $tplArray['vocab']['authentification_lcs'] = get_vocab("authentification_lcs");
+			/*echo "<p><span style=\"font-size:1.4em\"><a href=\"".LCS_PAGE_AUTHENTIF."\">".get_vocab("authentification_lcs")."</a></span></p>";
+			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";*/
+		} else {
+            $tplArray['lcs'] = false;
+        }
 		if ((Settings::get('sso_statut') == 'lasso_visiteur') || (Settings::get('sso_statut') == 'lasso_utilisateur'))
 		{
-			echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_lasso")."</a></span></p>";
-			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";
-		}
+            $tplArray['lasso'] = true;
+            $tplArray['vocab']['authentification_lasso'] = get_vocab("authentification_lasso");
+			/*echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_lasso")."</a></span></p>";
+			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";*/
+		} else {
+            $tplArray['lasso'] = false;
+        }
 		if ((Settings::get('sso_statut') == 'http_visiteur') || (Settings::get('sso_statut') == 'http_utilisateur'))
 		{
-			echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_http")."</a></span></p>";
-			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";
-		}
-		?>
-		<fieldset style="padding-top: 8px; padding-bottom: 8px; width: 40%; margin-left: auto; margin-right: auto;">
-			<legend class="fontcolor3" style="font-variant: small-caps;"><?php echo get_vocab("identification"); ?></legend>
+            $tplArray['http'] = true;
+            $tplArray['vocab']['authentification_http'] = get_vocab("authentification_http");
+			/*echo "<p><span style=\"font-size:1.4em\"><a href=\"./index.php\">".get_vocab("authentification_http")."</a></span></p>";
+			echo "<p><b>".get_vocab("authentification_locale")."</b></p>";*/
+		} else {
+            $tplArray['http'] = false;
+        }
+
+        $tplArray['vocab']['identification'] = get_vocab("identification");
+        $tplArray['vocab']['login'] = get_vocab("login");
+        $tplArray['vocab']['pwd'] = get_vocab("pwd");
+        $tplArray['vocab']['OK'] = get_vocab("OK");
+        $tplArray['vocab']['mrbs'] = strip_tags(get_vocab("mrbs"));
+        $tplArray['vocab']['grr_version'] = strip_tags(get_vocab("grr_version"));
+        $tplArray['vocab']['msg_login1'] = strip_tags(get_vocab("msg_login1"));
+
+		/*<fieldset style="padding-top: 8px; padding-bottom: 8px; width: 40%; margin-left: auto; margin-right: auto;">
+			<legend class="fontcolor3" style="font-variant: small-caps;"> echo get_vocab("identification"); </legend>
 			<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="0">
 				<tr>
-					<td style="text-align: right; width: 40%; font-variant: small-caps;"><?php echo get_vocab("login"); ?></td>
+					<td style="text-align: right; width: 40%; font-variant: small-caps;"> echo get_vocab("login"); </td>
 					<td style="text-align: center; width: 60%;"><input type="text" id="login" name="login" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: right; width: 40%; font-variant: small-caps;"><?php echo get_vocab("pwd"); ?></td>
+					<td style="text-align: right; width: 40%; font-variant: small-caps;"> echo get_vocab("pwd"); </td>
 					<td style="text-align: center; width: 60%;"><input type="password" name="password" /></td>
 				</tr>
-			</table>
-			<?php
+			</table>*/
+
 			if (isset($_GET['url']))
 			{
-				$url = rawurlencode($_GET['url']);
-				echo "<input type=\"hidden\" name=\"url\" value=\"".$url."\" />\n";
-			}
-			?>
-			<input type="submit" name="submit" value="<?php echo get_vocab("OK"); ?>" style="font-variant: small-caps;" />
+				$tplArray['url'] = rawurlencode(strip_tags($_GET['url']));
+				/*echo "<input type=\"hidden\" name=\"url\" value=\"".$url."\" />\n";*/
+			} else {
+                $tplArray['url'] = false;
+            }
+
+			/*<input type="submit" name="submit" value=" echo get_vocab("OK"); " style="font-variant: small-caps;" />
 		</fieldset>
 	</form>
 	<script type="text/javascript">
 		document.getElementById('login').focus();
-	</script>
-	<?php
+	</script>*/
+
 	if (Settings::get("webmaster_email") != "")
 	{
-		$lien = affiche_lien_contact("contact_administrateur","identifiant:non","seulement_si_email");
-		if ($lien != "")
-			echo "<p>[".$lien."]</p>";
-	}
-	echo "<a href=\"javascript:history.back()\">Précedent";
-	echo " - <b>".Settings::get("company")."</b></a>";
-	?>
-	<br />
-	<br />
-	<?php
-	$grr_devel_url = "http://grr.devome.com/";
-	echo "<br /><p class=\"small\"><a href=\"".$grr_devel_url."\">".get_vocab("mrbs")."</a> - ".get_vocab("grr_version").affiche_version();
-	$email = explode('@',$grr_devel_email);
+        $lien = affiche_lien_contact("contact_administrateur","identifiant:non","seulement_si_email");
+		if ($lien != "") {
+            $tplArray['webmasterMail'] = $lien;
+        } else {
+            $tplArray['webmasterMail'] = false;
+        }
+	} else {
+        $tplArray['webmasterMail'] = false;
+    }
+	/*echo "<a href=\"javascript:history.back()\">Précedent";
+	echo " - <b>".Settings::get("company")."</b></a>";*/
+
+	/*<br />
+	<br />*/
+	$tplArray['version'] = Settings::get('version');
+
+	//$grr_devel_url = "http://grr.devome.com/";
+	/*echo "<br /><p class=\"small\"><a href=\"".$grr_devel_url."\">".get_vocab("mrbs")."</a> - ".get_vocab("grr_version").affiche_version();*/
+	/*$email = explode('@',$grr_devel_email);
 	$person = $email[0];
-	$domain = $email[1];
-	echo "<br />".get_vocab("msg_login1")."<a href=\"".$grr_devel_url."\">".$grr_devel_url."</a>";
+	$domain = $email[1];*/
+	/*echo "<br />".get_vocab("msg_login1")."<a href=\"".$grr_devel_url."\">".$grr_devel_url."</a>";*/
+echo $twig->render('login.html.twig', $tplArray);
 	?>
-</div>
-</body>
-</html>

@@ -650,9 +650,6 @@ if ($enable_periods == 'y') {
 $tplArrayEditEntry['enablePeriod'] = false;
     /*echo '<b>'.get_vocab('time').' : </b>';*/
     if (isset($_GET['id'])) {
-        /*var_dump($duree_par_defaut_reservation_area);
-        var_dump($end_hour);
-        var_dump($end_min);*/
 
         //$tplArrayEditEntry['EnvGetId'] = $_GET['id'];
         //$tplArrayEditEntry['dureeParDefautReservationArea'] = $duration;

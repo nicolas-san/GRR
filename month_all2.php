@@ -183,7 +183,7 @@ FROM '.TABLE_PREFIX.'_entry inner join '.TABLE_PREFIX.'_room on '.TABLE_PREFIX.'
 WHERE (start_time <= $month_end AND end_time > $month_start and area_id='".$area."')
 ORDER by start_time, end_time, ".TABLE_PREFIX.'_room.room_name';
 $res = grr_sql_query($sql);
-var_dump($sql);
+/*var_dump($sql);*/
 if (!$res) {
     echo grr_sql_error();
 } else {
@@ -223,6 +223,7 @@ if (!$res) {
             $d[$day_num]['room'][] = $row[5];
             $d[$day_num]['res'][] = $row[6];
             $d[$day_num]['color'][] = $row[10];
+            $d[$day_num]['type'][] = grr_sql_query1('SELECT type_name FROM '.TABLE_PREFIX."_type_area WHERE type_letter='".$row[10]."'");
             if ($row[9] > 0) {
                 $d[$day_num]['option_reser'][] = $row[8];
             } else {
@@ -380,6 +381,7 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
             $t2 = mktime(0, 0, 0, $month,$k,$year);
             $cday = date('j', $t2);
             $cweek = date('w', $t2);
+            $name_day = ucfirst(utf8_strftime("%d", $t2));
             /*echo "<pre>";
             echo "<br>MONTH -> ".$month;
             echo "<br>T2  -> ".$t2;
@@ -392,6 +394,8 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
             //$t2 += 86400;
             if ($display_day[$cweek] == 1) {
                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['display'] = true;
+                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['nameDay'] = $name_day;
+                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['linkDay'] = 'day.php?year='.$year.'&month='.$month.'&day='.$cday.'&area='.$area;
                 //echo '<td class="cell_month"> ';
                 if (est_hors_reservation(mktime(0, 0, 0, $month, $cday, $year), $area)) {
                     $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['horsResa'] = true;
@@ -412,6 +416,8 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
                                     /*echo "\n<br /><table class='table-header'><tr>";
                                     tdcell($d[$cday]['color'][$i]);*/
                                     $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['color'] = getColor($d[$cday]['color'][$i]);
+                                    $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['type'] = $d[$cday]['type'][$i];
+                                    $tplArray['rooms'][$incrementRoomAccessible]['jours'][$incrementDisplayDay]['reservations'][$i]['data'] = $d[$cday]['data'][$i];
                                     /*if ($d[$cday]['res'][$i] != '-') {
                                         echo ' <img src="img_grr/buzy.png" alt="'.get_vocab('ressource actuellement empruntee').'" title="'.get_vocab('ressource actuellement empruntee')."\" width=\"20\" height=\"20\" class=\"image\" /> \n";
                                     }
