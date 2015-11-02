@@ -115,11 +115,6 @@ function minicals($year, $month, $day, $area, $room, $dmy)
         private function createlink($m, $y, $month, $year, $dmy, $room, $area, $text, $glyph)
         {
             global $vocab, $type_month_all;
-            echo "<pre>";
-            var_dump($dmy);
-            echo "<br>";
-            var_dump($type_month_all);
-            echo "</pre>";
             $tplArray['vocab'][$text] = htmlspecialchars(get_vocab($text));
             $tmp = mktime(0, 0, 0, ($month) + $m, 1, ($year) + $y);
             $lastmonth = date('m', $tmp);
