@@ -322,6 +322,8 @@ if (grr_sql_count($res) == 0) {
         echo '</tr>'.PHP_EOL;
         echo '</table>'.PHP_EOL;*/
     }
+    /* lien courant pour le  lien vers l'impression */
+    $tplArray['linkCurrent'] = 'week_all.php?year='.$year.'&month='.$month.'&day='.$day.'&area='.$area;
     $tplArray['thisAreaName'] = $this_area_name;
     /* todo sortir les dates brutes et laisser twig les localiser avec peut être l'extension intl */
     $tplArray['dateStart'] = utf8_strftime($dformat, $date_start);
@@ -770,6 +772,10 @@ echo '</div>'.PHP_EOL;*/
 
 //echo '<div id="popup_name" class="popup_block col-xs-12" ></div>'.PHP_EOL;
 
-//include 'footer.php';
-echo $twig->render('weekAll.html.twig', $tplArray);
+
+if ($_GET['pview'] == 1) {
+    echo $twig->render('weekPrint.html.twig', $tplArray);
+} else {
+    echo $twig->render('weekAll.html.twig', $tplArray);
+}
 ?>
