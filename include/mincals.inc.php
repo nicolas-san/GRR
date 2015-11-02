@@ -115,13 +115,18 @@ function minicals($year, $month, $day, $area, $room, $dmy)
         private function createlink($m, $y, $month, $year, $dmy, $room, $area, $text, $glyph)
         {
             global $vocab, $type_month_all;
+            echo "<pre>";
+            var_dump($dmy);
+            echo "<br>";
+            var_dump($type_month_all);
+            echo "</pre>";
             $tplArray['vocab'][$text] = htmlspecialchars(get_vocab($text));
             $tmp = mktime(0, 0, 0, ($month) + $m, 1, ($year) + $y);
             $lastmonth = date('m', $tmp);
             $lastyear = date('Y', $tmp);
             if (($dmy != 'day') && ($dmy != 'week_all') && ($dmy != 'month_all') && ($dmy != 'month_all2')) {
 
-                $tplArray['link'] = 'month.php?year='.$lastyear.'&month='.$lastmonth.'&day=1&area='.$this->area.'&room='.$room;
+                $tplArray['link'] = 'month_all2.php?year='.$lastyear.'&month='.$lastmonth.'&day=1&area='.$this->area.'&room='.$room;
                 //return '<button type="button" title="'.htmlspecialchars(get_vocab($text))."\" class=\"btn btn-default btn-xs\" onclick=\"charger();javascript: location.href='month.php?year=$lastyear&amp;month=$lastmonth&amp;day=1&amp;area=$this->area&amp;room=$room';\"><span class=\"glyphicon glyphicon-$glyph\"></span></button>\n";
                 return $tplArray['link'];
             } else {
