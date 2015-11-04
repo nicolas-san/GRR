@@ -346,6 +346,7 @@ $tplArray['description'] = $description;
 	</tr>*/
 
     if (!$was_del) {
+        $i = 0;
         $overload_data = mrbsEntryGetOverloadDesc($id);
         foreach ($overload_data as $fieldname => $fielddata) {
             if ($fielddata['confidentiel'] == 'n') {
@@ -367,6 +368,7 @@ $tplArray['description'] = $description;
             }
             $tplArray['overloadData'][$i]['name'] = bbcode(htmlspecialchars($fieldname), '');
             $tplArray['overloadData'][$i]['value'] = bbcode(htmlspecialchars($fielddata['valeur']), '');
+            $i++;
         }
     }
 $tplArray['areaName'] = $area_name;
