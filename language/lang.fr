@@ -933,4 +933,6 @@ $vocab['ofmonth'] = "du mois.";
 $vocab['holidays_msg'] = "Afficher les Vacances scolaire et les jours fériés (France)";
 $vocab['holidays_zone_msg'] = "Choix de la zone de vacances scolaire (France)";
 $vocab['courrier_msg'] = "Afficher la gestion des salles par courrier";
+$vocab['champs_libre'] = "Champs libre (permet d'ajouter des informations, utilisables par exemple par les plugins)";
+$vocab['tel'] = "Téléphone";
 ?>
