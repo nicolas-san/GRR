@@ -262,10 +262,14 @@ if ($enable_periods == 'y') {
 }
 if ($beneficiaire != '') {
     $mail_exist = grr_sql_query1('SELECT email FROM '.TABLE_PREFIX."_utilisateurs WHERE login='$beneficiaire'");
+    $telBenef = grr_sql_query1('SELECT tel FROM '.TABLE_PREFIX."_utilisateurs WHERE login='$beneficiaire'");
 } else {
     $tab_benef = donne_nom_email($beneficiaire_ext);
     $mail_exist = $tab_benef['email'];
+    //$telBenef = grr_sql_query1('SELECT tel FROM '.TABLE_PREFIX."_utilisateurs WHERE login='$beneficiaire_ext'");
 }
+
+$tplArray['emailBeneficiaire'] = $mail_exist;
 if ($enable_periods == 'y') {
     toPeriodString($start_period, $duration, $dur_units);
 } else {
@@ -481,7 +485,10 @@ $tplArray['typeName'] = $type_name;
 		</td>
 		<td>
 	*/
-			$tplArray['beneficiaireNomPrenom'] = affiche_nom_prenom_email($create_by, '', $option_affiche_nom_prenom_email);
+			$tplArray['beneficiaireNomPrenom'] = affiche_nom_prenom_email($create_by, '', 'nomail');
+            /* ajouté en attendant pour récuper le mail brut en plus */
+			$tplArray['beneficiaireMail'] = affiche_nom_prenom_email($create_by, '', 'onlymail');
+            $tplArray['telCreatedBy'] = grr_sql_query1('SELECT tel FROM '.TABLE_PREFIX."_utilisateurs WHERE login='$create_by'");
             //echo affiche_nom_prenom_email($create_by, '', $option_affiche_nom_prenom_email);
              $tplArray['createdBy'] = affiche_nom_prenom_email($create_by, '');
             if ($active_ressource_empruntee == 'y') {
@@ -584,13 +591,15 @@ $tplArray['typeName'] = $type_name;
         }
         $row2 = grr_sql_row($res, 0);
         $description = $row2[0];
-        $sql = 'SELECT nom, prenom FROM '.TABLE_PREFIX."_utilisateurs WHERE login = '".$row2[1]."'";
+        $sql = 'SELECT nom, prenom, email, tel FROM '.TABLE_PREFIX."_utilisateurs WHERE login = '".$row2[1]."'";
         $res = grr_sql_query($sql);
         if (!$res) {
             fatal_error(0, grr_sql_error());
         }
         $row3 = grr_sql_row($res, 0);
         $nom_modo = $row3[1].' '.$row3[0];
+        $tplArray['emailModo'] = $row3[2];
+        $tplArray['telModo'] = $row3[3];
         if (authGetUserLevel(getUserName(), -1) > 1) {
             $tplArray['moderable'] = true;
             /*echo '<tr>',PHP_EOL,'<td><b>'.get_vocab('moderation').get_vocab('deux_points').'</b></td><td><strong>'.get_vocab('moderation_acceptee_par').' '.$nom_modo.'</strong>';*/
@@ -614,13 +623,15 @@ $tplArray['typeName'] = $type_name;
         }
         $row4 = grr_sql_row($res, 0);
         $description = $row4[0];
-        $sql = 'SELECT nom, prenom from '.TABLE_PREFIX."_utilisateurs where login = '".$row4[1]."'";
+        $sql = 'SELECT nom, prenom, email, tel from '.TABLE_PREFIX."_utilisateurs where login = '".$row4[1]."'";
         $res = grr_sql_query($sql);
         if (!$res) {
             fatal_error(0, grr_sql_error());
         }
         $row5 = grr_sql_row($res, 0);
         $nom_modo = $row5[1].' '.$row5[0];
+        $tplArray['emailModo'] = $row3[2];
+        $tplArray['telModo'] = $row3[3];
         if (authGetUserLevel(getUserName(), -1) > 1) {
             $tplArray['moderable'] = true;
             if ($description != '') {
