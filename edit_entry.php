@@ -291,6 +291,9 @@ if (isset($id)) {
     $option_reservation = -1;
     $modif_option_reservation = 'y';
 }
+/* get user champs_libre */
+$tplArrayEditEntry['userChampsLibre'] = mysqli_result(grr_sql_query('SELECT champs_libre FROM '.TABLE_PREFIX.'_utilisateurs WHERE login="'.getUserName().'"'), 0);
+
 if (isset($_GET['Err'])) {
     $Err = $_GET['Err'];
 }
