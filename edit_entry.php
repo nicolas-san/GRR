@@ -927,6 +927,7 @@ if ($res) {
         $tplArrayEditEntry['rooms'][$i]['0'] = $row[0];
         $tplArrayEditEntry['rooms'][$i]['1'] = $row[1];
         $tplArrayEditEntry['rooms'][$i]['capacity'] = $row[3];
+        $tplArrayEditEntry['rooms'][$i]['desc'] = $row[2];
         $selected = '';
         if ($row[0] == $room_id) {
             //$selected = 'selected="selected"';

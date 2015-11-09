@@ -35,6 +35,7 @@ include "include/$dbsys.inc.php";
 include 'include/mincals.inc.php';
 include 'include/mrbs_sql.inc.php';
 include 'include/init.php';
+
 $grr_script_name = 'week_all.php';
 $tplArray = [];
 // Settings
@@ -76,6 +77,14 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
 }
 Definition_ressource_domaine_site();
+
+/* for plugins */
+use Grr\Event\EntryEventClass;
+use Grr\Event\WeekAllEvent;
+/* get id site by id area */
+$id_site = mrbsGetAreaSite($area);
+/* end plugins */
+
 print_header($day, $month, $year, $type_session, false);
 
 if (check_begin_end_bookings($day, $month, $year)) {
@@ -530,10 +539,21 @@ if (grr_sql_count($res) == 0) {
                             //$tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i] = true;
                             if ($d[$cday]['id_room'][$i] == $row['2']) {
                                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['empty'] = false;
-                                /*if ($no_td) {
-                                    echo '<td class="cell_month">'.PHP_EOL;
-                                    $no_td = false;
-                                }*/
+                                /**
+                                 * Plugin event
+                                 */
+                                /* dispatch de l'event pour chaque room */
+                                $event = new EntryEventClass($id_site, $area, $d[$cday]['id'][$i], false);
+                                $dispatcher->dispatch(WeekAllEvent::WEEKALL_FOREACH_ROOM, $event);
+                                /* mise à jour du template avec le retour du plugin */
+                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i] = $event->getTpl();
+                                /**
+                                 * END PLUGIN EVENT
+                                 */
+                                /*echo "<pre>";
+                                    var_dump($event);
+                                echo "</pre>";*/
+
                                 if ($acces_fiche_reservation) {
                                     $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['accessFicheResa'] = true;
 
@@ -676,44 +696,13 @@ if (grr_sql_count($res) == 0) {
                                      * Fin du duplicate
                                      */
 
-                                    /*if ($d[$cday]['res'][$i] != '-') {
-                                        echo '<img src="img_grr/buzy.png" alt="',get_vocab('ressource actuellement empruntee'),'" title="',get_vocab('ressource actuellement empruntee'),'" width="20" height="20" class="image" />',PHP_EOL;
-                                    }
-                                    if ((isset($d[$cday]['option_reser'][$i])) && ($d[$cday]['option_reser'][$i] != -1)) {
-                                        echo '<img src="img_grr/small_flag.png" alt="',get_vocab('reservation_a_confirmer_au_plus_tard_le'),'" title="',get_vocab('reservation_a_confirmer_au_plus_tard_le'),' ',time_date_string_jma($d[$cday]['option_reser'][$i], $dformat),'" width="20" height="20" class="image" />',PHP_EOL;
-                                    }
-                                    if ((isset($d[$cday]['moderation'][$i])) && ($d[$cday]['moderation'][$i == 1])) {
-                                        echo '<img src="img_grr/flag_moderation.png" alt="',get_vocab('en_attente_moderation'),'" title="',get_vocab('en_attente_moderation'),'" class="image" />',PHP_EOL;
-                                    }
-                                    $Son_GenreRepeat = grr_sql_query1('SELECT '.TABLE_PREFIX.'_type_area.type_name FROM '.TABLE_PREFIX.'_type_area,'.TABLE_PREFIX.'_entry  WHERE  '.TABLE_PREFIX.'_entry.type='.TABLE_PREFIX.'_type_area.type_letter  AND '.TABLE_PREFIX."_entry.id = '".$d[$cday]['id'][$i]."';");
-                                    if ($Son_GenreRepeat == -1) {
-                                        echo '<span class="small_planning">',PHP_EOL,'<b>',$d[$cday]['data'][$i],'</b><br>';
-                                    } else {
-                                        echo '<span class="small_planning">'.$d[$cday]['data'][$i].'<br>'.$Son_GenreRepeat.'<br>'.PHP_EOL;
-                                    }
-                                    echo $d[$cday]['who1'][$i].'<br>'.PHP_EOL;
-                                    if ($d[$cday]['description'][$i] != '') {
-                                        echo '<i>'.$d[$cday]['description'][$i].'</i>'.PHP_EOL;
-                                    }
-                                    echo '</span>'.PHP_EOL;*/
+
                                 }
-                                /*echo '</td>'.PHP_EOL;
-                                echo '</tr>'.PHP_EOL;
-                                echo '</table>'.PHP_EOL;
-                                echo '</a>'.PHP_EOL;*/
+
                             }
                         }
                     }
 
-                    /*if ($no_td) {
-                        if ($row['4'] == 1) {
-                            echo '<td class="empty_cell">'.PHP_EOL;
-                        } else {
-                            echo '<td class="avertissement">'.PHP_EOL;
-                        }
-                    } else {
-                        echo '<div class="empty_cell">'.PHP_EOL;
-                    }*/
                     $hour = date('H', $date_now);
                     $date_booking = mktime(24, 0, 0, $cmonth, $cday, $cyear);
                     if (est_hors_reservation(mktime(0, 0, 0, $cmonth, $cday, $cyear), $area)) {
