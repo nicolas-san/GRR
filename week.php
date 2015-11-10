@@ -78,6 +78,14 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
 }
 Definition_ressource_domaine_site();
+
+/* for plugins */
+use Grr\Event\EntryEventClass;
+use Grr\Event\WeekEvent;
+/* get id site by id area */
+$id_site = mrbsGetAreaSite($area);
+/* end plugins */
+
 print_header($day, $month, $year, $type_session, false);
 
 if (check_begin_end_bookings($day, $month, $year)) {
@@ -536,10 +544,19 @@ if (grr_sql_count($res) == 0) {
                             //$tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i] = true;
                             if ($d[$cday]['id_room'][$i] == $row['2']) {
                                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['empty'] = false;
-                                /*if ($no_td) {
-                                    echo '<td class="cell_month">'.PHP_EOL;
-                                    $no_td = false;
-                                }*/
+
+                                /**
+                                 * Plugin event
+                                 */
+                                /* dispatch de l'event pour chaque room */
+                                $event = new EntryEventClass($id_site, $area, $d[$cday]['id'][$i], false);
+                                $dispatcher->dispatch(WeekEvent::WEEK_FOREACH_ROOM, $event);
+                                /* mise à jour du template avec le retour du plugin */
+                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i] = $event->getTpl();
+                                /**
+                                 * END PLUGIN EVENT
+                                 */
+
                                 if ($acces_fiche_reservation) {
                                     $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['accessFicheResa'] = true;
 

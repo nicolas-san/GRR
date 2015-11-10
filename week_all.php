@@ -550,9 +550,7 @@ if (grr_sql_count($res) == 0) {
                                 /**
                                  * END PLUGIN EVENT
                                  */
-                                /*echo "<pre>";
-                                    var_dump($event);
-                                echo "</pre>";*/
+
 
                                 if ($acces_fiche_reservation) {
                                     $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['accessFicheResa'] = true;
