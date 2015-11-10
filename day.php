@@ -602,6 +602,13 @@ if (grr_sql_count($res) == 0) {
                     if ((isset($d[$cday]['id'][0])) && !(est_hors_reservation(mktime(0, 0, 0, $cmonth, $cday, $cyear), $area))) {
                         $n = count($d[$cday]['id']);
 
+                        /* is this day in the past ? */
+                        if(strtotime($cyear.'-'.$cmonth.'-'.$cday) < time()) {
+                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = true;
+                        } else {
+                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = false;
+                        }
+
                         /*echo "<pre>";
                         var_dump($d[$cday]);*/
                         for ($i = 0; $i < $n; ++$i) {
