@@ -437,6 +437,13 @@ if (grr_sql_count($res) == 0) {
             $tplArray['jours'][$weekcol]['linkTitle'] = $title;
             $tplArray['jours'][$weekcol]['linkText'] = day_name(($weekcol + $weekstarts) % 7).' '.$num_day.' '.$temp_month2;
 
+            /* is this day in the past ? */
+            if($t < time()) {
+                $tplArray['jours'][$weekcol]['past'] = true;
+            } else {
+                $tplArray['jours'][$weekcol]['past'] = false;
+            }
+
             if (Settings::get('jours_cycles_actif') == 'Oui' && intval($jour_cycle) > -1) {
 
                 if (intval($jour_cycle) > 0) {
@@ -603,7 +610,7 @@ if (grr_sql_count($res) == 0) {
                         $n = count($d[$cday]['id']);
 
                         /* is this day in the past ? */
-                        if(strtotime($cyear.'-'.$cmonth.'-'.$cday) < time()) {
+                        if($t2 < $t) {
                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = true;
                         } else {
                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = false;

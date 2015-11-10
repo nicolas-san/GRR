@@ -513,6 +513,12 @@ if (grr_sql_count($res) == 0) {
                 $cmonth = strftime('%m', $t2);
                 $cyear = strftime('%Y', $t2);
                 $t2 += 86400;
+                /* is this day in the past ? */
+                if($t2 < time()) {
+                    $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = true;
+                } else {
+                    $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['past'] = false;
+                }
                 if (!isset($correct_heure_ete_hiver) || ($correct_heure_ete_hiver == 1)) {
                     $temp_day = strftime('%d', $t2);
                     $temp_month = strftime('%m', $t2);
