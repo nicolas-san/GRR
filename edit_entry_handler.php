@@ -37,6 +37,7 @@ include 'include/mrbs_sql.inc.php';
 include 'include/init.php';
 include 'include/misc.inc.php';
 
+use Grr\Event\EditEntryHandlerForCreate;
 use Grr\Event\EditEntryHandler;
 use Grr\Event\EditEntryHandlerEvent;
 
@@ -618,6 +619,60 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
             $entry_moderate = 0;
             $send_mail_moderate = 0;
         }
+        /* dispatch an event before call of mrbsCreate */
+        if (!isset($entry_type)) {
+            $entry_type = false;
+        }
+        $dataForCreate = [
+            'starttime' => $starttime,
+            'endtime' => $endtime,
+            'entry_type' => $entry_type,
+            'repeat_id' => $repeat_id,
+            'room_id' => $room_id,
+            'create_by' => $create_by,
+            'beneficiaire' => $beneficiaire,
+            'beneficiaire_ext' => $beneficiaire_ext,
+            'name' => $name,
+            'type' => $type,
+            'description' => $description,
+            'option_reservation' => $option_reservation,
+            'overload_data' => $overload_data,
+            'entry_moderate' => $entry_moderate,
+            'rep_jour_c' => $rep_jour_c,
+            'statut_entry' => $statut_entry,
+            'keys' => $keys,
+            'courrier' => $courrier,
+            'area' => mrbsGetRoomArea($room_id),
+            'send_mail_moderate' => $send_mail_moderate
+        ];
+        $eventBeforeDb = new EditEntryHandlerForCreate($dataForCreate);
+        $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_BEFORE_DB, $eventBeforeDb);
+
+        $dataForCreate = $eventBeforeDb->getData();
+
+        /* put back modified datas */
+        
+        $starttime = $dataForCreate['starttime'];
+        $endtime = $dataForCreate['endtime'];
+        $entry_type = $dataForCreate['entry_type'];
+        $repeat_id = $dataForCreate['repeat_id'];
+        $room_id = $dataForCreate['room_id'];
+        $create_by = $dataForCreate['create_by'];
+        $beneficiaire = $dataForCreate['beneficiaire'];
+        $beneficiaire_ext = $dataForCreate['beneficiaire_ext'];
+        $name = $dataForCreate['name'];
+        $type = $dataForCreate['type'];
+        $description = $dataForCreate['description'];
+        $option_reservation = $dataForCreate['option_reservation'];
+        $overload_data = $dataForCreate['overload_data'];
+        $entry_moderate = $dataForCreate['entry_moderate'];
+        $rep_jour_c = $dataForCreate['rep_jour_c'];
+        $statut_entry = $dataForCreate['statut_entry'];
+        $keys = $dataForCreate['keys'];
+        $courrier = $dataForCreate['courrier'];
+        $area_id = $dataForCreate['area'];
+        $send_mail_moderate = $dataForCreate['send_mail_moderate'];
+
         if ($rep_type != 0) {
             mrbsCreateRepeatingEntrys($starttime, $endtime, $rep_type, $rep_enddate, $rep_opt, $room_id, $create_by, $beneficiaire, $beneficiaire_ext, $name, $type, $description, $rep_num_weeks, $option_reservation, $overload_data, $entry_moderate, $rep_jour_c, $courrier, $rep_month_abs1, $rep_month_abs2);
             /* var globale crée par la fonction ci dessus */
@@ -680,7 +735,7 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
     $dataFromGet = filter_input_array(INPUT_GET);
     $dataFromGet['idLastInsert'] = $idPourEvent;
     $event = new EditEntryHandler($area_id, $dataFromGet);
-    $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_START, $event);
+    $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_AFTER_DB, $event);
 
     $area = mrbsGetRoomArea($room_id);
     $_SESSION['displ_msg'] = 'yes';

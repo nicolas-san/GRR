@@ -15,6 +15,10 @@ final class EditEntryHandlerEvent
      *
      * @var string
      */
-    const EDITENTRYHANDLER_START = 'editentryhandler.start';
+    const EDITENTRYHANDLER_AFTER_DB = 'editentryhandler.afterdb';
+    /**
+     * dispatché avant l'appel aux fonctions mrbsCreate*, utile pour modifier la résa
+     */
+    const EDITENTRYHANDLER_BEFORE_DB = 'editentryhandler.beforedb';
 
 }
