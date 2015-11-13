@@ -662,8 +662,8 @@ $tplArrayEditEntry['enablePeriod'] = false;
     } else {
         //$tplArrayEditEntry['EnvGetId'] = false;
 
-        $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', '', '', $duree_par_defaut_reservation_area, true);
-        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', '', '', $duree_par_defaut_reservation_area, true);
+        $tplArrayEditEntry['timePicker'] = jQuery_TimePicker('start_', $hour, $minute, $duree_par_defaut_reservation_area, true);
+        $tplArrayEditEntry['timePickerEnd'] = jQuery_TimePicker('end_', $hour, $minute, $duree_par_defaut_reservation_area, true);
     }
     if (!$twentyfourhour_format) {
         $tplArrayEditEntry['24hFormat'] = true;

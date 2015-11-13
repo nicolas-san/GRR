@@ -74,6 +74,7 @@ if (isset($_GET['redirect_page_accueil']) && ($_GET['redirect_page_accueil'] == 
 	header("Location: ./".htmlspecialchars_decode(page_accueil())."");
 	exit;
 }
+
 echo begin_page(get_vocab("mrbs"),"no_session");
 ?>
 <div class="center">

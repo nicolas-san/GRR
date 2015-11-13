@@ -4603,59 +4603,36 @@ function jQuery_DatePicker($typeDate, $echoOff = false)
 function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaultsec, $echoOff = false)
 {
 
-	if (isset ($_GET['id']))
-	{
+	if (isset ($_GET['id'])) {
 		if (isset($start_hour) && isset($start_min))
 		{
 			$hour = $start_hour;
 			$minute = $start_min;
-		}
-		else
-		{
+		} else {
 			$hour = date("h");
-			$minute = date("m");
+			$minute = date("i");
 		}
-	}
-	else
-	{
-		if (isset ($_GET['hour']))
+	} else {
+		if (isset ($_GET['hour'])) {
 			$hour = $_GET['hour'];
-		else
+		} else {
 			$hour = date("h");
-		if (isset ($_GET['minute']))
+		}
+		if (isset ($_GET['minute'])) {
 			$minute = $_GET['minute'];
-		else
-			$minute = date("m");
+		} else {
+			$minute = date("i");
+        }
 
+		if ($typeTime == 'end_') {
 
-		if ($typeTime == 'end_'){
-		$dureepardefautmin = $dureepardefaultsec/60;
+            $heure = new DateTime($hour.':'.$minute);
+            $heure->add(new DateInterval('PT'.$dureepardefaultsec.'S'));
 
-		if ($dureepardefautmin == 60){
-			$ajout = 1;
-			$hour = $_GET['hour'] + $ajout;
-			$minute ="00";
-		}
+            $hour = $heure->format('H');
+            $minute = $heure->format('i');
 
-		if ($dureepardefautmin < 60){
-			$hour = $_GET['hour'];
-			$minute =$dureepardefautmin;
-		}
-
-		if ($dureepardefautmin > 60){
-
-		$dureepardefautheure = $dureepardefautmin/60;
-
-		if (($dureepardefautheure % 60)!=0){
-			$hour = $_GET['hour']+ $dureepardefautheure;
-			if ($_GET['minute'] == 30){
-				$minute =30;
-			}else{
-				 $minute = "00";
-				};
-			}
-		}
-	};
+	    }
 
 	}
 
@@ -4666,6 +4643,7 @@ function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaults
         $tplTimePicker['hour'] = $hour;
         $tplTimePicker['minute'] = $minute;
         $tplTimePicker['typeTime'] = $typeTime;
+
 
         return $tplTimePicker;
     } else {
