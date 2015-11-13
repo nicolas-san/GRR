@@ -4602,65 +4602,63 @@ function jQuery_DatePicker($typeDate, $echoOff = false)
 
 function jQuery_TimePicker($typeTime, $start_hour, $start_min, $dureepardefaultsec, $echoOff = false)
 {
-    if (isset($_GET['id'])) {
-        if (isset($start_hour) && isset($start_min)) {
-            $hour = $start_hour;
-            $minute = $start_min;
-        } else {
-            $hour = date('h');
-            $minute = date('m');
-        }
-    } else {
-        if (isset($_GET['hour'])) {
-            $hour = $_GET['hour'];
-        } else {
-            $hour = date('h');
-        }
-        if (isset($_GET['minute'])) {
-            $minute = $_GET['minute'];
-        } else {
-            $minute = date('m');
-        }
 
-        if ($typeTime == 'end_') {
-            //echo "<br>inside function";
-            $dureepardefautmin = $dureepardefaultsec / 60;
-//echo "<br>durnéee par defaut : => ".$dureepardefautmin;
-            if ($dureepardefautmin == 60) {
-                $ajout = 1;
-                $hour = $_GET['hour'] + $ajout;
-                $minute = '00';
-            }
+	if (isset ($_GET['id']))
+	{
+		if (isset($start_hour) && isset($start_min))
+		{
+			$hour = $start_hour;
+			$minute = $start_min;
+		}
+		else
+		{
+			$hour = date("h");
+			$minute = date("m");
+		}
+	}
+	else
+	{
+		if (isset ($_GET['hour']))
+			$hour = $_GET['hour'];
+		else
+			$hour = date("h");
+		if (isset ($_GET['minute']))
+			$minute = $_GET['minute'];
+		else
+			$minute = date("m");
 
-            if ($dureepardefautmin < 60) {
-                //echo "<br>inférieur à 60 ";
-                $minuteGet = $_GET['minute'];
-                $hour = $_GET['hour'];
-                //var_dump(($minuteGet + $dureepardefautmin));
-                if (($minuteGet + $dureepardefautmin) >= 60) {
-                    /* j'ajoute les minutes du creneau choisis, et les minutes à ajouter si ça fait plus d'une heure j'incrémente l'heure */
-                    $hour++;
-                    $minute = 0;
 
-                }
-                //$minute = $dureepardefautmin;
-            }
+		if ($typeTime == 'end_'){
+		$dureepardefautmin = $dureepardefaultsec/60;
 
-            if ($dureepardefautmin > 60) {
-                $dureepardefautheure = $dureepardefautmin / 60;
+		if ($dureepardefautmin == 60){
+			$ajout = 1;
+			$hour = $_GET['hour'] + $ajout;
+			$minute ="00";
+		}
 
-                if (($dureepardefautheure % 60) != 0) {
-                    $hour = $_GET['hour'] + $dureepardefautheure;
-                    if ($_GET['minute'] == 30) {
-                        $minute = 30;
-                    } else {
-                        $minute = '00';
-                    }
-                }
-            }
-            //var_dump($hour);
-        }
-    }
+		if ($dureepardefautmin < 60){
+			$hour = $_GET['hour'];
+			$minute =$dureepardefautmin;
+		}
+
+		if ($dureepardefautmin > 60){
+
+		$dureepardefautheure = $dureepardefautmin/60;
+
+		if (($dureepardefautheure % 60)!=0){
+			$hour = $_GET['hour']+ $dureepardefautheure;
+			if ($_GET['minute'] == 30){
+				$minute =30;
+			}else{
+				 $minute = "00";
+				};
+			}
+		}
+	};
+
+	}
+
     if ($minute == 0) {
         $minute = '00';
     }
