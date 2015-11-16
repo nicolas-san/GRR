@@ -17,6 +17,7 @@ if ($_GET['pview'] != 1) {
      * Liste des param de minical
      * $year, $month, $day, $area, $room, $dmy
      */
+
     $tplArrayMenuGauche['returnCalHtml'] = minicals($year, $month, $day, $area, $room, $pageActuel);
 
     if (isset($_SESSION['default_list_type']) || (Settings::get('authentification_obli') == 1)) {
