@@ -268,7 +268,7 @@ function affiche_lien_contact($_cible, $_type_cible, $option_affichage)
                 $affichage = '';
             }
         } else {
-            $affichage = '<a href="javascript:centrerpopup(\'contact.php?cible='.$_cible.'&amp;type_cible='.$_type_cible.'\',600,480,\'scrollbars=yes,statusbar=no,resizable=yes\')" title="'.$_identite.'\">'.$_identite.'</a>'.PHP_EOL;
+            $affichage = '<a href="javascript:centrerpopup(\'contact.php?cible='.$_cible.'&type_cible='.$_type_cible.'\',600,480,\'scrollbars=yes,statusbar=no,resizable=yes\')" title="'.$_identite.'\">'.$_identite.'</a>'.PHP_EOL;
         }
     } else {
         ?>
@@ -834,7 +834,7 @@ function page_accueil($param = 'no')
     if ($defaultarea == -1) {
         $page_accueil = 'day.php?noarea=';
     }
-    // le paramètre noarea ne sert à rien, il est juste là pour éviter un cas particulier à traiter avec &amp;id_site= et $param
+    // le paramètre noarea ne sert à rien, il est juste là pour éviter un cas particulier à traiter avec &id_site= et $param
     elseif ($defaultroom == -1) {
         $page_accueil = 'day.php?area='.$defaultarea;
     } elseif ($defaultroom == -2) {
@@ -844,13 +844,13 @@ function page_accueil($param = 'no')
     } elseif ($defaultroom == -4) {
         $page_accueil = 'month_all2.php?area='.$defaultarea;
     } else {
-        $page_accueil = 'week.php?area='.$defaultarea.'&amp;room='.$defaultroom;
+        $page_accueil = 'week.php?area='.$defaultarea.'&room='.$defaultroom;
     }
     if ((Settings::get('module_multisite') == 'Oui') && ($defaultsite > 0)) {
-        $page_accueil .= '&amp;id_site='.$defaultsite;
+        $page_accueil .= '&id_site='.$defaultsite;
     }
     if ($param == 'yes') {
-        $page_accueil .= '&amp;';
+        $page_accueil .= '&';
     }
 
     return $page_accueil;
@@ -1148,9 +1148,9 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
             $nom_picture = $racine.'images/'.Settings::get('logo');
             if ((Settings::get('logo') != '') && (@file_exists($nom_picture))) {
                 $tplArray['nomPicture'] = $nom_picture;
-                $tplArray['homeLink'] = $racine.page_accueil('yes').'day='.$day.'&amp;year='.$year.'&amp;month='.$month;
+                $tplArray['homeLink'] = $racine.page_accueil('yes').'day='.$day.'&year='.$year.'&month='.$month;
 
-                /*echo '<td class="logo" height="100">'.PHP_EOL.'<a href="'.$racine.page_accueil('yes').'day='.$day.'&amp;year='.$year.'&amp;month='.$month.'"><img src="'.$nom_picture.'" alt="logo"/></a>'.PHP_EOL.'</td>'.PHP_EOL;*/
+                /*echo '<td class="logo" height="100">'.PHP_EOL.'<a href="'.$racine.page_accueil('yes').'day='.$day.'&year='.$year.'&month='.$month.'"><img src="'.$nom_picture.'" alt="logo"/></a>'.PHP_EOL.'</td>'.PHP_EOL;*/
             } else {
                 $tplArray['nomPicture'] = false;
             }
@@ -1159,7 +1159,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
             $tplArray['vocab']['welcome'] = get_vocab('welcome');
             $tplArray['company'] = Settings::get('company');
 
-            /*echo '<td class="accueil ">',PHP_EOL,'<h2>',PHP_EOL,'<a href="'.$racine.page_accueil('yes'),'day=',$day,'&amp;year=',$year,'&amp;month=',$month,'">',get_vocab('welcome'),' - <b>',Settings::get('company'),'</b></a>',PHP_EOL,'</h2>',PHP_EOL;*/
+            /*echo '<td class="accueil ">',PHP_EOL,'<h2>',PHP_EOL,'<a href="'.$racine.page_accueil('yes'),'day=',$day,'&year=',$year,'&month=',$month,'">',get_vocab('welcome'),' - <b>',Settings::get('company'),'</b></a>',PHP_EOL,'</h2>',PHP_EOL;*/
 
             //Mail réservartion
             $tplArray['messageAcceuil'] = Settings::get('message_accueil');
@@ -1172,9 +1172,9 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
 
             if ($res == 1) {
                 if ($type_session == 'no_session') {
-                    /*echo '<td class="contactformulaire">',PHP_EOL,'<input class="btn btn-default" type="submit" rel="popup_name" value="Réserver" onClick="javascript:location.href=\'contactFormulaire.php?day=',$day,'&amp;month=',$month,'&amp;year=',$year,'\'" >',PHP_EOL,'</td>',PHP_EOL;*/
+                    /*echo '<td class="contactformulaire">',PHP_EOL,'<input class="btn btn-default" type="submit" rel="popup_name" value="Réserver" onClick="javascript:location.href=\'contactFormulaire.php?day=',$day,'&month=',$month,'&year=',$year,'\'" >',PHP_EOL,'</td>',PHP_EOL;*/
                     $tplArray['mailEtatDestEtNoSession'] = true;
-                    $tplArray['pathToReserver'] = 'contactFormulaire.php?day='.$day.'&amp;month='.$month.'&amp;year='.$year;
+                    $tplArray['pathToReserver'] = 'contactFormulaire.php?day='.$day.'&month='.$month.'&year='.$year;
 
                 } else {
                     $tplArray['mailEtatDestEtNoSession'] = false;
@@ -1188,7 +1188,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                     //echo '<td class="administration">'.PHP_EOL;
                     $tplArray['pathToAdmin'] = $racineAd."admin_accueil.php?day=".$day."&month=".$month."&year=".$year;
                     $tplArray['vocab']['admin'] = get_vocab('admin');
-                    //echo "<br><a href='{$racineAd}admin_accueil.php?day={$day}&amp;month={$month}&amp;year={$year}'>".get_vocab('admin').'</a>'.PHP_EOL;
+                    //echo "<br><a href='{$racineAd}admin_accueil.php?day={$day}&month={$month}&year={$year}'>".get_vocab('admin').'</a>'.PHP_EOL;
                     if (authGetUserLevel(getUserName(), -1, 'area') >= 6) {
                         $tplArray['pathToMyslqlSave'] = $racineAd.'admin_save_mysql.php';
                         $tplArray['vocab']['submit_backup'] = get_vocab('submit_backup');
@@ -1247,7 +1247,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                 /**
                  * filtre rapide + urlencode, todo : voir pour mieux faire
                  */
-                //$parametres_url = htmlspecialchars(strip_tags($_SERVER['QUERY_STRING'])).'&amp;';
+                //$parametres_url = htmlspecialchars(strip_tags($_SERVER['QUERY_STRING'])).'&';
                 $parametres_url = urlencode(filter_var(strip_tags($_SERVER['QUERY_STRING']), FILTER_SANITIZE_URL));
 
                 //$_SESSION['chemin_retour'] = traite_grr_url($grr_script_name).'?'.$_SERVER['QUERY_STRING'];
@@ -1279,7 +1279,7 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                 $tplArray['prenom'] = htmlspecialchars($_SESSION['prenom']);
                 $tplArray['nom'] = htmlspecialchars($_SESSION['nom']);
                 /*echo '<br /> <b>'.get_vocab('welcome_to').htmlspecialchars($_SESSION['prenom']).' '.htmlspecialchars($_SESSION['nom']).'</b>'.PHP_EOL;
-                echo '<br /> <a href="'.$racine.'my_account.php?day='.$day.'&amp;year='.$year.'&amp;month='.$month.'">'.get_vocab('manage_my_account').'</a>'.PHP_EOL;*/
+                echo '<br /> <a href="'.$racine.'my_account.php?day='.$day.'&year='.$year.'&month='.$month.'">'.get_vocab('manage_my_account').'</a>'.PHP_EOL;*/
                 if (verif_access_search(getUserName())) {
                     $tplArray['searchAccess'] = true;
                     $tplArray['pathToReport'] = $racine.'report.php';
@@ -1301,8 +1301,8 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                         //echo '<br /> <a href="'.$racine.'logout.php?auto=0" >'.get_vocab('disconnect').'</a>'.PHP_EOL;
                     } else {
                         $tplArray['authentificationObli'] = false;
-                        $tplArray['pathToLogout'] = $racine.'logout.php?auto=0&amp;redirect_page_accueil=yes';
-                        /*echo '<br /> <a href="'.$racine.'logout.php?auto=0&amp;redirect_page_accueil=yes" >'.get_vocab('disconnect').'</a>'.PHP_EOL;*/
+                        $tplArray['pathToLogout'] = $racine.'logout.php?auto=0&redirect_page_accueil=yes';
+                        /*echo '<br /> <a href="'.$racine.'logout.php?auto=0&redirect_page_accueil=yes" >'.get_vocab('disconnect').'</a>'.PHP_EOL;*/
                     }
                 } else {
                     $tplArray['disconnectLink'] = false;
@@ -2236,9 +2236,9 @@ function make_area_selection_fields($link, $current_site, $current_area, $year, 
                 /*if ($row[0] == $current_area) {*/
                     $tplArray['areas'][$i]['current'] = ($row[0] == $current_area) ? true : false;
 
-                    //echo '<a id="liste_select" onclick="charger();" href="'.$link."?year=$year&amp;month=$month&amp;day=$day&amp;area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a></b><br />\n";
+                    //echo '<a id="liste_select" onclick="charger();" href="'.$link."?year=$year&month=$month&day=$day&area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a></b><br />\n";
                /* } else {*/
-                    //echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&amp;month=$month&amp;day=$day&amp;area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a><br />\n";
+                    //echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&month=$month&day=$day&area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a><br />\n";
                 /*}*/
             }
         }
@@ -2269,7 +2269,7 @@ function make_room_selection_fields($link, $current_area, $current_room, $year, 
     $tplArray['linkToAllRoom'] = $link.'_all.php?year='.$year.'&month='.$month.'&day='.$day.'&area='.$current_area;
 
     /*$out_html = '<b><i>'.get_vocab('rooms').get_vocab('deux_points').'</i></b><br /><form id="room_001" action="'.$_SERVER['PHP_SELF'].'"><div><select class="form-control" name="room" onchange="room_go()">';
-    $out_html .= '<option value="'.$link."_all.php?year=$year&amp;month=$month&amp;day=$day&amp;area=$current_area\">".get_vocab('all_rooms').'</option>';*/
+    $out_html .= '<option value="'.$link."_all.php?year=$year&month=$month&day=$day&area=$current_area\">".get_vocab('all_rooms').'</option>';*/
     $sql = 'select id, room_name, description from '.TABLE_PREFIX."_room WHERE area_id='".protect_data_sql($current_area)."' order by order_display,room_name";
     $res = grr_sql_query($sql);
     if ($res) {
@@ -2285,7 +2285,7 @@ function make_room_selection_fields($link, $current_area, $current_room, $year, 
                 /*if ($row[0] == $current_area) {*/
                 $tplArray['rooms'][$i]['current'] = ($row[0] == $current_area) ? true : false;
                 //$selected = ($row[0] == $current_room) ? 'selected="selected"' : '';
-                //$link2 = $link.'.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;room='.$row[0];
+                //$link2 = $link.'.php?year='.$year.'&month='.$month.'&day='.$day.'&room='.$row[0];
                 //$out_html .= "<option $selected value=\"$link2\">".htmlspecialchars($row[1].$temp).'</option>'.PHP_EOL;
             }
         }
@@ -2356,9 +2356,9 @@ function make_area_list_html($link, $current_site, $current_area, $year, $month,
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
             if (authUserAccesArea($user, $row[0]) == 1) {
                 if ($row[0] == $current_area) {
-                    echo '<a id="liste_select" onclick="charger();" href="'.$link."?year=$year&amp;month=$month&amp;day=$day&amp;area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a></b><br />\n";
+                    echo '<a id="liste_select" onclick="charger();" href="'.$link."?year=$year&month=$month&day=$day&area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a></b><br />\n";
                 } else {
-                    echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&amp;month=$month&amp;day=$day&amp;area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a><br />\n";
+                    echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&month=$month&day=$day&area=$row[0]\">&gt; ".htmlspecialchars($row[1])."</a><br />\n";
                 }
             }
         }
@@ -2390,7 +2390,7 @@ function make_area_list_html($link, $current_site, $current_area, $year, $month,
                 if ($row[0] == $current_room) {
                     echo '<span id="liste_select">&gt; '.htmlspecialchars($row[1])."</span><br />\n";
                 } else {
-                    echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&amp;month=$month&amp;day=$day&amp;&amp;room=$row[0]\">".htmlspecialchars($row[1])."</a><br />\n";
+                    echo '<a id="liste" onclick="charger();" href="'.$link."?year=$year&month=$month&day=$day&&room=$row[0]\">".htmlspecialchars($row[1])."</a><br />\n";
                 }
             }
         }
@@ -2437,7 +2437,7 @@ function make_area_item_html($link, $current_site, $current_area, $year, $month,
     $res = grr_sql_query($sql);
     if ($res) {
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
-            $link2 = $link.'?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$row[0];
+            $link2 = $link.'?year='.$year.'&month='.$month.'&day='.$day.'&area='.$row[0];
             if (authUserAccesArea($user, $row[0]) == 1) {
                 // Couleur du domaine selectionné
                 if ($current_area != null) {
@@ -2478,8 +2478,8 @@ function make_area_item_html($link, $current_site, $current_area, $year, $month,
     if ($res) {
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
             if (verif_acces_ressource(getUserName(), $row[0])) {
-                $link2 = $link.'.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;room='.$row[0];
-                $link_all_room = 'week_all.php?year='.$year.'&amp;month='.$month.'&amp;day='.$day.'&amp;area='.$current_area;
+                $link2 = $link.'.php?year='.$year.'&month='.$month.'&day='.$day.'&room='.$row[0];
+                $link_all_room = 'week_all.php?year='.$year.'&month='.$month.'&day='.$day.'&area='.$current_area;
                 if (!isset($_GET['room'])) {
                     if (isset($all_ressource) && $all_ressource == 0) {
                         $out_html .= '<div class="panel-body">'.PHP_EOL.'<input id="item_select" class="btn btn-primary btn-lg btn-block" name="all_room" value="Toutes les ressources" onclick="location.href=\''.$link_all_room.'\' ;charger();"/>'.PHP_EOL;

@@ -29,6 +29,9 @@
 * dé dupliquer le code des fonctions make_site_*
 * il faudrait voir pour au moins, dédupliquer le code de week et week_all, puis refaire les events en fonction
 * idem pour mont et month_all
+* prévoir un système de surcharge de paramètres globaux, spécifiques au template, un php d'init ou config du template
+* prévoir un système de surcharge d'un template, comme les child de wp
+* prévoir dans le template, une surcharge des élements de langues
 
 # Warnings
 * Les vars sont passées en GET à edit_entry_handler, avec les plugins risque de dépasser la taille max du _GET, il faudrait passer en POST
