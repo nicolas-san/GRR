@@ -358,6 +358,7 @@ if (grr_sql_count($res) == 0) {
         $tplArray['linkAfter'] = "week_all.php?year=".$ty."&month=".$tm."&day=".$td."&area=".$area;*/
         $tplArray['linkBefore'] = 'day.php?year='.$yy.'&month='.$ym.'&day='.$yd.'&area='.$area;
         $tplArray['linkAfter'] = 'day.php?year='.$ty.'&month='.$tm.'&day='.$td.'&area='.$area;
+        $tplArray['linkToday'] = 'day.php?year='.$year.'&month='.$month.'&day='.$day.'&area='.$area;
 
         /*echo '<tr>'.PHP_EOL;
         echo '<td class="left">'.PHP_EOL;
@@ -517,6 +518,8 @@ if (grr_sql_count($res) == 0) {
             $auth_visiteur = auth_visiteur(getUserName(), $row['2']);
 
             $tplArray['rooms'][$incrementRoomAccessible]['id'] = $row[2];
+            $tplArray['rooms'][$incrementRoomAccessible]['capacity'] = $row[1];
+            $tplArray['rooms'][$incrementRoomAccessible]['description'] = $row[3];
 
             //echo '<tr>'.PHP_EOL;
 
@@ -897,5 +900,9 @@ echo '</div>'.PHP_EOL;*/
 //echo '<div id="popup_name" class="popup_block col-xs-12" ></div>'.PHP_EOL;
 
 //include 'footer.php';
-echo $twig->render('day.html.twig', $tplArray);
+if ($_GET['pview'] == 1) {
+    echo $twig->render('dayPrint.html.twig', $tplArray);
+} else {
+    echo $twig->render('day.html.twig', $tplArray);
+}
 ?>

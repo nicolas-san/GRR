@@ -2601,8 +2601,12 @@ function send_mail($id_entry, $action, $dformat, $tab_id_moderes = array())
     $room_name = removeMailUnicode(htmlspecialchars($row[3]));
     $area_name = removeMailUnicode(htmlspecialchars($row[4]));
     $room_id = $row[6];
+    $area_id = $row[12];
     $repeat_id = $row[7];
     $date_avis = strftime('%Y/%m/%d', $row[10]);
+    $startDay = date('d', $row[11]);
+    $startMonth = date('m', $row[11]);
+    $startYear = date('Y', $row[11]);
     $delais_option_reservation = $row[13];
     $option_reservation = $row[14];
     $moderate = $row[15];
@@ -2911,7 +2915,9 @@ function send_mail($id_entry, $action, $dformat, $tab_id_moderes = array())
             $message5 = removeMailUnicode(Settings::get('company')).' - '.$vocab['title_mail'];
             $message5 .= traite_grr_url('', 'y')."\n\n";
             $message5 .= $vocab['subject_a_moderer'];
-            $message5 .= "\n".traite_grr_url('', 'y').'view_entry.php?id='.$id_entry;
+            //$message5 .= "\n".traite_grr_url('', 'y').'view_entry.php?id='.$id_entry;
+            /* changing view entry for the day view, to have quick look around the entry to modify*/
+            $message5 .= "\n".traite_grr_url('', 'y').'week.php?year='.$startYear.'&month='.$startMonth.'&day='.$startDay.'&room='.$room_id;
             $message5 .= "\n\n".$vocab['created_by'].affiche_nom_prenom_email($user_login, '', 'formail');
             $message5 .= "\n".$vocab['room'].$vocab['deux_points'].$room_name.' ('.$area_name.") \n";
             $message5 = html_entity_decode($message5);

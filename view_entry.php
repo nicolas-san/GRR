@@ -372,6 +372,7 @@ $tplArray['description'] = $description;
             }
             $tplArray['overloadData'][$i]['name'] = bbcode(htmlspecialchars($fieldname), '');
             $tplArray['overloadData'][$i]['value'] = bbcode(htmlspecialchars($fielddata['valeur']), '');
+            $tplArray['overloadData'][$i]['fieldtype'] = $fielddata['fieldtype'];
             $i++;
         }
     }

@@ -459,7 +459,8 @@ if (grr_sql_count($res) == 0) {
             $auth_visiteur = auth_visiteur(getUserName(), $row['2']);
 
             $tplArray['rooms'][$incrementRoomAccessible]['id'] = $row[2];
-
+            $tplArray['rooms'][$incrementRoomAccessible]['capacity'] = $row[1];
+            $tplArray['rooms'][$incrementRoomAccessible]['description'] = $row[3];
             //echo '<tr>'.PHP_EOL;
 
             /* remplacé par la class "table_stripped de bootstrap */

@@ -371,6 +371,8 @@ for ($ir = 0; ($row = grr_sql_row($res, $ir)); ++$ir) {
     $verif_acces_ressource = verif_acces_ressource(getUserName(), $row[2]);
     if ($verif_acces_ressource) {
         $tplArray['rooms'][$incrementRoomAccessible]['nom'] = strip_tags(htmlspecialchars($row[0]));
+        $tplArray['rooms'][$incrementRoomAccessible]['capacity'] = $row[1];
+        $tplArray['rooms'][$incrementRoomAccessible]['description'] = $row[3];
 
         $acces_fiche_reservation = verif_acces_fiche_reservation(getUserName(), $row[2]);
         //echo '<tr><th class="tableau_month_all2">'.htmlspecialchars($row[0])."</th>\n";

@@ -490,7 +490,7 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
     echo '<option value="" >'.get_vocab('personne exterieure').'</option>'.PHP_EOL;*/
 
 
-    $sql = 'SELECT DISTINCT login, nom, prenom FROM '.TABLE_PREFIX."_utilisateurs WHERE (etat!='inactif' and statut!='visiteur' ) OR (login='".$beneficiaire."') ORDER BY nom, prenom";
+    $sql = 'SELECT DISTINCT login, nom, prenom, tel FROM '.TABLE_PREFIX."_utilisateurs WHERE (etat!='inactif' and statut!='visiteur' ) OR (login='".$beneficiaire."') ORDER BY nom, prenom";
     $res = grr_sql_query($sql);
     if ($res) {
         for ($i = 0; ($row = grr_sql_row($res, $i)); ++$i) {
@@ -508,7 +508,12 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
                 $tplArrayEditEntry['options'][$i]['selected'] = true;
             }
             //echo '>'.$row[1].' '.$row[2].'</option>'.PHP_EOL;
-            $tplArrayEditEntry['options'][$i]['text'] = $row[1].' '.$row[2];
+            if($row[3] != "") {
+                $tel = ' ('.$row[3].')';
+            } else {
+                $tel = "";
+            }
+            $tplArrayEditEntry['options'][$i]['text'] = $row[1].' '.$row[2].$tel;
         }
     }
     $test = grr_sql_query1('SELECT login FROM '.TABLE_PREFIX."_utilisateurs WHERE login='".$beneficiaire."'");
