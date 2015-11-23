@@ -4287,7 +4287,12 @@ function affichage_resa_planning($_description, $id_resa)
             if ($affichage != '') {
                 $affichage .= '<br />';
             }
-            $affichage .= htmlspecialchars($fieldname, ENT_NOQUOTES).get_vocab('deux_points').htmlspecialchars($field['valeur'], ENT_NOQUOTES);
+            if ($field['fieldtype'] != 'checkbox') {
+                $affichage .= htmlspecialchars($fieldname, ENT_NOQUOTES).get_vocab('deux_points').htmlspecialchars($field['valeur'], ENT_NOQUOTES);
+            } else {
+                $affichage .= htmlspecialchars($fieldname, ENT_NOQUOTES);
+            }
+
         }
     }
 
