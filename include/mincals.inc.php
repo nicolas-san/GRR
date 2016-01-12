@@ -311,6 +311,7 @@ function minicals($year, $month, $day, $area, $room, $dmy)
 
             //$s .= $this->createlink(-1, 0, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'see_month_for_this_room', 'chevron-left');
             $tplArray['monthForThisRoomLeft'] = $this->createlink(-1, 0, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'see_month_for_this_room', 'chevron-left');
+            $tplArray['monthForThisRoomLeftMoins2'] = $this->createlink(-2, 0, $this->month, $this->year, $this->dmy, $this->room, $this->area, 'see_month_for_this_room', 'chevron-left');
 
             $tplArray['TextAllRoomsForTheMonth'] = $monthName . ' ' . $this->year;
             if (($this->dmy != 'day') && ($this->dmy != 'week_all') && ($this->dmy != 'month_all') && ($this->dmy != 'month_all2')) {
