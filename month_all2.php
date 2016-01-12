@@ -63,6 +63,7 @@ $tplArray['pview'] = $_GET['pview'];
 if (empty($debug_flag)) {
     $debug_flag = 0;
 }
+include 'include/setdate.php';
 if (empty($month) || empty($year) || !checkdate($month, 1, $year)) {
     $month = date('m');
     $year = date('Y');
@@ -112,6 +113,7 @@ if ($enable_periods == 'y') {
 $this_area_name = '';
 $this_room_name = '';
 $this_area_name = grr_sql_query1('SELECT area_name FROM '.TABLE_PREFIX."_area WHERE id=$area");
+
 $i = mktime(0, 0, 0, $month - 1, 1, $year);
 $yy = date('Y', $i);
 $ym = date('n', $i);
@@ -133,8 +135,8 @@ $tplArray['vocab']['rep_type_6'] = get_vocab('rep_type_6');
 /*echo '<div id="planningMonthAll2">';
 echo '<div class="titre_planning"><table class="table-header">';*/
 if ((!isset($_GET['pview'])) or ($_GET['pview'] != 1)) {
-    $tplArray['linkMonthBefore'] = 'month_all2.php?year='.$yy.'&month='.$ym.'&area='.$area;
-    $tplArray['linkMonthAfter'] = 'month_all2.php?year='.$ty.'&month='.$tm.'&area='.$area;
+    $tplArray['linkMonthBefore'] = 'month_all2.php?year='.$yy.'&month='.$ym.'&day=1&area='.$area;
+    $tplArray['linkMonthAfter'] = 'month_all2.php?year='.$ty.'&month='.$tm.'&day=1&area='.$area;
 /*    echo "\n
 	<tr>
 		<td class=\"left\">

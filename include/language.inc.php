@@ -382,6 +382,6 @@ global $type_month_all;
 if (isset($_SESSION['type_month_all'])) {
     $type_month_all = $_SESSION['type_month_all'];
 } elseif (!isset($type_month_all)) {
-    $type_month_all = 'month_all';
+    $type_month_all = 'month_all2';
 }
 

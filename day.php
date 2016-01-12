@@ -168,14 +168,29 @@ switch ($dateformat) {
         $dformat = '%A %d %b';
         break;
 }
-$i = mktime(0, 0, 0, $month_week, $day - 1, $year_week);
+$i = mktime(0, 0, 0, $month, $day - 1, $year);
 $yy = date('Y', $i);
 $ym = date('m', $i);
 $yd = date('d', $i);
-$i = mktime(0, 0, 0, $month_week, $day + 1, $year_week);
+/*echo "<prev>";
+var_dump($month_week);
+echo "<br>";
+var_dump($i);
+echo "<br>";
+var_dump($yy);echo "<br>";
+var_dump($ym);echo "<br>";
+var_dump($yd);echo "<br>";
+echo "</prev>";*/
+$i = mktime(0, 0, 0, $month, $day + 1, $year);
 $ty = date('Y', $i);
 $tm = date('m', $i);
 $td = date('d', $i);
+/*echo "<prev>";
+var_dump($i);echo "<br>";
+var_dump($ty);echo "<br>";
+var_dump($tm);echo "<br>";
+var_dump($td);echo "<br>";
+echo "</prev>";*/
 $all_day = preg_replace('/ /', ' ', get_vocab('all_day2'));
 $sql = 'SELECT start_time, end_time, '.TABLE_PREFIX.'_entry.id, name, beneficiaire, '.TABLE_PREFIX.'_room.id,type, statut_entry, '.TABLE_PREFIX.'_entry.description, '.TABLE_PREFIX.'_entry.option_reservation, '.TABLE_PREFIX.'_room.delais_option_reservation, '.TABLE_PREFIX.'_entry.moderate, beneficiaire_ext
 FROM '.TABLE_PREFIX.'_entry, '.TABLE_PREFIX.'_room, '.TABLE_PREFIX.'_area
@@ -217,6 +232,7 @@ if (!$res) {
             } else {
                 $d[$day_num]['who'][] = '';
             }
+            $d[$day_num]['whoDeBase'][] = affiche_nom_prenom_email($row['4'], $row['12'], 'nomail');
             $d[$day_num]['who1'][] = affichage_lien_resa_planning($row['3'], $row['2']);
             $d[$day_num]['id_room'][] = $row['5'];
             $d[$day_num]['color'][] = $row['6'];
@@ -666,12 +682,12 @@ if (grr_sql_count($res) == 0) {
                                                 //$id = $d[$cday]['id'][$i];
                                                 //echo '<a title="'.htmlspecialchars($d[$cday]['who'][$i]).'" data-width="675" onclick="request('.$id.','.$cday.','.$cmonth.','.$cyear.',\''.$currentPage.'\',readData);" data-rel="popup_name" class="poplight" style = "border-bottom:1px solid #FFF">'.PHP_EOL;
 
-                                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkOnclick'] = 'request(' . $d[$cday]['id'][$i] . ',' . $cday . ',' . $cmonth . ',' . $cyear . ',\'week_all\',readData);';
+                                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkOnclick'] = 'request(' . $d[$cday]['id'][$i] . ',' . $cday . ',' . $cmonth . ',' . $cyear . ',\'day\',readData);';
                                                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkHref'] = false;
                                             } else {
                                                 //echo '<a class="lienCellule" title="'.htmlspecialchars($d[$cday]['who'][$i]).'" href="view_entry.php?id='.$d[$cday]['id'][$i].'&amp;page=week_all&amp;day='.$cday.'&amp;month='.$cmonth.'&amp;year='.$cyear.'&amp;">'.PHP_EOL;
                                                 $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkOnclick'] = false;
-                                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkHref'] = 'view_entry.php?id=' . $d[$cday]['id'][$i] . '&page=week_all&day=' . $cday . '&month=' . $cmonth . '&year=' . $cyear;
+                                                $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkHref'] = 'view_entry.php?id=' . $d[$cday]['id'][$i] . '&page=day&day=' . $cday . '&month=' . $cmonth . '&year=' . $cyear;
                                             }
 
                                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['linkTitle'] = strip_tags(htmlspecialchars($d[$cday]['who'][$i]));
@@ -711,6 +727,7 @@ if (grr_sql_count($res) == 0) {
                                             }
                                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['data'] = $d[$cday]['data'][$i];
                                             $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['who1'] = $d[$cday]['who1'][$i];
+                                            $tplArray['rooms'][$incrementRoomAccessible]['jours'][$k]['reservations'][$i]['whoDeBase'] = $d[$cday]['whoDeBase'][$i];
 
                                             //echo $d[$cday]['who1'][$i].'<br/>'.PHP_EOL;
 

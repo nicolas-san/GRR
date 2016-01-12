@@ -1,8 +1,8 @@
 <?php
 /**
- * EditEntry.php
+ * DelEntryEvent.php
  *
- * Évènements du script qui gère l'affichage du formulaire edit entry
+ * Evénement du script delEntry, de suppression d'une entry
  *
  * Ce script fait partie de l'application GRR
  *
@@ -27,21 +27,19 @@
  * along with GRR; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 namespace Grr\Event;
 
-final class EditEntryEvent
+final class DelEntryEvent
 {
     /**
-     * L'évènement editEntry.form.before est lancé juste avant la balise form
+     * L'évènement delEntry.end est lancé à la fin du script de suppression d'une entry
      *
      * Le « listener » de l'évènement reçoit une instance de
-     * Grr\Event\EditEntryForm
+     * Grr\Event\EntryEventClass
      *
      * @var string
      */
-    const EDITENTRY_FORM_BEFORE = 'editentry.form_before';
-    const EDITENTRY_FORM_AFTER = 'editentry.form_after';
-    const EDITENTRY_FORM_INSIDE_START = 'editentry.form_inside_start';
-    const EDITENTRY_FORM_INSIDE_END = 'editentry.form_inside_stop';
-    const EDITENTRY_FORM_INSIDE_PLUGIN_AREA = 'editentry.form_inside_plugin_area';
+    const DELENTRY_END = 'delentry.end';
+    const DELENTRY_START = 'delentry.start';
 }

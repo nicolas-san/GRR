@@ -14,11 +14,12 @@ class EditEntryForm extends Event
     private $idArea;
     private $idSite;
 
-    public function __construct($idSite, $idArea, array $tpl)
+    public function __construct($idSite, $idArea, array $tpl, $idEntry = null)
     {
         $this->tpl = $tpl;
         $this->idArea = $idArea;
         $this->idSite = $idSite;
+        $this->idEntry = $idEntry;
     }
 
     /**
@@ -67,6 +68,22 @@ class EditEntryForm extends Event
     public function setIdSite($idSite)
     {
         $this->idSite = $idSite;
+    }
+
+    /**
+     * @return null
+     */
+    public function getIdEntry()
+    {
+        return $this->idEntry;
+    }
+
+    /**
+     * @param null $idEntry
+     */
+    public function setIdEntry($idEntry)
+    {
+        $this->idEntry = $idEntry;
     }
 
 

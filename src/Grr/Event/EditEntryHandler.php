@@ -13,10 +13,11 @@ class EditEntryHandler extends Event
     private $data;
     private $idArea;
 
-    public function __construct($idArea, array $data)
+    public function __construct($idArea, array $data, $idEntry = null)
     {
         $this->data = $data;
         $this->idArea = $idArea;
+        $this->idEntry = $idEntry;
     }
 
     /**
@@ -49,6 +50,22 @@ class EditEntryHandler extends Event
     public function setIdArea($idArea)
     {
         $this->idArea = $idArea;
+    }
+
+    /**
+     * @return null
+     */
+    public function getIdEntry()
+    {
+        return $this->idEntry;
+    }
+
+    /**
+     * @param null $idEntry
+     */
+    public function setIdEntry($idEntry)
+    {
+        $this->idEntry = $idEntry;
     }
 
 }

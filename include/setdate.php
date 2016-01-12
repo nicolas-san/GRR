@@ -39,4 +39,8 @@ if (!isset($day) || !isset($month) || !isset($year)) {
         $day--;
     }
 }
+/*  add date detail to allpages */
+$tplArray['dayFromSetDate'] = $day;
+$tplArray['monthFromSetDate'] = $month;
+$tplArray['yearFromSetDate'] = $year;
 

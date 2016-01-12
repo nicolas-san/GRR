@@ -214,4 +214,8 @@ $grrSettings = array();
 global $template;
 $template = "Modern";
 
+/* surcharge manuelle de certain param */
+global $type_month_all;
+$type_month_all = "month_all2";
+
 //$template = "Default";

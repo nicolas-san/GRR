@@ -645,7 +645,7 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
             'area' => mrbsGetRoomArea($room_id),
             'send_mail_moderate' => $send_mail_moderate
         ];
-        $eventBeforeDb = new EditEntryHandlerForCreate($dataForCreate);
+        $eventBeforeDb = new EditEntryHandlerForCreate($dataForCreate, $id);
         $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_BEFORE_DB, $eventBeforeDb);
 
         $dataForCreate = $eventBeforeDb->getData();
@@ -734,7 +734,7 @@ if (empty($err) && ($error_booking_in_past == 'no') && ($error_duree_max_resa_ar
 
     $dataFromGet = filter_input_array(INPUT_GET);
     $dataFromGet['idLastInsert'] = $idPourEvent;
-    $event = new EditEntryHandler($area_id, $dataFromGet);
+    $event = new EditEntryHandler($area_id, $dataFromGet, $id);
     $dispatcher->dispatch(EditEntryHandlerEvent::EDITENTRYHANDLER_AFTER_DB, $event);
 
     $area = mrbsGetRoomArea($room_id);

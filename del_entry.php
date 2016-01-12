@@ -35,7 +35,8 @@ include 'include/config.inc.php';
 include 'include/functions.inc.php';
 include "include/$dbsys.inc.php";
 include_once 'include/misc.inc.php';
-include 'include/mrbs_sql.inc.php'; include 'include/init.php'; include 'include/init.php';
+include 'include/mrbs_sql.inc.php';
+include 'include/init.php';
 $grr_script_name = 'del_entry.php';
 require_once './include/settings.class.php';
 if (!Settings::load()) {
@@ -47,6 +48,10 @@ if (!grr_resumeSession()) {
     die();
 };
 include 'include/language.inc.php';
+
+use Grr\Event\DelEntryEvent;
+use Grr\Event\EntryEventClass;
+
 $series = isset($_GET['series']) ? $_GET['series'] : null;
 if (isset($series)) {
     settype($series, 'integer');
@@ -89,7 +94,17 @@ if ($info = mrbsGetEntryInfo($id)) {
         showAccessDenied($back);
         exit();
     }
+
+    /* avant la suppression, dispatch de l'event */
+    $event = new EntryEventClass(false, false, $id, false);
+    $dispatcher->dispatch(DelEntryEvent::DELENTRY_START, $event);
+
     $result = mrbsDelEntry(getUserName(), $id, $series, 1);
+
+    /* après la suppression, dispatch de l'event */
+    $eventEnd = new EntryEventClass(false, false, $id, false);
+    $dispatcher->dispatch(DelEntryEvent::DELENTRY_END, $eventEnd);
+
     if ($result) {
         $_SESSION['displ_msg'] = 'yes';
         Header('Location: '.$page.".php?day=$day&month=$month&year=$year&area=$area&room=".$info['room_id']);

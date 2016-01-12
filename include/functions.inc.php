@@ -1332,7 +1332,8 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
                         /*echo '<a href="lasso/defederate.php">'.get_vocab('lasso_defederate_this_account').'</a>'.PHP_EOL;*/
                     }
                 }
-            }/*
+            }
+            /*
             echo '</td>'.PHP_EOL;
             echo '</tr>'.PHP_EOL;
             echo '</table>'.PHP_EOL;

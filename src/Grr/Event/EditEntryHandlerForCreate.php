@@ -12,9 +12,10 @@ class EditEntryHandlerForCreate extends Event
 {
     private $data;
 
-    public function __construct(array $data)
+    public function __construct(array $data, $idEntry = null)
     {
         $this->data = $data;
+        $this->idEntry = $idEntry;
     }
 
     /**
@@ -31,6 +32,22 @@ class EditEntryHandlerForCreate extends Event
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdEntry()
+    {
+        return $this->idEntry;
+    }
+
+    /**
+     * @param mixed $idEntry
+     */
+    public function setIdEntry($idEntry)
+    {
+        $this->idEntry = $idEntry;
     }
 
 

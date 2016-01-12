@@ -41,6 +41,7 @@ if (isset($_GET['id'])) {
 } else {
     $id = null;
 }
+/* si id != null c'est une entry qui existe déjà, donc on est dans le cas d'une modification */
 $period = isset($_GET['period']) ? $_GET['period'] : null;
 if (isset($period)) {
     settype($period, 'integer');
@@ -82,6 +83,7 @@ if (isset($id)) {
     if ($info = mrbsGetEntryInfo($id)) {
         $area = mrbsGetRoomArea($info['room_id']);
         $room = $info['room_id'];
+        $id_site = mrbsGetAreaSite($area);
     } else {
         $area = -1;
         $room = -1;
@@ -423,7 +425,7 @@ $tplArrayEditEntry['moderate'] = $moderate;
  */
 // crée le EntryFormEvent et le répartit
 global $id_site;
-$event = new EditEntryForm($id_site, $area_id, $tplArrayEditEntry);
+$event = new EditEntryForm($id_site, $area_id, $tplArrayEditEntry, $id);
 $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_BEFORE, $event);
 
 /*echo '<form class="form-inline" id="main" action="edit_entry_handler.php" method="get">'.PHP_EOL;*/
@@ -463,9 +465,6 @@ if ($res) {
         }
     }
 }
-
-
-
 
 /*echo '<div id="error"></div>';
 echo '<table class="table-bordered EditEntryTable"><tr>'.PHP_EOL;
@@ -525,7 +524,8 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
     } else {
         $tplArrayEditEntry['optionBeneficiaireInconnu'] = false;
     }
-/*    echo '</select>'.PHP_EOL;
+    /*
+    echo '</select>'.PHP_EOL;
     echo '</div>'.PHP_EOL;
     echo '<input type="button" class="btn btn-primary" value="'.get_vocab('definir par defaut').'" onclick="setdefault(\'beneficiaire_default\',document.getElementById(\'main\').beneficiaire.options[document.getElementById(\'main\').beneficiaire.options.selectedIndex].value)" />'.PHP_EOL;
     echo '<div id="div_profilBeneficiaire">'.PHP_EOL;
@@ -547,7 +547,7 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
     } else {
         echo '<tr style="display:none" id="menu4"><td>'.PHP_EOL;
     }*/
-/*    echo '<div class="form-group">'.PHP_EOL;
+    /*    echo '<div class="form-group">'.PHP_EOL;
     echo '    <div class="input-group">'.PHP_EOL;
     echo '      <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>'.PHP_EOL;
     echo '      <input class="form-control" type="text" name="benef_ext_nom" value="'.htmlspecialchars($tab_benef['nom']).'" placeholder="'.get_vocab('nom beneficiaire').'">'.PHP_EOL;
@@ -555,7 +555,7 @@ if (((authGetUserLevel(getUserName(), -1, 'room') >= $qui_peut_reserver_pour) ||
     echo '  </div>'.PHP_EOL;*/
     $affiche_mess_asterisque = true;
     $tplArrayEditEntry['settings']['automaticMail'] = Settings::get('automatic_mail');
-/*    if (Settings::get('automatic_mail') == 'yes') {
+    /* if (Settings::get('automatic_mail') == 'yes') {
         echo '<div class="form-group">'.PHP_EOL;
         echo '    <div class="input-group">'.PHP_EOL;
         echo '      <div class="input-group-addon"><span class="glyphicon glyphicon-envelope" ></span></div>'.PHP_EOL;
@@ -696,7 +696,7 @@ $tplArrayEditEntry['typeAffichageReser'] = $type_affichage_reser;
 if ($type_affichage_reser == 0) {
     //$tplArrayEditEntry['typeAffichageReser'] = false;
     $tplArrayEditEntry['spinner']['duration'] = $duration;
-/*    echo '<tr><td class="E">'.PHP_EOL;
+    /*    echo '<tr><td class="E">'.PHP_EOL;
     echo '<b>'.get_vocab('duration').'</b>'.PHP_EOL;
     echo '</td></tr>'.PHP_EOL;
     echo '<tr><td class="CL">'.PHP_EOL;
@@ -723,7 +723,7 @@ if ($type_affichage_reser == 0) {
     $tplArrayEditEntry['units'] = $units;
     $tplArrayEditEntry['durUnits'] = $dur_units;
 
-/*    while (list(, $unit) = each($units)) {
+    /*    while (list(, $unit) = each($units)) {
         echo '<option value="'.$unit.'"';
         if ($dur_units ==  get_vocab($unit)) {
             echo ' selected="selected"';
@@ -754,18 +754,18 @@ if ($type_affichage_reser == 0) {
     $tplArrayEditEntry['morningStarts'] = $morningstarts;
     $tplArrayEditEntry['afFinJour'] = $af_fin_jour;
 
-/*    echo '</div>'.PHP_EOL;
+    /*    echo '</div>'.PHP_EOL;
     echo '</td></tr>'.PHP_EOL;*/
 
 
 } else {
 
 
-    //$tplArrayEditEntry['typeAffichageReser'] = true;
-/*    echo '<tr><td class="E"><b>'.get_vocab('fin_reservation').get_vocab('deux_points').'</b></td></tr>'.PHP_EOL;
-    echo '<tr><td class="CL" >'.PHP_EOL;
+        //$tplArrayEditEntry['typeAffichageReser'] = true;
+    /*    echo '<tr><td class="E"><b>'.get_vocab('fin_reservation').get_vocab('deux_points').'</b></td></tr>'.PHP_EOL;
+        echo '<tr><td class="CL" >'.PHP_EOL;
 
-    echo '<div class="form-group">'.PHP_EOL;*/
+        echo '<div class="form-group">'.PHP_EOL;*/
     $tplArrayEditEntry['rawSelectDateEnd'] = jQuery_DatePicker('end', true);
 
     if ($enable_periods == 'y') {
@@ -776,35 +776,35 @@ if ($type_affichage_reser == 0) {
         }
         $tplArrayEditEntry['endMin'] = $end_min;
 
-/*        echo '<b>'.get_vocab('period').'</b>';
-        echo "<td class=\"CL\">\n";
-        echo '<select class="form-control" name="end_period">';*/
-/*        foreach ($periods_name as $p_num => $p_val) {
-            echo '<option value="'.$p_num.'"';
-            if ((isset($end_period) && $end_period == $p_num) || ($p_num + 1) == $end_min) {
-                echo ' selected="selected"';
+    /*        echo '<b>'.get_vocab('period').'</b>';
+            echo "<td class=\"CL\">\n";
+            echo '<select class="form-control" name="end_period">';*/
+    /*        foreach ($periods_name as $p_num => $p_val) {
+                echo '<option value="'.$p_num.'"';
+                if ((isset($end_period) && $end_period == $p_num) || ($p_num + 1) == $end_min) {
+                    echo ' selected="selected"';
+                }
+                echo ">$p_val</option>\n";
             }
-            echo ">$p_val</option>\n";
-        }
-        echo '</select>'.PHP_EOL;*/
+            echo '</select>'.PHP_EOL;*/
 
     } else {
 
-/*        echo '<b>'.get_vocab('time').' : </b>';
-        if (isset($_GET['id'])) {
-            jQuery_TimePicker('end_', $end_hour, $end_min, $duree_par_defaut_reservation_area);
-        } else {
-            jQuery_TimePicker('end_', '', '', $duree_par_defaut_reservation_area);
-        }
-        if (!$twentyfourhour_format) {
-            $checked = ($end_hour < 12) ? 'checked="checked"' : '';
-            echo "<input name=\"ampm\" type=\"radio\" value=\"am\" $checked />".date('a', mktime(1, 0, 0, 1, 1, 1970));
-            $checked = ($end_hour >= 12) ? 'checked="checked"' : '';
-            echo "<input name=\"ampm\" type=\"radio\" value=\"pm\" $checked />".date('a', mktime(13, 0, 0, 1, 1, 1970));
-        }*/
+    /*        echo '<b>'.get_vocab('time').' : </b>';
+            if (isset($_GET['id'])) {
+                jQuery_TimePicker('end_', $end_hour, $end_min, $duree_par_defaut_reservation_area);
+            } else {
+                jQuery_TimePicker('end_', '', '', $duree_par_defaut_reservation_area);
+            }
+            if (!$twentyfourhour_format) {
+                $checked = ($end_hour < 12) ? 'checked="checked"' : '';
+                echo "<input name=\"ampm\" type=\"radio\" value=\"am\" $checked />".date('a', mktime(1, 0, 0, 1, 1, 1970));
+                $checked = ($end_hour >= 12) ? 'checked="checked"' : '';
+                echo "<input name=\"ampm\" type=\"radio\" value=\"pm\" $checked />".date('a', mktime(13, 0, 0, 1, 1, 1970));
+            }*/
     }
-/*    echo '</div>'.PHP_EOL;
-    echo '</td></tr>'.PHP_EOL;*/
+    /*    echo '</div>'.PHP_EOL;
+        echo '</td></tr>'.PHP_EOL;*/
 }
 
 if (($delais_option_reservation > 0) && (($modif_option_reservation == 'y') || ((($modif_option_reservation == 'n') && ($option_reservation != -1))))) {
@@ -1317,7 +1317,10 @@ $tplArrayEditEntry['vocab']['rep_rep_day'] = get_vocab('rep_rep_day');
     /* si ça reste à false, c'est qu'il n'y a pas de plugin */
     $tplArrayEditEntry['plugins'] = false;
     // crée le EntryFormEvent et le répartit
-    $event = new EditEntryForm($id_site, $area_id, $tplArrayEditEntry);
+    /*echo "<pre>";
+    var_dump($id_site, $area_id, $id);
+    echo "</pre>";*/
+    $event = new EditEntryForm($id_site, $area_id, $tplArrayEditEntry, $id);
     $dispatcher->dispatch(EditEntryEvent::EDITENTRY_FORM_INSIDE_PLUGIN_AREA, $event);
     /* mise à jour du tableau du template avec le retour des events */
     $tplArrayEditEntry = $event->getTpl();
