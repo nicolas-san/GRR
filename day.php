@@ -31,7 +31,7 @@
 
 /**
  * todo : refactoriser pour ne prendre que le jour en cours
- * dans le but de rapidement unifermiser le site, j'ai utilisé weekæll.php comme base, et dans le template je n'affiche qu'un jour,
+ * dans le but de rapidement uniformiser le site, j'ai utilisé week_all.php comme base, et dans le template je n'affiche qu'un jour,
  * cette solution est fonctionelle, mais pas élégante, et sur un gros volume de données pourrait être consommatrice de ressources pour rien.
  *
  */
@@ -192,7 +192,7 @@ var_dump($tm);echo "<br>";
 var_dump($td);echo "<br>";
 echo "</prev>";*/
 $all_day = preg_replace('/ /', ' ', get_vocab('all_day2'));
-$sql = 'SELECT start_time, end_time, '.TABLE_PREFIX.'_entry.id, name, beneficiaire, '.TABLE_PREFIX.'_room.id,type, statut_entry, '.TABLE_PREFIX.'_entry.description, '.TABLE_PREFIX.'_entry.option_reservation, '.TABLE_PREFIX.'_room.delais_option_reservation, '.TABLE_PREFIX.'_entry.moderate, beneficiaire_ext
+$sql = 'SELECT start_time, end_time, '.TABLE_PREFIX.'_entry.id, name, beneficiaire, '.TABLE_PREFIX.'_room.id, type, statut_entry, '.TABLE_PREFIX.'_entry.description, '.TABLE_PREFIX.'_entry.option_reservation, '.TABLE_PREFIX.'_room.delais_option_reservation, '.TABLE_PREFIX.'_entry.moderate, beneficiaire_ext
 FROM '.TABLE_PREFIX.'_entry, '.TABLE_PREFIX.'_room, '.TABLE_PREFIX.'_area
 where
 '.TABLE_PREFIX.'_entry.room_id='.TABLE_PREFIX.'_room.id and
