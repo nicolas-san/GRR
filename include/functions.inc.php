@@ -1059,7 +1059,7 @@ function begin_page($title, $page = 'with_session')
 * @param bool $close si il est true, dans le template twig les div ouverts dans printHeader seront fermés à la fin du fichier, sinon ils restent ouvert et c'est soit menu_gauche, soit le
  * script en cours qui doit les fermer.
  */
-function print_header($day = '', $month = '', $year = '', $type_session = 'with_session', $close = true)
+function print_header($day = '', $month = '', $year = '', $type_session = 'with_session', $close = true, $display = true, $admin = true)
 {
     global $vocab, $search_str, $grrSettings, $clock_file, $desactive_VerifNomPrenomUser, $grr_script_name;
     global $use_prototype, $use_admin, $use_tooltip_js, $desactive_bandeau_sup, $id_site, $use_select2;
@@ -1348,7 +1348,15 @@ function print_header($day = '', $month = '', $year = '', $type_session = 'with_
             echo '</div>'.PHP_EOL;
             echo '</div>'.PHP_EOL;*/
 
-           echo $twig->render('printHeader.html.twig', $tplArray);
+            if ($display) {
+                if ($admin) {
+                    echo $twig->render('printHeaderAdmin.html.twig', $tplArray);
+                } else {
+                    echo $twig->render('printHeader.html.twig', $tplArray);
+                }
+            } else {
+                return $tplArray;
+            }
         }
     }
 
