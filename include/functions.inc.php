@@ -2541,6 +2541,31 @@ function send_mail($id_entry, $action, $dformat, $tab_id_moderes = array())
     $mail = new PHPMailer();
 
     if (Settings::get('grr_mail_method') == 'smtp') {
+
+        $smtpUsername = Settings::get('grr_mail_Username');
+        $smtpPassword = Settings::get('grr_mail_Password');
+
+        if ($smtpUsername != "") {
+            $mail->SMTPAuth = true;
+            $mail->Username = $smtpUsername;
+            $mail->Password = $smtpPassword;
+
+        } else {
+            $mail->SMTPAuth = false;
+        }
+
+        $mail->Host = Settings::get('grr_mail_smtp');
+        $mail->Port = 587;
+
+        $mail->isSMTP();
+
+    } else {
+
+        $mail->isSendMail();
+
+    }
+
+/*    if (Settings::get('grr_mail_method') == 'smtp') {
         $smtpUsername = Settings::get('grr_mail_Username');
         $smtpPassword = Settings::get('grr_mail_Password');
 
@@ -2556,10 +2581,8 @@ function send_mail($id_entry, $action, $dformat, $tab_id_moderes = array())
         $mail->SMTPAuth = true;
     }
 
-//	$mail->SMTPDebug = 2;
-//	$mail->Debugoutput = 'html';
     $mail->Host = Settings::get('grr_mail_smtp');
-    $mail->Port = 587;
+    $mail->Port = 587;*/
 
     $mail->CharSet = 'UTF-8';
     $mail->setFrom(GRR_FROM, GRR_FROMNAME);
